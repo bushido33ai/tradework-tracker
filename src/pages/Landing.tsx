@@ -8,7 +8,7 @@ const features = [
   "Track multiple jobs efficiently",
   "Manage supplier relationships",
   "Monitor costs and profitability",
-  "Generate professional reports",
+  "Minimise administrative overheads",
 ];
 
 const Landing = () => {
