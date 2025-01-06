@@ -58,8 +58,6 @@ const JobsList = ({ status }: JobsListProps) => {
                   ? "default"
                   : job.status === "cancelled"
                   ? "destructive"
-                  : job.status === "pending"
-                  ? "success"
                   : "secondary"
               }
               className={job.status === "pending" ? "bg-green-500 hover:bg-green-600" : ""}
