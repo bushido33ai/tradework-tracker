@@ -4,6 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useProfile } from "@/hooks/useProfile";
 import { ProfileForm } from "@/components/profile/ProfileForm";
+import { Card, CardContent } from "@/components/ui/card";
+import { Mail, Phone, MapPin } from "lucide-react";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -41,15 +43,49 @@ const Profile = () => {
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <h1 className="text-3xl font-bold mb-8">Profile Settings</h1>
-      <ProfileForm 
-        initialData={{
-          email: authData.user.email || "",
-          address: profile.address,
-          telephone: profile.telephone,
-        }}
-      />
+    <div className="max-w-2xl mx-auto space-y-8">
+      <h1 className="text-3xl font-bold">Profile Settings</h1>
+      
+      <Card className="content-container">
+        <CardContent className="pt-6 space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex items-center space-x-3">
+              <Mail className="w-5 h-5 text-primary" />
+              <div>
+                <p className="text-sm text-muted-foreground">Email</p>
+                <p className="font-medium">{authData.user.email}</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center space-x-3">
+              <Phone className="w-5 h-5 text-primary" />
+              <div>
+                <p className="text-sm text-muted-foreground">Telephone</p>
+                <p className="font-medium">{profile.telephone || 'Not set'}</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center space-x-3 md:col-span-2">
+              <MapPin className="w-5 h-5 text-primary" />
+              <div>
+                <p className="text-sm text-muted-foreground">Address</p>
+                <p className="font-medium">{profile.address || 'Not set'}</p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="content-container p-6">
+        <h2 className="text-xl font-semibold mb-6">Edit Profile</h2>
+        <ProfileForm 
+          initialData={{
+            email: authData.user.email || "",
+            address: profile.address,
+            telephone: profile.telephone,
+          }}
+        />
+      </div>
     </div>
   );
 };
