@@ -9,11 +9,13 @@ import FileUpload from "@/components/jobs/FileUpload";
 import FileList from "@/components/jobs/FileList";
 import BudgetChart from "@/components/jobs/BudgetChart";
 import { CheckCircle } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const JobDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const isMobile = useIsMobile();
 
   const { data: job, isLoading } = useQuery({
     queryKey: ["job", id],
@@ -66,12 +68,12 @@ const JobDetails = () => {
   return (
     <div className="space-y-6">
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>{job.title}</CardTitle>
+        <CardHeader className={`flex ${isMobile ? 'flex-col' : 'flex-row'} items-center justify-between gap-4`}>
+          <CardTitle className="text-center md:text-left">{job.title}</CardTitle>
           {job.status !== "completed" && job.status !== "cancelled" && (
             <Button
               onClick={handleCompleteJob}
-              className="bg-green-500 hover:bg-green-600"
+              className="bg-green-500 hover:bg-green-600 w-full md:w-auto"
               disabled={completeJobMutation.isPending}
             >
               <CheckCircle className="mr-2 h-4 w-4" />
@@ -85,7 +87,7 @@ const JobDetails = () => {
               <h3 className="font-medium">Description</h3>
               <p className="text-muted-foreground mt-1">{job.description}</p>
             </div>
-            <div className="flex gap-4 text-sm text-muted-foreground">
+            <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
               <span>📍 {job.location}</span>
               {job.budget && <span>💰 ${job.budget}</span>}
             </div>
@@ -94,10 +96,10 @@ const JobDetails = () => {
       </Card>
 
       <Tabs defaultValue="designs" className="w-full">
-        <TabsList>
-          <TabsTrigger value="designs">Designs</TabsTrigger>
-          <TabsTrigger value="invoices">Invoices</TabsTrigger>
-          {job.budget > 0 && <TabsTrigger value="budget">Budget</TabsTrigger>}
+        <TabsList className="w-full flex">
+          <TabsTrigger value="designs" className="flex-1">Designs</TabsTrigger>
+          <TabsTrigger value="invoices" className="flex-1">Invoices</TabsTrigger>
+          {job.budget > 0 && <TabsTrigger value="budget" className="flex-1">Budget</TabsTrigger>}
         </TabsList>
         
         <TabsContent value="designs">
