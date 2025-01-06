@@ -1,9 +1,23 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, Hammer, Home, Store } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const UserTypeSelection = () => {
+  const navigate = useNavigate();
+
+  const handleUserTypeSelection = async (userType: string) => {
+    try {
+      // Store the selected user type in session storage for the signup process
+      sessionStorage.setItem('selectedUserType', userType);
+      navigate(`/signup/${userType}`);
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.");
+    }
+  };
+
   const options = [
     {
       title: "I am a tradesman",
@@ -45,12 +59,15 @@ const UserTypeSelection = () => {
             {options.map((option) => (
               <Card 
                 key={option.value}
-                className="p-6 flex flex-col items-center text-center cursor-pointer card-hover"
+                className="p-6 flex flex-col items-center text-center cursor-pointer hover:shadow-lg transition-shadow"
               >
                 <div className="mb-4 text-primary">{option.icon}</div>
                 <h3 className="text-xl font-semibold mb-2">{option.title}</h3>
                 <p className="text-gray-600 mb-4">{option.description}</p>
-                <Button className="w-full">
+                <Button 
+                  className="w-full"
+                  onClick={() => handleUserTypeSelection(option.value)}
+                >
                   Continue
                 </Button>
               </Card>

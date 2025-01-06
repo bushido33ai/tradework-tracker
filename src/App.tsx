@@ -17,6 +17,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/register" element={<UserTypeSelection />} />
+            <Route path="/signup/:userType" element={<div>Sign up page - Coming soon</div>} />
             <Route
               path="/*"
               element={
