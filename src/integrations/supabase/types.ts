@@ -48,6 +48,51 @@ export type Database = {
         }
         Relationships: []
       }
+      enquiries: {
+        Row: {
+          assigned_to: string | null
+          created_at: string
+          created_by: string
+          description: string
+          enquiry_number: string
+          id: string
+          location: string
+          measurement_notes: string | null
+          status: Database["public"]["Enums"]["enquiry_status"] | null
+          title: string
+          updated_at: string
+          visit_date: string | null
+        }
+        Insert: {
+          assigned_to?: string | null
+          created_at?: string
+          created_by: string
+          description: string
+          enquiry_number?: string
+          id?: string
+          location: string
+          measurement_notes?: string | null
+          status?: Database["public"]["Enums"]["enquiry_status"] | null
+          title: string
+          updated_at?: string
+          visit_date?: string | null
+        }
+        Update: {
+          assigned_to?: string | null
+          created_at?: string
+          created_by?: string
+          description?: string
+          enquiry_number?: string
+          id?: string
+          location?: string
+          measurement_notes?: string | null
+          status?: Database["public"]["Enums"]["enquiry_status"] | null
+          title?: string
+          updated_at?: string
+          visit_date?: string | null
+        }
+        Relationships: []
+      }
       job_designs: {
         Row: {
           file_path: string
@@ -252,6 +297,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      enquiry_status: "pending" | "in_progress" | "completed" | "cancelled"
       job_status: "pending" | "in_progress" | "completed" | "cancelled"
       supplier_status: "active" | "inactive"
       user_type: "tradesman" | "customer" | "merchant"

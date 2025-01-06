@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Building2, ClipboardList, Home, Users, UserCircle, Menu } from "lucide-react";
+import { Building2, ClipboardList, Home, Users, UserCircle, Menu, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -17,6 +17,7 @@ const Navigation = () => {
   const navItems = [
     { icon: Home, label: "Dashboard", path: "/dashboard" },
     { icon: ClipboardList, label: "Jobs", path: "/jobs" },
+    { icon: MessageSquare, label: "Enquiries", path: "/enquiries" },
     { icon: Users, label: "Suppliers", path: "/suppliers" },
     { icon: Building2, label: "Customers", path: "/customers" },
     { icon: UserCircle, label: "Profile", path: "/profile" },

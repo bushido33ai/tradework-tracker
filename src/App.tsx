@@ -9,12 +9,12 @@ import SignUp from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
 import Navigation from "./components/Navigation";
 import Jobs from "./pages/Jobs";
+import Enquiries from "./pages/Enquiries";
 import Profile from "./pages/Profile";
 import JobDetails from "./pages/JobDetails";
 import Dashboard from "./pages/Dashboard";
 import Suppliers from "./pages/Suppliers";
 import Customers from "./pages/Customers";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +39,7 @@ const App = () => {
                         <Route path="/dashboard" element={<Dashboard />} />
                         <Route path="/jobs" element={<Jobs />} />
                         <Route path="/jobs/:id" element={<JobDetails />} />
+                        <Route path="/enquiries" element={<Enquiries />} />
                         <Route path="/suppliers" element={<Suppliers />} />
                         <Route path="/customers" element={<Customers />} />
                         <Route path="/profile" element={<Profile />} />
