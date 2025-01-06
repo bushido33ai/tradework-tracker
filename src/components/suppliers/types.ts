@@ -14,4 +14,5 @@ export const supplierSchema = z.object({
   business_type: z.string().min(1, "Business type is required"),
 });
 
+// This ensures the form values match exactly what's required
 export type SupplierFormValues = z.infer<typeof supplierSchema>;

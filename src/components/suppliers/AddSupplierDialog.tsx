@@ -40,9 +40,9 @@ const AddSupplierDialog = ({ open, onOpenChange }: AddSupplierDialogProps) => {
 
       // Create the supplier insert object with all required fields
       const supplierData: SupplierInsert = {
-        ...values, // These are all required fields from the form
+        ...values,
         created_by: user.id,
-        status: "active", // Set default status
+        status: "active",
       };
 
       const { error } = await supabase.from("suppliers").insert(supplierData);
