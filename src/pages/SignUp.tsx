@@ -28,7 +28,7 @@ const SignUp = () => {
   });
 
   const onSubmit = async (data: SignUpFormData) => {
-    if (isLoading) return; // Prevent multiple submissions
+    if (isLoading) return;
     
     try {
       setIsLoading(true);
@@ -38,14 +38,15 @@ const SignUp = () => {
         throw new Error('Invalid user type');
       }
 
+      // Structure the metadata properly
       const signUpResponse = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
         options: {
           data: {
             user_type: userType,
-            address: data.address,
-            telephone: data.telephone,
+            address: data.address || null,
+            telephone: data.telephone || null
           },
         },
       });
@@ -53,6 +54,8 @@ const SignUp = () => {
       if (signUpResponse.error) {
         throw signUpResponse.error;
       }
+
+      console.log('Signup response:', signUpResponse); // Add this for debugging
 
       toast.success("Account created successfully! Please check your email to verify your account.");
       navigate("/");
