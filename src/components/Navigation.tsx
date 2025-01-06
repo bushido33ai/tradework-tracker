@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { Building2, ClipboardList, Home, Users, UserCircle, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const Navigation = () => {
@@ -25,19 +25,18 @@ const Navigation = () => {
       {navItems.map((item) => {
         const Icon = item.icon;
         return (
-          <SheetClose asChild key={item.path}>
-            <Link
-              to={item.path}
-              className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
-                isActive(item.path)
-                  ? "bg-primary-50 text-primary-800"
-                  : "text-gray-600 hover:bg-gray-50"
-              }`}
-            >
-              <Icon className="w-5 h-5" />
-              <span className="font-medium">{item.label}</span>
-            </Link>
-          </SheetClose>
+          <Link
+            key={item.path}
+            to={item.path}
+            className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
+              isActive(item.path)
+                ? "bg-primary-50 text-primary-800"
+                : "text-gray-600 hover:bg-gray-50"
+            }`}
+          >
+            <Icon className="w-5 h-5" />
+            <span className="font-medium">{item.label}</span>
+          </Link>
         );
       })}
     </div>
