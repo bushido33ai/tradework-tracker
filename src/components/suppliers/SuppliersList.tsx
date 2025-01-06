@@ -9,6 +9,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { useState } from "react";
+import ViewSupplierDialog from "./ViewSupplierDialog";
 
 interface Supplier {
   id: string;
@@ -28,6 +30,13 @@ interface SuppliersListProps {
 
 const SuppliersList = ({ suppliers, isLoading }: SuppliersListProps) => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
+  const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const handleSupplierClick = (supplier: Supplier) => {
+    setSelectedSupplier(supplier);
+    setIsDialogOpen(true);
+  };
 
   if (isLoading) {
     return <div>Loading suppliers...</div>;
@@ -49,8 +58,13 @@ const SuppliersList = ({ suppliers, isLoading }: SuppliersListProps) => {
             <CardHeader>
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="font-semibold">{supplier.company_name}</h3>
-                  <p className="text-sm text-muted-foreground">{supplier.contact_name}</p>
+                  <button
+                    onClick={() => handleSupplierClick(supplier)}
+                    className="text-left hover:text-primary transition-colors"
+                  >
+                    <h3 className="font-semibold">{supplier.company_name}</h3>
+                    <p className="text-sm text-muted-foreground">{supplier.contact_name}</p>
+                  </button>
                 </div>
                 <Badge variant={supplier.status === "active" ? "default" : "secondary"}>
                   {supplier.status}
@@ -69,6 +83,13 @@ const SuppliersList = ({ suppliers, isLoading }: SuppliersListProps) => {
             </CardContent>
           </Card>
         ))}
+        {selectedSupplier && (
+          <ViewSupplierDialog
+            supplier={selectedSupplier}
+            open={isDialogOpen}
+            onOpenChange={setIsDialogOpen}
+          />
+        )}
       </div>
     );
   }
@@ -89,7 +110,14 @@ const SuppliersList = ({ suppliers, isLoading }: SuppliersListProps) => {
         <TableBody>
           {suppliers.map((supplier) => (
             <TableRow key={supplier.id}>
-              <TableCell className="font-medium">{supplier.company_name}</TableCell>
+              <TableCell className="font-medium">
+                <button
+                  onClick={() => handleSupplierClick(supplier)}
+                  className="hover:text-primary transition-colors text-left"
+                >
+                  {supplier.company_name}
+                </button>
+              </TableCell>
               <TableCell>{supplier.contact_name}</TableCell>
               <TableCell className="break-all">{supplier.email}</TableCell>
               <TableCell>{supplier.phone}</TableCell>
@@ -103,6 +131,13 @@ const SuppliersList = ({ suppliers, isLoading }: SuppliersListProps) => {
           ))}
         </TableBody>
       </Table>
+      {selectedSupplier && (
+        <ViewSupplierDialog
+          supplier={selectedSupplier}
+          open={isDialogOpen}
+          onOpenChange={setIsDialogOpen}
+        />
+      )}
     </div>
   );
 };
