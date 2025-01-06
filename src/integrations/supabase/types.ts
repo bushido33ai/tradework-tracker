@@ -11,20 +11,26 @@ export type Database = {
     Tables: {
       profiles: {
         Row: {
+          address: string | null
           created_at: string
           id: string
+          telephone: string | null
           updated_at: string
           user_type: Database["public"]["Enums"]["user_type"]
         }
         Insert: {
+          address?: string | null
           created_at?: string
           id: string
+          telephone?: string | null
           updated_at?: string
           user_type: Database["public"]["Enums"]["user_type"]
         }
         Update: {
+          address?: string | null
           created_at?: string
           id?: string
+          telephone?: string | null
           updated_at?: string
           user_type?: Database["public"]["Enums"]["user_type"]
         }
