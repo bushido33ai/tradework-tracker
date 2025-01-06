@@ -22,7 +22,7 @@ const JobNotes = ({ jobId }: JobNotesProps) => {
           created_by,
           created_at,
           updated_at,
-          creator:profiles(full_name)
+          creator:created_by(full_name)
         `)
         .eq("job_id", jobId)
         .order("created_at", { ascending: false });
