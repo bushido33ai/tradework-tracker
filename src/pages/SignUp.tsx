@@ -34,8 +34,8 @@ const SignUp = () => {
     
     try {
       // Validate user type
-      const validUserTypes = ['tradesman', 'customer', 'merchant'];
-      if (!validUserTypes.includes(userType)) {
+      const validUserTypes = ['tradesman', 'customer', 'merchant'] as const;
+      if (!validUserTypes.includes(userType as typeof validUserTypes[number])) {
         throw new Error('Invalid user type');
       }
 
@@ -45,8 +45,8 @@ const SignUp = () => {
         options: {
           data: {
             user_type: userType,
-            address: data.address.trim(),
-            telephone: data.telephone.trim(),
+            address: data.address.trim() || null,
+            telephone: data.telephone.trim() || null,
           },
         },
       });
