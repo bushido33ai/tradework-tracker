@@ -66,10 +66,10 @@ const JobDetails = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pt-4 md:pt-0">
       <Card>
-        <CardHeader className={`flex ${isMobile ? 'flex-col' : 'flex-row'} items-center justify-between gap-4`}>
-          <CardTitle className="text-center md:text-left">{job.title}</CardTitle>
+        <CardHeader className="space-y-4 md:space-y-0 md:flex md:flex-row md:items-center md:justify-between">
+          <CardTitle className="text-xl md:text-2xl">{job.title}</CardTitle>
           {job.status !== "completed" && job.status !== "cancelled" && (
             <Button
               onClick={handleCompleteJob}
