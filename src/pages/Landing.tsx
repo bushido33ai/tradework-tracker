@@ -11,16 +11,25 @@ const features = [
   "Generate professional reports",
 ];
 
-// Only create Supabase client if environment variables are available
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
+// Create Supabase client with environment variable checks
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error("Supabase credentials are missing");
+}
+
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 const Landing = () => {
   const handleGoogleLogin = async () => {
     try {
-      toast.loading("Connecting to Google...");
+      if (!supabaseUrl || !supabaseAnonKey) {
+        toast.error("Authentication is not properly configured");
+        return;
+      }
+
+      toast.loading("Connecting to Google...", { id: "google-auth" });
       
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
@@ -30,11 +39,11 @@ const Landing = () => {
       });
       
       if (error) {
-        toast.error("Failed to sign in with Google");
+        toast.error("Failed to sign in with Google", { id: "google-auth" });
         console.error("Google sign-in error:", error);
       }
     } catch (error) {
-      toast.error("An unexpected error occurred");
+      toast.error("An unexpected error occurred", { id: "google-auth" });
       console.error("Google sign-in error:", error);
     }
   };
