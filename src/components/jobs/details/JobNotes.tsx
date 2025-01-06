@@ -9,7 +9,7 @@ interface JobNotesProps {
 }
 
 const JobNotes = ({ jobId }: JobNotesProps) => {
-  const { data: notes, isLoading } = useQuery<JobNote[]>({
+  const { data: notes, isLoading } = useQuery({
     queryKey: ["jobNotes", jobId],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -22,7 +22,7 @@ const JobNotes = ({ jobId }: JobNotesProps) => {
           created_by,
           created_at,
           updated_at,
-          creator:profiles(full_name)
+          creator:profiles!created_by(full_name)
         `)
         .eq("job_id", jobId)
         .order("created_at", { ascending: false });
