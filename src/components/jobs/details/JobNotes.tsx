@@ -20,7 +20,8 @@ const JobNotes = ({ jobId }: JobNotesProps) => {
           content,
           note_type,
           created_at,
-          profiles!created_by (
+          created_by,
+          profiles (
             full_name
           )
         `)
