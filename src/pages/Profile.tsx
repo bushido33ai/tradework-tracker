@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useProfile } from "@/hooks/useProfile";
 import { ProfileForm } from "@/components/profile/ProfileForm";
 import { Card, CardContent } from "@/components/ui/card";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin, User } from "lucide-react";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -14,6 +14,7 @@ const Profile = () => {
     queryKey: ['user'],
     queryFn: async () => {
       const { data } = await supabase.auth.getUser();
+      console.log("Auth data:", data);
       return data;
     },
   });
@@ -43,12 +44,20 @@ const Profile = () => {
   }
 
   return (
-    <div className="max-w-2xl mx-auto space-y-8">
+    <div className="max-w-2xl mx-auto space-y-8 p-4">
       <h1 className="text-3xl font-bold">Profile Settings</h1>
       
-      <Card className="content-container">
+      <Card>
         <CardContent className="pt-6 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex items-center space-x-3">
+              <User className="w-5 h-5 text-primary" />
+              <div>
+                <p className="text-sm text-muted-foreground">User Type</p>
+                <p className="font-medium capitalize">{profile.user_type}</p>
+              </div>
+            </div>
+
             <div className="flex items-center space-x-3">
               <Mail className="w-5 h-5 text-primary" />
               <div>
@@ -65,7 +74,7 @@ const Profile = () => {
               </div>
             </div>
             
-            <div className="flex items-center space-x-3 md:col-span-2">
+            <div className="flex items-center space-x-3">
               <MapPin className="w-5 h-5 text-primary" />
               <div>
                 <p className="text-sm text-muted-foreground">Address</p>
@@ -76,16 +85,18 @@ const Profile = () => {
         </CardContent>
       </Card>
 
-      <div className="content-container p-6">
-        <h2 className="text-xl font-semibold mb-6">Edit Profile</h2>
-        <ProfileForm 
-          initialData={{
-            email: authData.user.email || "",
-            address: profile.address,
-            telephone: profile.telephone,
-          }}
-        />
-      </div>
+      <Card>
+        <CardContent className="pt-6">
+          <h2 className="text-xl font-semibold mb-6">Edit Profile</h2>
+          <ProfileForm 
+            initialData={{
+              email: authData.user.email || "",
+              address: profile.address || "",
+              telephone: profile.telephone || "",
+            }}
+          />
+        </CardContent>
+      </Card>
     </div>
   );
 };
