@@ -3,6 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import FileUpload from "@/components/jobs/FileUpload";
 import FileList from "@/components/jobs/FileList";
 import BudgetChart from "@/components/jobs/BudgetChart";
+import JobNotes from "./JobNotes";
 
 interface JobTabsProps {
   jobId: string;
@@ -15,6 +16,7 @@ const JobTabs = ({ jobId, budget }: JobTabsProps) => {
       <TabsList className="w-full flex">
         <TabsTrigger value="designs" className="flex-1">Designs</TabsTrigger>
         <TabsTrigger value="invoices" className="flex-1">Invoices</TabsTrigger>
+        <TabsTrigger value="notes" className="flex-1">Notes</TabsTrigger>
         {budget && budget > 0 && (
           <TabsTrigger value="budget" className="flex-1">Budget</TabsTrigger>
         )}
@@ -38,6 +40,14 @@ const JobTabs = ({ jobId, budget }: JobTabsProps) => {
               <FileUpload jobId={jobId} type="invoice" />
             </div>
             <FileList jobId={jobId} type="invoice" />
+          </div>
+        </Card>
+      </TabsContent>
+
+      <TabsContent value="notes">
+        <Card>
+          <div className="p-6">
+            <JobNotes jobId={jobId} />
           </div>
         </Card>
       </TabsContent>

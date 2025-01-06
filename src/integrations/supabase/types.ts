@@ -166,6 +166,44 @@ export type Database = {
           },
         ]
       }
+      job_notes: {
+        Row: {
+          content: string
+          created_at: string
+          created_by: string
+          id: string
+          job_id: string
+          note_type: Database["public"]["Enums"]["note_type"] | null
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          created_by: string
+          id?: string
+          job_id: string
+          note_type?: Database["public"]["Enums"]["note_type"] | null
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          job_id?: string
+          note_type?: Database["public"]["Enums"]["note_type"] | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_notes_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       jobs: {
         Row: {
           assigned_to: string | null
@@ -299,6 +337,7 @@ export type Database = {
     Enums: {
       enquiry_status: "pending" | "in_progress" | "completed" | "cancelled"
       job_status: "pending" | "in_progress" | "completed" | "cancelled"
+      note_type: "general" | "update" | "issue" | "resolution"
       supplier_status: "active" | "inactive"
       user_type: "tradesman" | "customer" | "merchant"
     }
