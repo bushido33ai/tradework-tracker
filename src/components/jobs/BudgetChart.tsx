@@ -4,6 +4,7 @@ import {
   ChartContainer,
 } from "@/components/ui/chart";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip, Legend } from "recharts";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface BudgetChartProps {
   jobId: string;
@@ -11,6 +12,7 @@ interface BudgetChartProps {
 }
 
 const BudgetChart = ({ jobId, budget }: BudgetChartProps) => {
+  const isMobile = useIsMobile();
   const { data: invoices } = useQuery({
     queryKey: ["invoices", jobId],
     queryFn: async () => {
@@ -48,7 +50,7 @@ const BudgetChart = ({ jobId, budget }: BudgetChartProps) => {
 
   const CustomLegend = ({ payload }: any) => {
     return (
-      <div className="flex justify-center gap-8 mt-4">
+      <div className="flex flex-col md:flex-row justify-center gap-4 mt-4">
         {payload.map((entry: any, index: number) => (
           <div key={`legend-${index}`} className="flex items-center gap-2">
             <div 
@@ -73,7 +75,7 @@ const BudgetChart = ({ jobId, budget }: BudgetChartProps) => {
         </p>
       </div>
       
-      <div className="w-full" style={{ height: '300px' }}>
+      <div className="w-full h-[250px] md:h-[300px] mt-4">
         <ChartContainer
           config={{
             spent: { color: COLORS[0] },
@@ -81,13 +83,13 @@ const BudgetChart = ({ jobId, budget }: BudgetChartProps) => {
           }}
         >
           <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
+            <PieChart margin={{ top: 20, right: 0, bottom: 20, left: 0 }}>
               <Pie
                 data={data}
                 cx="50%"
                 cy="50%"
-                innerRadius={60}
-                outerRadius={80}
+                innerRadius={isMobile ? 40 : 60}
+                outerRadius={isMobile ? 60 : 80}
                 paddingAngle={5}
                 dataKey="value"
                 label={({ name, value }) => `${name}: $${value.toFixed(2)}`}
