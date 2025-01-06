@@ -4,6 +4,7 @@ import { Loader2, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import AddCustomerDialog from "@/components/customers/AddCustomerDialog";
+import { Link } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -59,7 +60,14 @@ const Customers = () => {
           <TableBody>
             {customers?.map((customer) => (
               <TableRow key={customer.id}>
-                <TableCell className="font-medium">{customer.full_name}</TableCell>
+                <TableCell className="font-medium">
+                  <Link 
+                    to={`/customers/${customer.id}`}
+                    className="text-blue-600 hover:text-blue-800 hover:underline"
+                  >
+                    {customer.full_name}
+                  </Link>
+                </TableCell>
                 <TableCell>{customer.email}</TableCell>
                 <TableCell>{customer.telephone}</TableCell>
                 <TableCell>{customer.address}</TableCell>
