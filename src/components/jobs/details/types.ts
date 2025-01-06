@@ -5,10 +5,6 @@ export type JobNote = {
   job_id: string;
   content: string;
   note_type: Database["public"]["Enums"]["note_type"] | null;
-  created_by: string;
   created_at: string;
-  updated_at: string;
-  creator: {
-    full_name: string | null;
-  } | null;
+  created_by_name: string | null;
 };

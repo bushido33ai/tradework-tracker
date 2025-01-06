@@ -12,23 +12,31 @@ const JobNotes = ({ jobId }: JobNotesProps) => {
   const { data: notes, isLoading } = useQuery<JobNote[]>({
     queryKey: ["jobNotes", jobId],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data: notesData, error: notesError } = await supabase
         .from("job_notes")
         .select(`
           id,
           job_id,
           content,
           note_type,
-          created_by,
           created_at,
-          updated_at,
-          creator:profiles!created_by(full_name)
+          profiles!created_by (
+            full_name
+          )
         `)
         .eq("job_id", jobId)
         .order("created_at", { ascending: false });
 
-      if (error) throw error;
-      return data as JobNote[];
+      if (notesError) throw notesError;
+
+      return notesData.map(note => ({
+        id: note.id,
+        job_id: note.job_id,
+        content: note.content,
+        note_type: note.note_type,
+        created_at: note.created_at,
+        created_by_name: note.profiles?.full_name || "Unknown User"
+      }));
     },
   });
 

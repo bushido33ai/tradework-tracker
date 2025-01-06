@@ -10,7 +10,7 @@ export const JobNoteItem = ({ note }: JobNoteItemProps) => {
     <div className="bg-white p-4 rounded-lg shadow">
       <div className="flex justify-between items-start mb-2">
         <div>
-          <p className="font-medium">{note.creator?.full_name || "Unknown User"}</p>
+          <p className="font-medium">{note.created_by_name}</p>
           <p className="text-sm text-muted-foreground">
             {formatDistanceToNow(new Date(note.created_at), { addSuffix: true })}
           </p>
