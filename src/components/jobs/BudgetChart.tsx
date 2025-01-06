@@ -73,7 +73,7 @@ const BudgetChart = ({ jobId, budget }: BudgetChartProps) => {
         </p>
       </div>
       
-      <div className="h-[280px] w-full">
+      <div className="w-full" style={{ height: '300px' }}>
         <ChartContainer
           config={{
             spent: { color: COLORS[0] },
@@ -91,7 +91,7 @@ const BudgetChart = ({ jobId, budget }: BudgetChartProps) => {
                 paddingAngle={5}
                 dataKey="value"
                 label={({ name, value }) => `${name}: $${value.toFixed(2)}`}
-                labelLine={true}
+                labelLine={false}
               >
                 {data.map((entry, index) => (
                   <Cell 
