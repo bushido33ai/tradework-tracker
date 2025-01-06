@@ -45,6 +45,9 @@ const JobsList = ({ status }: JobsListProps) => {
         >
           <div className="flex justify-between items-start">
             <div>
+              <div className="text-sm text-muted-foreground mb-1">
+                {job.job_number}
+              </div>
               <h3 className="font-semibold text-lg">{job.title}</h3>
               <p className="text-muted-foreground mt-1">{job.description}</p>
               <div className="flex gap-4 mt-2 text-sm text-muted-foreground">
