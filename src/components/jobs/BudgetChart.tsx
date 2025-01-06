@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  ChartContainer,
-} from "@/components/ui/chart";
-import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip, Legend } from "recharts";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { ChartContainer } from "@/components/ui/chart";
+import { Legend, Tooltip } from "recharts";
+import { CustomTooltip } from "./charts/CustomTooltip";
+import { BudgetLegend } from "./charts/BudgetLegend";
+import { BudgetPieChart } from "./charts/BudgetPieChart";
 
 interface BudgetChartProps {
   jobId: string;
@@ -12,7 +12,6 @@ interface BudgetChartProps {
 }
 
 const BudgetChart = ({ jobId, budget }: BudgetChartProps) => {
-  const isMobile = useIsMobile();
   const { data: invoices } = useQuery({
     queryKey: ["invoices", jobId],
     queryFn: async () => {
@@ -36,36 +35,6 @@ const BudgetChart = ({ jobId, budget }: BudgetChartProps) => {
 
   const COLORS = ["#ef4444", "#22c55e"];
 
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-white/95 border border-border/50 rounded-lg p-3 shadow-lg">
-          <p className="font-medium">{`${payload[0].name}`}</p>
-          <p className="text-lg">${payload[0].value.toFixed(2)}</p>
-        </div>
-      );
-    }
-    return null;
-  };
-
-  const CustomLegend = ({ payload }: any) => {
-    return (
-      <div className="flex flex-col md:flex-row justify-center gap-4 mt-4">
-        {payload.map((entry: any, index: number) => (
-          <div key={`legend-${index}`} className="flex items-center gap-2">
-            <div 
-              className="w-4 h-4 rounded-full" 
-              style={{ backgroundColor: entry.color }}
-            />
-            <span className="text-sm font-medium">
-              {entry.value}: ${data[index].value.toFixed(2)}
-            </span>
-          </div>
-        ))}
-      </div>
-    );
-  };
-
   return (
     <div className="space-y-4">
       <div className="text-center">
@@ -82,31 +51,9 @@ const BudgetChart = ({ jobId, budget }: BudgetChartProps) => {
             remaining: { color: COLORS[1] },
           }}
         >
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart margin={{ top: 20, right: 0, bottom: 20, left: 0 }}>
-              <Pie
-                data={data}
-                cx="50%"
-                cy="50%"
-                innerRadius={isMobile ? 40 : 60}
-                outerRadius={isMobile ? 60 : 80}
-                paddingAngle={5}
-                dataKey="value"
-                label={({ name, value }) => `${name}: $${value.toFixed(2)}`}
-                labelLine={false}
-              >
-                {data.map((entry, index) => (
-                  <Cell 
-                    key={`cell-${index}`} 
-                    fill={COLORS[index]}
-                    className="transition-all duration-200 hover:opacity-80"
-                  />
-                ))}
-              </Pie>
-              <Tooltip content={<CustomTooltip />} />
-              <Legend content={<CustomLegend />} />
-            </PieChart>
-          </ResponsiveContainer>
+          <BudgetPieChart data={data} colors={COLORS} />
+          <Tooltip content={<CustomTooltip />} />
+          <Legend content={<BudgetLegend data={data} />} />
         </ChartContainer>
       </div>
     </div>
