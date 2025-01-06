@@ -8,8 +8,17 @@ import { toast } from "sonner";
 import FileUpload from "@/components/jobs/FileUpload";
 import FileList from "@/components/jobs/FileList";
 import BudgetChart from "@/components/jobs/BudgetChart";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, Trash2 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const JobDetails = () => {
   const { id } = useParams();
@@ -28,6 +37,26 @@ const JobDetails = () => {
 
       if (error) throw error;
       return data;
+    },
+  });
+
+  const deleteJobMutation = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase
+        .from("jobs")
+        .delete()
+        .eq("id", id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Job deleted successfully");
+      queryClient.invalidateQueries({ queryKey: ["jobs"] });
+      navigate("/jobs");
+    },
+    onError: (error) => {
+      console.error("Error deleting job:", error);
+      toast.error("Failed to delete job");
     },
   });
 
@@ -65,6 +94,10 @@ const JobDetails = () => {
     completeJobMutation.mutate();
   };
 
+  const handleDeleteJob = () => {
+    deleteJobMutation.mutate();
+  };
+
   return (
     <div className="space-y-6 pt-4 md:pt-0">
       <Card>
@@ -75,16 +108,43 @@ const JobDetails = () => {
             </div>
             <CardTitle className="text-xl md:text-2xl">{job.title}</CardTitle>
           </div>
-          {job.status !== "completed" && job.status !== "cancelled" && (
-            <Button
-              onClick={handleCompleteJob}
-              className="bg-green-500 hover:bg-green-600 w-full md:w-auto"
-              disabled={completeJobMutation.isPending}
-            >
-              <CheckCircle className="mr-2 h-4 w-4" />
-              {completeJobMutation.isPending ? "Completing..." : "Mark as Complete"}
-            </Button>
-          )}
+          <div className="flex flex-col md:flex-row gap-2">
+            {job.status !== "completed" && job.status !== "cancelled" && (
+              <Button
+                onClick={handleCompleteJob}
+                className="bg-green-500 hover:bg-green-600 w-full md:w-auto"
+                disabled={completeJobMutation.isPending}
+              >
+                <CheckCircle className="mr-2 h-4 w-4" />
+                {completeJobMutation.isPending ? "Completing..." : "Mark as Complete"}
+              </Button>
+            )}
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="destructive" className="w-full md:w-auto">
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Delete Job
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Delete Job</DialogTitle>
+                  <DialogDescription>
+                    Are you sure you want to delete this job? This action cannot be undone.
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <Button
+                    variant="destructive"
+                    onClick={handleDeleteJob}
+                    disabled={deleteJobMutation.isPending}
+                  >
+                    {deleteJobMutation.isPending ? "Deleting..." : "Delete"}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4">
