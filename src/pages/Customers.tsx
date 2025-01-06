@@ -1,9 +1,13 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import AddCustomerDialog from "@/components/customers/AddCustomerDialog";
 
 const Customers = () => {
+  const [showAddDialog, setShowAddDialog] = useState(false);
+  
   const { data: profiles, isLoading } = useQuery({
     queryKey: ['customers'],
     queryFn: async () => {
@@ -29,7 +33,7 @@ const Customers = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Customers</h1>
-        <Button>
+        <Button onClick={() => setShowAddDialog(true)}>
           <UserPlus className="w-4 h-4 mr-2" />
           Add Customer
         </Button>
@@ -51,6 +55,11 @@ const Customers = () => {
           </div>
         ))}
       </div>
+
+      <AddCustomerDialog 
+        open={showAddDialog} 
+        onOpenChange={setShowAddDialog} 
+      />
     </div>
   );
 };
