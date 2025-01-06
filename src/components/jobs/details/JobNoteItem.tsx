@@ -1,28 +1,27 @@
-import { format } from "date-fns";
-import { Card } from "@/components/ui/card";
+import { formatDistanceToNow } from "date-fns";
+import type { JobNote } from "./types";
 
 interface JobNoteItemProps {
-  note: {
-    content: string;
-    created_at: string;
-    creator: {
-      full_name: string | null;
-    } | null;
-  };
+  note: JobNote;
 }
 
 export const JobNoteItem = ({ note }: JobNoteItemProps) => {
   return (
-    <Card className="p-4">
+    <div className="bg-white p-4 rounded-lg shadow">
       <div className="flex justify-between items-start mb-2">
-        <span className="font-medium">
-          {note.creator?.full_name || "Unknown User"}
-        </span>
-        <span className="text-sm text-muted-foreground">
-          {format(new Date(note.created_at), "PPp")}
-        </span>
+        <div>
+          <p className="font-medium">{note.creator?.full_name || "Unknown User"}</p>
+          <p className="text-sm text-muted-foreground">
+            {formatDistanceToNow(new Date(note.created_at), { addSuffix: true })}
+          </p>
+        </div>
+        {note.note_type && (
+          <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
+            {note.note_type}
+          </span>
+        )}
       </div>
-      <p className="whitespace-pre-wrap">{note.content}</p>
-    </Card>
+      <p className="text-gray-700 whitespace-pre-wrap">{note.content}</p>
+    </div>
   );
 };

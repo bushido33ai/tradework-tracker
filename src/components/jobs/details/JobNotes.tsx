@@ -15,7 +15,13 @@ const JobNotes = ({ jobId }: JobNotesProps) => {
       const { data, error } = await supabase
         .from("job_notes")
         .select(`
-          *,
+          id,
+          job_id,
+          content,
+          note_type,
+          created_by,
+          created_at,
+          updated_at,
           creator:profiles!job_notes_created_by_fkey (
             full_name
           )
@@ -24,7 +30,7 @@ const JobNotes = ({ jobId }: JobNotesProps) => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return data;
+      return data as JobNote[];
     },
   });
 
