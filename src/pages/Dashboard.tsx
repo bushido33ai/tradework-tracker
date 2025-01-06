@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { format } from "date-fns";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Briefcase, CheckCircle, PoundSterling, Receipt } from "lucide-react";
@@ -98,9 +97,12 @@ const Dashboard = () => {
               <CheckCircle className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
+              <Link 
+                to="/jobs?status=completed" 
+                className="text-2xl font-bold hover:text-primary transition-colors"
+              >
                 {completedJobs?.reduce((sum, month) => sum + month.count, 0) || 0}
-              </div>
+              </Link>
             </CardContent>
           </Card>
 
