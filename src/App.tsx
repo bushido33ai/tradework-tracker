@@ -14,6 +14,7 @@ import JobDetails from "./pages/JobDetails";
 import Dashboard from "./pages/Dashboard";
 import Suppliers from "./pages/Suppliers";
 import Customers from "./pages/Customers";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const queryClient = new QueryClient();
 
@@ -33,7 +34,7 @@ const App = () => {
                 element={
                   <div className="flex min-h-screen">
                     <Navigation />
-                    <main className="flex-1 ml-64 p-8 content-container my-4 mr-4">
+                    <main className="flex-1 p-4 md:p-8 content-container my-4 mx-4 md:ml-64">
                       <Routes>
                         <Route path="/dashboard" element={<Dashboard />} />
                         <Route path="/jobs" element={<Jobs />} />
