@@ -1,25 +1,34 @@
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useProfile } from "@/hooks/useProfile";
 import { ProfileForm } from "@/components/profile/ProfileForm";
 
 const Profile = () => {
   const navigate = useNavigate();
-  const { data: { user } } = await supabase.auth.getUser();
-  const { data: profile, isLoading } = useProfile(user?.id);
+  
+  const { data: authData, isLoading: isAuthLoading } = useQuery({
+    queryKey: ['user'],
+    queryFn: async () => {
+      const { data } = await supabase.auth.getUser();
+      return data;
+    },
+  });
 
-  if (!user) {
-    navigate("/signin");
-    return null;
-  }
+  const { data: profile, isLoading: isProfileLoading } = useProfile(authData?.user?.id);
 
-  if (isLoading) {
+  if (isAuthLoading || isProfileLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );
+  }
+
+  if (!authData?.user) {
+    navigate("/signin");
+    return null;
   }
 
   if (!profile) {
@@ -36,7 +45,7 @@ const Profile = () => {
       <h1 className="text-3xl font-bold mb-8">Profile Settings</h1>
       <ProfileForm 
         initialData={{
-          email: user.email || "",
+          email: authData.user.email || "",
           address: profile.address,
           telephone: profile.telephone,
         }}
