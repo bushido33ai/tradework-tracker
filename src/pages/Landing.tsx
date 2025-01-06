@@ -78,8 +78,7 @@ const Landing = () => {
               <span className="text-primary-600">Efficiently</span>
             </h2>
             <p className="text-xl text-gray-600 mb-8">
-              The all-in-one platform for tradesmen to manage jobs, track costs, and
-              boost profitability.
+              The all-in-one platform for tradesmen to manage jobs, track costs, save time and make a tradesman's life easier.
             </p>
 
             <div className="flex justify-center space-x-4 mb-12">
