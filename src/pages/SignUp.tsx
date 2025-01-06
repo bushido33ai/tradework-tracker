@@ -28,18 +28,17 @@ const SignUp = () => {
   });
 
   const onSubmit = async (data: SignUpFormData) => {
-    if (isLoading) return;
+    if (isLoading || !userType) return;
+    
+    setIsLoading(true);
     
     try {
-      setIsLoading(true);
-      
       // Validate user type
-      if (!userType || !['tradesman', 'customer', 'merchant'].includes(userType)) {
+      if (!['tradesman', 'customer', 'merchant'].includes(userType)) {
         throw new Error('Invalid user type');
       }
 
-      // Clean and prepare the data
-      const cleanData = {
+      const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email: data.email.trim(),
         password: data.password,
         options: {
@@ -49,27 +48,17 @@ const SignUp = () => {
             telephone: data.telephone.trim(),
           },
         },
-      };
-
-      console.log('Attempting signup with data:', {
-        email: cleanData.email,
-        userType: cleanData.options.data.user_type,
-        address: cleanData.options.data.address,
-        telephone: cleanData.options.data.telephone,
       });
 
-      const { error } = await supabase.auth.signUp(cleanData);
+      if (signUpError) throw signUpError;
 
-      if (error) {
-        console.error('Signup error:', error);
-        throw error;
+      if (authData.user) {
+        toast.success("Account created successfully! Please check your email to verify your account.");
+        navigate("/");
       }
-
-      toast.success("Account created successfully! Please check your email to verify your account.");
-      navigate("/");
     } catch (error: any) {
-      console.error('Signup process error:', error);
-      toast.error(error.message || "An error occurred during sign up");
+      console.error('Signup error:', error);
+      toast.error(error.message || "Failed to create account. Please try again.");
     } finally {
       setIsLoading(false);
     }
