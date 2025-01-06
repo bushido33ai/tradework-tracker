@@ -1,24 +1,32 @@
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
+import { useState } from "react";
 
 const Index = () => {
+  const [imageErrors, setImageErrors] = useState<{[key: string]: boolean}>({});
+  
   const images = [
     {
-      url: "https://images.unsplash.com/photo-1488972685288-c3fd157d7c7a",
+      url: "https://images.unsplash.com/photo-1488972685288-c3fd157d7c7a?auto=format&fit=crop&w=1920",
       alt: "Low angle photography of gray building",
       caption: "Building Excellence"
     },
     {
-      url: "https://images.unsplash.com/photo-1518005020951-eccb494ad742",
+      url: "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1920",
       alt: "White concrete building during daytime",
       caption: "Modern Construction"
     },
     {
-      url: "https://images.unsplash.com/photo-1496307653780-42ee777d4833",
+      url: "https://images.unsplash.com/photo-1496307653780-42ee777d4833?auto=format&fit=crop&w=1920",
       alt: "Bottom view of glass building",
       caption: "Innovative Design"
     }
   ];
+
+  const handleImageError = (index: number) => {
+    console.error(`Failed to load image at index ${index}`);
+    setImageErrors(prev => ({ ...prev, [index]: true }));
+  };
 
   return (
     <div className="min-h-screen relative">
@@ -26,7 +34,7 @@ const Index = () => {
       <div 
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-10"
         style={{ 
-          backgroundImage: "url('https://images.unsplash.com/photo-1433832597046-4f10e10ac764')",
+          backgroundImage: `url('https://images.unsplash.com/photo-1433832597046-4f10e10ac764?auto=format&fit=crop&w=1920')`,
           backgroundAttachment: "fixed"
         }}
       />
@@ -50,12 +58,20 @@ const Index = () => {
                 <CarouselItem key={index}>
                   <Card className="border-none">
                     <CardContent className="p-0">
-                      <div className="relative aspect-video overflow-hidden rounded-xl">
-                        <img
-                          src={image.url}
-                          alt={image.alt}
-                          className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-                        />
+                      <div className="relative aspect-video overflow-hidden rounded-xl bg-gray-100">
+                        {!imageErrors[index] ? (
+                          <img
+                            src={image.url}
+                            alt={image.alt}
+                            className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                            onError={() => handleImageError(index)}
+                            loading="lazy"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-gray-500">
+                            Image failed to load
+                          </div>
+                        )}
                         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-6">
                           <h3 className="text-white text-2xl font-semibold">
                             {image.caption}
