@@ -13,6 +13,7 @@ import CreateJob from "./pages/CreateJob";
 import Profile from "./pages/Profile";
 import JobDetails from "./pages/JobDetails";
 import Dashboard from "./pages/Dashboard";
+import Suppliers from "./pages/Suppliers";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +39,7 @@ const App = () => {
                         <Route path="/jobs" element={<Jobs />} />
                         <Route path="/jobs/create" element={<CreateJob />} />
                         <Route path="/jobs/:id" element={<JobDetails />} />
+                        <Route path="/suppliers" element={<Suppliers />} />
                         <Route path="/profile" element={<Profile />} />
                       </Routes>
                     </main>
