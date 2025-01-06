@@ -33,29 +33,37 @@ const SignUp = () => {
     try {
       setIsLoading(true);
       
-      // Ensure userType is valid
+      // Ensure userType is valid and matches expected enum values
       if (!userType || !['tradesman', 'customer', 'merchant'].includes(userType)) {
         throw new Error('Invalid user type');
       }
 
-      // Structure the metadata properly
+      console.log('Attempting signup with data:', {
+        email: data.email,
+        userType,
+        address: data.address || null,
+        telephone: data.telephone || null
+      });
+
       const signUpResponse = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
         options: {
+          emailRedirectTo: window.location.origin,
           data: {
             user_type: userType,
             address: data.address || null,
-            telephone: data.telephone || null
+            telephone: data.telephone || null,
           },
         },
       });
 
+      console.log('Raw signup response:', signUpResponse);
+
       if (signUpResponse.error) {
+        console.error('Signup error details:', signUpResponse.error);
         throw signUpResponse.error;
       }
-
-      console.log('Signup response:', signUpResponse); // Add this for debugging
 
       toast.success("Account created successfully! Please check your email to verify your account.");
       navigate("/");
