@@ -24,15 +24,15 @@ const Suppliers = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Suppliers</h1>
-          <p className="text-muted-foreground mt-2">
+          <h1 className="text-2xl md:text-3xl font-bold break-words">Suppliers</h1>
+          <p className="text-muted-foreground mt-2 text-sm md:text-base break-words">
             Manage your suppliers and their information
           </p>
         </div>
-        <Button onClick={() => setIsAddDialogOpen(true)}>
-          <Plus className="mr-2" />
+        <Button onClick={() => setIsAddDialogOpen(true)} className="w-full sm:w-auto">
+          <Plus className="mr-2 h-4 w-4" />
           Add Supplier
         </Button>
       </div>

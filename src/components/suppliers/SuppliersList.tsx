@@ -7,6 +7,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface Supplier {
   id: string;
@@ -38,35 +39,39 @@ const SuppliersList = ({ suppliers, isLoading }: SuppliersListProps) => {
   }
 
   return (
-    <div className="border rounded-lg">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Company Name</TableHead>
-            <TableHead>Contact</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Phone</TableHead>
-            <TableHead>Business Type</TableHead>
-            <TableHead>Status</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {suppliers.map((supplier) => (
-            <TableRow key={supplier.id}>
-              <TableCell className="font-medium">{supplier.company_name}</TableCell>
-              <TableCell>{supplier.contact_name}</TableCell>
-              <TableCell>{supplier.email}</TableCell>
-              <TableCell>{supplier.phone}</TableCell>
-              <TableCell>{supplier.business_type}</TableCell>
-              <TableCell>
-                <Badge variant={supplier.status === "active" ? "default" : "secondary"}>
-                  {supplier.status}
-                </Badge>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+    <div className="border rounded-lg overflow-hidden">
+      <ScrollArea className="w-full overflow-auto">
+        <div className="min-w-[800px]">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Company Name</TableHead>
+                <TableHead>Contact</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Phone</TableHead>
+                <TableHead>Business Type</TableHead>
+                <TableHead>Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {suppliers.map((supplier) => (
+                <TableRow key={supplier.id}>
+                  <TableCell className="font-medium">{supplier.company_name}</TableCell>
+                  <TableCell>{supplier.contact_name}</TableCell>
+                  <TableCell className="break-all">{supplier.email}</TableCell>
+                  <TableCell>{supplier.phone}</TableCell>
+                  <TableCell>{supplier.business_type}</TableCell>
+                  <TableCell>
+                    <Badge variant={supplier.status === "active" ? "default" : "secondary"}>
+                      {supplier.status}
+                    </Badge>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </ScrollArea>
     </div>
   );
 };
