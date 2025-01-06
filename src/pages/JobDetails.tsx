@@ -1,30 +1,16 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import FileUpload from "@/components/jobs/FileUpload";
-import FileList from "@/components/jobs/FileList";
-import BudgetChart from "@/components/jobs/BudgetChart";
-import { CheckCircle, Trash2 } from "lucide-react";
-import { useIsMobile } from "@/hooks/use-mobile";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import JobHeader from "@/components/jobs/details/JobHeader";
+import JobContent from "@/components/jobs/details/JobContent";
+import JobTabs from "@/components/jobs/details/JobTabs";
 
 const JobDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const isMobile = useIsMobile();
 
   const { data: job, isLoading } = useQuery({
     queryKey: ["job", id],
@@ -90,115 +76,26 @@ const JobDetails = () => {
     return <div>Job not found</div>;
   }
 
-  const handleCompleteJob = () => {
-    completeJobMutation.mutate();
-  };
-
-  const handleDeleteJob = () => {
-    deleteJobMutation.mutate();
-  };
-
   return (
     <div className="space-y-6 pt-4 md:pt-0">
       <Card>
-        <CardHeader className="space-y-4 md:space-y-0 md:flex md:flex-row md:items-center md:justify-between">
-          <div>
-            <div className="text-sm text-muted-foreground mb-1">
-              {job.job_number}
-            </div>
-            <CardTitle className="text-xl md:text-2xl">{job.title}</CardTitle>
-          </div>
-          <div className="flex flex-col md:flex-row gap-2">
-            {job.status !== "completed" && job.status !== "cancelled" && (
-              <Button
-                onClick={handleCompleteJob}
-                className="bg-green-500 hover:bg-green-600 w-full md:w-auto"
-                disabled={completeJobMutation.isPending}
-              >
-                <CheckCircle className="mr-2 h-4 w-4" />
-                {completeJobMutation.isPending ? "Completing..." : "Mark as Complete"}
-              </Button>
-            )}
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="destructive" className="w-full md:w-auto">
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  Delete Job
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Delete Job</DialogTitle>
-                  <DialogDescription>
-                    Are you sure you want to delete this job? This action cannot be undone.
-                  </DialogDescription>
-                </DialogHeader>
-                <DialogFooter>
-                  <Button
-                    variant="destructive"
-                    onClick={handleDeleteJob}
-                    disabled={deleteJobMutation.isPending}
-                  >
-                    {deleteJobMutation.isPending ? "Deleting..." : "Delete"}
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4">
-            <div>
-              <h3 className="font-medium">Description</h3>
-              <p className="text-muted-foreground mt-1">{job.description}</p>
-            </div>
-            <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-              <span>📍 {job.location}</span>
-              {job.budget && <span>💰 ${job.budget}</span>}
-            </div>
-          </div>
-        </CardContent>
+        <JobHeader
+          jobNumber={job.job_number}
+          title={job.title}
+          status={job.status}
+          onComplete={() => completeJobMutation.mutate()}
+          onDelete={() => deleteJobMutation.mutate()}
+          isCompletePending={completeJobMutation.isPending}
+          isDeletePending={deleteJobMutation.isPending}
+        />
+        <JobContent
+          description={job.description}
+          location={job.location}
+          budget={job.budget}
+        />
       </Card>
 
-      <Tabs defaultValue="designs" className="w-full">
-        <TabsList className="w-full flex">
-          <TabsTrigger value="designs" className="flex-1">Designs</TabsTrigger>
-          <TabsTrigger value="invoices" className="flex-1">Invoices</TabsTrigger>
-          {job.budget > 0 && <TabsTrigger value="budget" className="flex-1">Budget</TabsTrigger>}
-        </TabsList>
-        
-        <TabsContent value="designs">
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex justify-end mb-4">
-                <FileUpload jobId={job.id} type="design" />
-              </div>
-              <FileList jobId={job.id} type="design" />
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="invoices">
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex justify-end mb-4">
-                <FileUpload jobId={job.id} type="invoice" />
-              </div>
-              <FileList jobId={job.id} type="invoice" />
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {job.budget > 0 && (
-          <TabsContent value="budget">
-            <Card>
-              <CardContent className="pt-6">
-                <BudgetChart jobId={job.id} budget={job.budget} />
-              </CardContent>
-            </Card>
-          </TabsContent>
-        )}
-      </Tabs>
+      <JobTabs jobId={job.id} budget={job.budget} />
     </div>
   );
 };
