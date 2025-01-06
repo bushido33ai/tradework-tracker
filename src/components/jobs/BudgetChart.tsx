@@ -48,7 +48,7 @@ const BudgetChart = ({ jobId, budget }: BudgetChartProps) => {
 
   const CustomLegend = ({ payload }: any) => {
     return (
-      <div className="flex justify-center gap-8 mt-6">
+      <div className="flex justify-center gap-8 mt-4">
         {payload.map((entry: any, index: number) => (
           <div key={`legend-${index}`} className="flex items-center gap-2">
             <div 
@@ -65,7 +65,7 @@ const BudgetChart = ({ jobId, budget }: BudgetChartProps) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="text-center">
         <h3 className="text-lg font-medium mb-1">Budget Overview</h3>
         <p className="text-sm text-muted-foreground">
@@ -73,7 +73,7 @@ const BudgetChart = ({ jobId, budget }: BudgetChartProps) => {
         </p>
       </div>
       
-      <div className="h-[300px] w-full">
+      <div className="h-[280px] w-full">
         <ChartContainer
           config={{
             spent: { color: COLORS[0] },
