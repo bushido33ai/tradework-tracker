@@ -38,18 +38,16 @@ const AddCustomerDialog = ({ open, onOpenChange }: AddCustomerDialogProps) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      // Create a profile entry for the customer with a generated UUID
       const { data, error } = await supabase
-        .from('profiles')
+        .from('customer_profiles')
         .insert({
-          id: crypto.randomUUID(), // Generate a UUID for the customer profile
-          user_type: 'customer',
           full_name: values.fullName,
           email: values.email,
           telephone: values.telephone,
           address: values.address,
           preferred_contact_method: values.preferredContactMethod,
-          notes: values.notes
+          notes: values.notes,
+          created_by: user.id
         })
         .select()
         .single();

@@ -19,13 +19,12 @@ const Customers = () => {
   const { data: customers, isLoading } = useQuery({
     queryKey: ['customers'],
     queryFn: async () => {
-      const { data: profiles, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_type', 'customer');
+      const { data: customerProfiles, error } = await supabase
+        .from('customer_profiles')
+        .select('*');
       
       if (error) throw error;
-      return profiles;
+      return customerProfiles;
     },
   });
 
