@@ -92,7 +92,14 @@ const EnquiryFormFields = ({ form }: EnquiryFormFieldsProps) => {
                 <Calendar
                   mode="single"
                   selected={field.value}
-                  onSelect={field.onChange}
+                  onSelect={(date) => {
+                    field.onChange(date);
+                    // Close the popover after selection
+                    const popoverElement = document.querySelector('[data-radix-popper-content-wrapper]');
+                    if (popoverElement) {
+                      (popoverElement as HTMLElement).style.display = 'none';
+                    }
+                  }}
                   initialFocus
                 />
               </PopoverContent>
