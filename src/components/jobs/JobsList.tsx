@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -10,6 +11,8 @@ interface JobsListProps {
 }
 
 const JobsList = ({ status }: JobsListProps) => {
+  const navigate = useNavigate();
+
   const { data: jobs, isLoading } = useQuery({
     queryKey: ["jobs", status],
     queryFn: async () => {
@@ -35,7 +38,11 @@ const JobsList = ({ status }: JobsListProps) => {
   return (
     <div className="grid gap-4 mt-4">
       {jobs.map((job) => (
-        <Card key={job.id} className="p-4">
+        <Card 
+          key={job.id} 
+          className="p-4 cursor-pointer hover:shadow-md transition-shadow"
+          onClick={() => navigate(`/jobs/${job.id}`)}
+        >
           <div className="flex justify-between items-start">
             <div>
               <h3 className="font-semibold text-lg">{job.title}</h3>

@@ -11,6 +11,7 @@ import Navigation from "./components/Navigation";
 import Jobs from "./pages/Jobs";
 import CreateJob from "./pages/CreateJob";
 import Profile from "./pages/Profile";
+import JobDetails from "./pages/JobDetails";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ const App = () => {
                       <Routes>
                         <Route path="/jobs" element={<Jobs />} />
                         <Route path="/jobs/create" element={<CreateJob />} />
+                        <Route path="/jobs/:id" element={<JobDetails />} />
                         <Route path="/profile" element={<Profile />} />
                       </Routes>
                     </main>
