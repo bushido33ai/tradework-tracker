@@ -58,10 +58,13 @@ const JobsList = ({ status }: JobsListProps) => {
                   ? "default"
                   : job.status === "cancelled"
                   ? "destructive"
+                  : job.status === "pending"
+                  ? "success"
                   : "secondary"
               }
+              className={job.status === "pending" ? "bg-green-500 hover:bg-green-600" : ""}
             >
-              {job.status.replace("_", " ")}
+              {job.status === "pending" ? "current" : job.status.replace("_", " ")}
             </Badge>
           </div>
         </Card>
