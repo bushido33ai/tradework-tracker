@@ -148,6 +148,48 @@ export type Database = {
         }
         Relationships: []
       }
+      suppliers: {
+        Row: {
+          address: string
+          business_type: string
+          company_name: string
+          contact_name: string
+          created_at: string
+          created_by: string
+          email: string
+          id: string
+          phone: string
+          status: Database["public"]["Enums"]["supplier_status"] | null
+          updated_at: string
+        }
+        Insert: {
+          address: string
+          business_type: string
+          company_name: string
+          contact_name: string
+          created_at?: string
+          created_by: string
+          email: string
+          id?: string
+          phone: string
+          status?: Database["public"]["Enums"]["supplier_status"] | null
+          updated_at?: string
+        }
+        Update: {
+          address?: string
+          business_type?: string
+          company_name?: string
+          contact_name?: string
+          created_at?: string
+          created_by?: string
+          email?: string
+          id?: string
+          phone?: string
+          status?: Database["public"]["Enums"]["supplier_status"] | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -157,6 +199,7 @@ export type Database = {
     }
     Enums: {
       job_status: "pending" | "in_progress" | "completed" | "cancelled"
+      supplier_status: "active" | "inactive"
       user_type: "tradesman" | "customer" | "merchant"
     }
     CompositeTypes: {
