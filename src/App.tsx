@@ -34,7 +34,7 @@ const App = () => {
                 element={
                   <div className="flex min-h-screen">
                     <Navigation />
-                    <main className="flex-1 p-4 md:p-8 content-container my-4 mx-4 md:ml-64 mt-20 md:mt-4">
+                    <main className="flex-1 p-2 md:p-8 content-container mt-20 md:mt-4 mx-2 md:mx-4 md:ml-64">
                       <Routes>
                         <Route path="/dashboard" element={<Dashboard />} />
                         <Route path="/jobs" element={<Jobs />} />
