@@ -78,8 +78,16 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-8">
+    <div 
+      className="min-h-screen flex flex-col items-center justify-center p-4"
+      style={{
+        backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('/lovable-uploads/342506cf-411e-4195-9c10-5f806c52d3b7.png')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
+      <div className="w-full max-w-md space-y-8 bg-white/80 backdrop-blur-sm p-8 rounded-lg shadow-lg">
         <div className="flex items-center mb-8">
           <Button
             variant="ghost"
@@ -110,7 +118,7 @@ const SignUp = () => {
         <p className="mt-4 text-center text-sm text-gray-600">
           Already have an account?{" "}
           <Link
-            to="/"
+            to="/signin"
             className="font-medium text-primary hover:text-primary-600"
           >
             Sign in
