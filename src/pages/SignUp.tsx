@@ -28,6 +28,8 @@ const SignUp = () => {
   });
 
   const onSubmit = async (data: SignUpFormData) => {
+    if (isLoading) return; // Prevent multiple submissions
+    
     try {
       setIsLoading(true);
       
@@ -36,7 +38,7 @@ const SignUp = () => {
         throw new Error('Invalid user type');
       }
 
-      const { error } = await supabase.auth.signUp({
+      const signUpResponse = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
         options: {
@@ -48,9 +50,8 @@ const SignUp = () => {
         },
       });
 
-      if (error) {
-        console.error('Signup error:', error);
-        throw error;
+      if (signUpResponse.error) {
+        throw signUpResponse.error;
       }
 
       toast.success("Account created successfully! Please check your email to verify your account.");
