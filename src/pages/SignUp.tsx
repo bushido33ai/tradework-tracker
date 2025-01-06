@@ -48,7 +48,10 @@ const SignUp = () => {
         },
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Signup error:', error);
+        throw error;
+      }
 
       toast.success("Account created successfully! Please check your email to verify your account.");
       navigate("/");
