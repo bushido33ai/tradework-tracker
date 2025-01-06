@@ -6,11 +6,27 @@ import { toast } from "sonner";
 import JobHeader from "@/components/jobs/details/JobHeader";
 import JobContent from "@/components/jobs/details/JobContent";
 import JobTabs from "@/components/jobs/details/JobTabs";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { jobSchema, type JobFormValues } from "@/components/jobs/types";
+import { EditJobDialog } from "@/components/jobs/details/EditJobDialog";
 
 const JobDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [showEditDialog, setShowEditDialog] = useState(false);
+
+  const form = useForm<JobFormValues>({
+    resolver: zodResolver(jobSchema),
+    defaultValues: {
+      title: "",
+      description: "",
+      location: "",
+      budget: "",
+    },
+  });
 
   const { data: job, isLoading } = useQuery({
     queryKey: ["job", id],
@@ -23,6 +39,43 @@ const JobDetails = () => {
 
       if (error) throw error;
       return data;
+    },
+  });
+
+  // Set form values when job data is loaded
+  React.useEffect(() => {
+    if (job) {
+      form.reset({
+        title: job.title,
+        description: job.description,
+        location: job.location,
+        budget: job.budget?.toString() || "",
+      });
+    }
+  }, [job, form]);
+
+  const updateJobMutation = useMutation({
+    mutationFn: async (values: JobFormValues) => {
+      const { error } = await supabase
+        .from("jobs")
+        .update({
+          title: values.title,
+          description: values.description,
+          location: values.location,
+          budget: values.budget ? parseFloat(values.budget) : null,
+        })
+        .eq("id", id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Job updated successfully");
+      queryClient.invalidateQueries({ queryKey: ["job", id] });
+      setShowEditDialog(false);
+    },
+    onError: (error) => {
+      console.error("Error updating job:", error);
+      toast.error("Failed to update job");
     },
   });
 
@@ -85,6 +138,7 @@ const JobDetails = () => {
           status={job.status}
           onComplete={() => completeJobMutation.mutate()}
           onDelete={() => deleteJobMutation.mutate()}
+          onEdit={() => setShowEditDialog(true)}
           isCompletePending={completeJobMutation.isPending}
           isDeletePending={deleteJobMutation.isPending}
         />
@@ -96,6 +150,13 @@ const JobDetails = () => {
       </Card>
 
       <JobTabs jobId={job.id} budget={job.budget} />
+
+      <EditJobDialog
+        open={showEditDialog}
+        onOpenChange={setShowEditDialog}
+        form={form}
+        updateJobMutation={updateJobMutation}
+      />
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { CheckCircle, Trash2 } from "lucide-react";
+import { CheckCircle, Pencil, Trash2 } from "lucide-react";
 
 interface JobHeaderProps {
   jobNumber: string;
@@ -9,6 +9,7 @@ interface JobHeaderProps {
   status: string;
   onComplete: () => void;
   onDelete: () => void;
+  onEdit: () => void;
   isCompletePending: boolean;
   isDeletePending: boolean;
 }
@@ -19,6 +20,7 @@ const JobHeader = ({
   status,
   onComplete,
   onDelete,
+  onEdit,
   isCompletePending,
   isDeletePending,
 }: JobHeaderProps) => {
@@ -30,14 +32,24 @@ const JobHeader = ({
       </div>
       <div className="flex flex-col md:flex-row gap-2">
         {status !== "completed" && status !== "cancelled" && (
-          <Button
-            onClick={onComplete}
-            className="bg-green-500 hover:bg-green-600 w-full md:w-auto"
-            disabled={isCompletePending}
-          >
-            <CheckCircle className="mr-2 h-4 w-4" />
-            {isCompletePending ? "Completing..." : "Mark as Complete"}
-          </Button>
+          <>
+            <Button
+              onClick={onComplete}
+              className="bg-green-500 hover:bg-green-600 w-full md:w-auto"
+              disabled={isCompletePending}
+            >
+              <CheckCircle className="mr-2 h-4 w-4" />
+              {isCompletePending ? "Completing..." : "Mark as Complete"}
+            </Button>
+            <Button
+              onClick={onEdit}
+              variant="outline"
+              className="w-full md:w-auto"
+            >
+              <Pencil className="mr-2 h-4 w-4" />
+              Edit Job
+            </Button>
+          </>
         )}
         <Dialog>
           <DialogTrigger asChild>
