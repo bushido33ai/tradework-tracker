@@ -1,6 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 const features = [
   "Track multiple jobs efficiently",
@@ -10,6 +13,36 @@ const features = [
 ];
 
 const Landing = () => {
+  const navigate = useNavigate();
+  const [session, setSession] = useState(null);
+
+  useEffect(() => {
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleSignOut = async () => {
+    try {
+      await supabase.auth.signOut();
+      toast.success("Signed out successfully");
+      navigate("/");
+    } catch (error) {
+      console.error("Error signing out:", error);
+      toast.error("Error signing out");
+    }
+  };
+
   return (
     <div 
       className="min-h-screen bg-cover bg-center relative"
@@ -25,20 +58,32 @@ const Landing = () => {
             </h1>
           </Link>
           <div className="space-x-4">
-            <Link to="/signin">
+            {session ? (
               <Button
                 variant="outline"
                 className="px-4 py-2 text-primary-600 hover:text-primary-700 font-medium"
+                onClick={handleSignOut}
               >
-                Sign in
+                Sign out
               </Button>
-            </Link>
-            <Link
-              to="/register"
-              className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium"
-            >
-              Get Started
-            </Link>
+            ) : (
+              <>
+                <Link to="/signin">
+                  <Button
+                    variant="outline"
+                    className="px-4 py-2 text-primary-600 hover:text-primary-700 font-medium"
+                  >
+                    Sign in
+                  </Button>
+                </Link>
+                <Link
+                  to="/register"
+                  className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium"
+                >
+                  Get Started
+                </Link>
+              </>
+            )}
           </div>
         </nav>
 
