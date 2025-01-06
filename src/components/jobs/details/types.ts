@@ -6,5 +6,5 @@ export type JobNote = {
   content: string;
   note_type: Database["public"]["Enums"]["note_type"] | null;
   created_at: string;
-  created_by_name: string | null;
+  created_by_name: string;
 };
