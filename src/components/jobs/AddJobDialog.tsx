@@ -31,10 +31,21 @@ const AddJobDialog = ({ open, onOpenChange }: AddJobDialogProps) => {
     },
   });
 
+  const generateJobNumber = async () => {
+    const { count } = await supabase
+      .from("jobs")
+      .select("*", { count: "exact", head: true });
+    
+    const nextNumber = (count ?? 0) + 1;
+    return `JOB-${String(nextNumber).padStart(4, '0')}`;
+  };
+
   const addJob = useMutation({
     mutationFn: async (values: JobFormValues) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
+
+      const jobNumber = await generateJobNumber();
 
       const jobData = {
         title: values.title,
@@ -42,6 +53,7 @@ const AddJobDialog = ({ open, onOpenChange }: AddJobDialogProps) => {
         location: values.location,
         budget: values.budget ? parseFloat(values.budget) : null,
         created_by: user.id,
+        job_number: jobNumber,
       };
 
       const { error } = await supabase.from("jobs").insert(jobData);
