@@ -12,7 +12,7 @@ const Index = () => {
       caption: "Precise Planning & Execution"
     },
     {
-      url: "/lovable-uploads/136602a8-f1a5-4465-8db7-36485b6fc5ae.png",
+      url: "/lovable-uploads/58a4e10b-57e1-40ad-9d10-d39be2d4d0eb.png",
       alt: "Construction crane on building site at sunset",
       caption: "Large-Scale Projects"
     },
@@ -39,7 +39,7 @@ const Index = () => {
       <div 
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-10"
         style={{ 
-          backgroundImage: `url('/lovable-uploads/136602a8-f1a5-4465-8db7-36485b6fc5ae.png')`,
+          backgroundImage: `url('/lovable-uploads/58a4e10b-57e1-40ad-9d10-d39be2d4d0eb.png')`,
           backgroundAttachment: "fixed"
         }}
       />
