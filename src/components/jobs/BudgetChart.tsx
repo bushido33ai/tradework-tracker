@@ -51,9 +51,11 @@ const BudgetChart = ({ jobId, budget }: BudgetChartProps) => {
             remaining: { color: COLORS[1] },
           }}
         >
-          <BudgetPieChart data={data} colors={COLORS} />
-          <Tooltip content={<CustomTooltip />} />
-          <Legend content={<BudgetLegend data={data} />} />
+          <>
+            <BudgetPieChart data={data} colors={COLORS} />
+            <Tooltip content={<CustomTooltip />} />
+            <Legend content={<BudgetLegend data={data} />} />
+          </>
         </ChartContainer>
       </div>
     </div>
