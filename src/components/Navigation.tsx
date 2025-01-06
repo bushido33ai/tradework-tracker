@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Building2, ClipboardList, Home, Users, UserCircle } from "lucide-react";
+import { Building2, ClipboardList, Home, Users, UserCircle, User } from "lucide-react";
 
 const Navigation = () => {
   const location = useLocation();
@@ -12,6 +12,7 @@ const Navigation = () => {
     { icon: Home, label: "Dashboard", path: "/dashboard" },
     { icon: ClipboardList, label: "Jobs", path: "/jobs" },
     { icon: Users, label: "Suppliers", path: "/suppliers" },
+    { icon: User, label: "Customers", path: "/customers" },
     { icon: Building2, label: "Company", path: "/company" },
     { icon: UserCircle, label: "Profile", path: "/profile" },
   ];
