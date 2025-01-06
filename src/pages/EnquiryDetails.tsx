@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,12 +16,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useState } from "react";
-import EnquiryFormFields from "@/components/enquiries/EnquiryFormFields";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { enquirySchema, type EnquiryFormValues } from "@/components/enquiries/types";
 import { Form } from "@/components/ui/form";
+import EnquiryFormFields from "@/components/enquiries/EnquiryFormFields";
 
 const EnquiryDetails = () => {
   const { id } = useParams();
@@ -54,7 +54,7 @@ const EnquiryDetails = () => {
   });
 
   // Update the form values when the enquiry data is loaded
-  React.useEffect(() => {
+  useEffect(() => {
     if (enquiry) {
       form.reset({
         title: enquiry.title,
