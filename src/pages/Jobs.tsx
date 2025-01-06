@@ -1,26 +1,11 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
 import JobsList from "@/components/jobs/JobsList";
 import AddJobDialog from "@/components/jobs/AddJobDialog";
 
 const Jobs = () => {
   const [showAddDialog, setShowAddDialog] = useState(false);
-  
-  const { data: jobs, isLoading } = useQuery({
-    queryKey: ['jobs'],
-    queryFn: async () => {
-      const { data: jobs, error } = await supabase
-        .from('jobs')
-        .select('*')
-        .order('created_at', { ascending: false });
-      
-      if (error) throw error;
-      return jobs;
-    },
-  });
 
   return (
     <div className="space-y-6">
@@ -37,7 +22,7 @@ const Jobs = () => {
         </Button>
       </div>
 
-      <JobsList jobs={jobs || []} isLoading={isLoading} />
+      <JobsList status={["pending", "in_progress", "completed", "cancelled"]} />
       
       <AddJobDialog
         open={showAddDialog}
