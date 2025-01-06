@@ -34,9 +34,20 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url('/lovable-uploads/342506cf-411e-4195-9c10-5f806c52d3b7.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    min-height: 100vh;
   }
 
   .card-hover {
     @apply transition-all duration-200 hover:shadow-lg hover:-translate-y-1;
+  }
+
+  /* Add a white background with some opacity to content containers */
+  .content-container {
+    @apply bg-white/90 backdrop-blur-sm rounded-lg shadow-sm;
   }
 }
