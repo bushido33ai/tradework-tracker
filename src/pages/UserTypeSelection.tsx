@@ -22,7 +22,7 @@ const UserTypeSelection = () => {
     {
       title: "I am a tradesman",
       icon: <Hammer className="w-8 h-8" />,
-      description: "Access tools to manage jobs, track costs, and grow your business",
+      description: "Register here if you are tradesman looking to simplify management, invoicing & paperwork for your building jobs",
       value: "tradesman"
     },
     {
