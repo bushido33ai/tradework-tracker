@@ -65,6 +65,7 @@ const AddSupplierDialog = ({ open, onOpenChange }: AddSupplierDialogProps) => {
       const supplierData: SupplierInsert = {
         ...values,
         created_by: user.id,
+        status: "active", // Set default status
       };
 
       const { error } = await supabase.from("suppliers").insert(supplierData);
