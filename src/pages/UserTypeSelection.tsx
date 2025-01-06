@@ -34,7 +34,7 @@ const UserTypeSelection = () => {
     {
       title: "I am a builders merchant",
       icon: <Store className="w-8 h-8" />,
-      description: "Connect with tradesmen and manage your inventory",
+      description: "Register here if you are a builders merchant providing materials to the building industry",
       value: "merchant"
     }
   ];
