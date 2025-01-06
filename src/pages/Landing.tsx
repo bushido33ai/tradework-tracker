@@ -1,8 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 
 const features = [
   "Track multiple jobs efficiently",
@@ -12,27 +10,6 @@ const features = [
 ];
 
 const Landing = () => {
-  const handleGoogleLogin = async () => {
-    try {
-      toast.loading("Connecting to Google...", { id: "google-auth" });
-      
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: `${window.location.origin}/dashboard`,
-        },
-      });
-      
-      if (error) {
-        toast.error("Failed to sign in with Google", { id: "google-auth" });
-        console.error("Google sign-in error:", error);
-      }
-    } catch (error) {
-      toast.error("An unexpected error occurred", { id: "google-auth" });
-      console.error("Google sign-in error:", error);
-    }
-  };
-
   return (
     <div 
       className="min-h-screen bg-cover bg-center relative"
@@ -55,13 +32,14 @@ const Landing = () => {
             <h1 className="text-2xl font-bold text-primary-800">TradeMate</h1>
           </div>
           <div className="space-x-4">
-            <Button
-              variant="outline"
-              onClick={handleGoogleLogin}
-              className="px-4 py-2 text-primary-600 hover:text-primary-700 font-medium"
-            >
-              Sign in with Google
-            </Button>
+            <Link to="/signin">
+              <Button
+                variant="outline"
+                className="px-4 py-2 text-primary-600 hover:text-primary-700 font-medium"
+              >
+                Sign in
+              </Button>
+            </Link>
             <Link
               to="/register"
               className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium"
