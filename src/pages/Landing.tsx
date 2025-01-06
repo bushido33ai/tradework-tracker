@@ -21,7 +21,7 @@ const Landing = () => {
         <nav className="flex justify-between items-center mb-16">
           <div className="flex items-center gap-2">
             <img 
-              src="/lovable-uploads/69663853-babf-463e-8762-de5c956a648b.png" 
+              src="/lovable-uploads/317a517a-5245-4ea6-9e38-bdb24750620c.png" 
               alt="TradeMate Logo" 
               className="w-10 h-10 object-contain"
               onError={(e) => {
