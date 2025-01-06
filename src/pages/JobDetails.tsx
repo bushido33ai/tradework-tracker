@@ -1,14 +1,19 @@
-import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useParams, useNavigate } from "react-router-dom";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import FileUpload from "@/components/jobs/FileUpload";
 import FileList from "@/components/jobs/FileList";
 import BudgetChart from "@/components/jobs/BudgetChart";
+import { CheckCircle } from "lucide-react";
 
 const JobDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const { data: job, isLoading } = useQuery({
     queryKey: ["job", id],
@@ -24,6 +29,28 @@ const JobDetails = () => {
     },
   });
 
+  const completeJobMutation = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase
+        .from("jobs")
+        .update({ status: "completed" })
+        .eq("id", id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Job marked as completed");
+      queryClient.invalidateQueries({ queryKey: ["jobs"] });
+      queryClient.invalidateQueries({ queryKey: ["job", id] });
+      queryClient.invalidateQueries({ queryKey: ["currentJobs"] });
+      navigate("/jobs");
+    },
+    onError: (error) => {
+      console.error("Error completing job:", error);
+      toast.error("Failed to complete job");
+    },
+  });
+
   if (isLoading) {
     return <div>Loading job details...</div>;
   }
@@ -32,11 +59,25 @@ const JobDetails = () => {
     return <div>Job not found</div>;
   }
 
+  const handleCompleteJob = () => {
+    completeJobMutation.mutate();
+  };
+
   return (
     <div className="space-y-6">
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>{job.title}</CardTitle>
+          {job.status !== "completed" && job.status !== "cancelled" && (
+            <Button
+              onClick={handleCompleteJob}
+              className="bg-green-500 hover:bg-green-600"
+              disabled={completeJobMutation.isPending}
+            >
+              <CheckCircle className="mr-2 h-4 w-4" />
+              {completeJobMutation.isPending ? "Completing..." : "Mark as Complete"}
+            </Button>
+          )}
         </CardHeader>
         <CardContent>
           <div className="grid gap-4">
