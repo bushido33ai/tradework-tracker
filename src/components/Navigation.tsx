@@ -20,7 +20,7 @@ const Navigation = () => {
     { icon: UserCircle, label: "Profile", path: "/profile" },
   ];
 
-  const NavContent = () => (
+  const NavContent = ({ onItemClick }: { onItemClick?: () => void }) => (
     <div className="space-y-2">
       {navItems.map((item) => {
         const Icon = item.icon;
@@ -28,6 +28,7 @@ const Navigation = () => {
           <Link
             key={item.path}
             to={item.path}
+            onClick={onItemClick}
             className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
               isActive(item.path)
                 ? "bg-primary-50 text-primary-800"
@@ -50,19 +51,23 @@ const Navigation = () => {
         </Link>
         
         <Sheet>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <Menu className="h-5 w-5" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="w-64 p-4">
-            <div className="flex items-center mb-8 px-2">
-              <Link to="/" className="hover:opacity-80 transition-opacity">
-                <h1 className="text-2xl font-bold text-primary-800">TradeMate</h1>
-              </Link>
-            </div>
-            <NavContent />
-          </SheetContent>
+          {({ setOpen }) => (
+            <>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-64 p-4">
+                <div className="flex items-center mb-8 px-2">
+                  <Link to="/" className="hover:opacity-80 transition-opacity">
+                    <h1 className="text-2xl font-bold text-primary-800">TradeMate</h1>
+                  </Link>
+                </div>
+                <NavContent onItemClick={() => setOpen(false)} />
+              </SheetContent>
+            </>
+          )}
         </Sheet>
       </div>
     );
