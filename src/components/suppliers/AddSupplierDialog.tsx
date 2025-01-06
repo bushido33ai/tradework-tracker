@@ -20,7 +20,12 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import type { TablesInsert } from "@/integrations/supabase/types";
 
+// Define the type for supplier insert
+type SupplierInsert = TablesInsert<"suppliers">;
+
+// Create a schema that matches the required database fields
 const supplierSchema = z.object({
   company_name: z.string().min(1, "Company name is required"),
   contact_name: z.string().min(1, "Contact name is required"),
@@ -56,11 +61,13 @@ const AddSupplierDialog = ({ open, onOpenChange }: AddSupplierDialogProps) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase.from("suppliers").insert({
+      // Create the supplier insert object with all required fields
+      const supplierData: SupplierInsert = {
         ...values,
         created_by: user.id,
-      });
+      };
 
+      const { error } = await supabase.from("suppliers").insert(supplierData);
       if (error) throw error;
     },
     onSuccess: () => {
