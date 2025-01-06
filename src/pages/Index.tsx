@@ -7,19 +7,24 @@ const Index = () => {
   
   const images = [
     {
-      url: "https://images.unsplash.com/photo-1488972685288-c3fd157d7c7a?auto=format&fit=crop&w=1920",
-      alt: "Low angle photography of gray building",
-      caption: "Building Excellence"
+      url: "/lovable-uploads/69663853-babf-463e-8762-de5c956a648b.png",
+      alt: "Construction blueprints with measuring tape and drill",
+      caption: "Precise Planning & Execution"
     },
     {
-      url: "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1920",
-      alt: "White concrete building during daytime",
-      caption: "Modern Construction"
+      url: "/lovable-uploads/136602a8-f1a5-4465-8db7-36485b6fc5ae.png",
+      alt: "Construction crane on building site at sunset",
+      caption: "Large-Scale Projects"
     },
     {
-      url: "https://images.unsplash.com/photo-1496307653780-42ee777d4833?auto=format&fit=crop&w=1920",
-      alt: "Bottom view of glass building",
-      caption: "Innovative Design"
+      url: "/lovable-uploads/3143329b-2054-4942-8bf7-8c9113821903.png",
+      alt: "Architect drawing detailed plans",
+      caption: "Expert Design"
+    },
+    {
+      url: "/lovable-uploads/2cb4ae81-e570-47a8-9002-4a9522803d47.png",
+      alt: "Modern house exterior at dusk",
+      caption: "Quality Results"
     }
   ];
 
@@ -34,7 +39,7 @@ const Index = () => {
       <div 
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-10"
         style={{ 
-          backgroundImage: `url('https://images.unsplash.com/photo-1433832597046-4f10e10ac764?auto=format&fit=crop&w=1920')`,
+          backgroundImage: `url('/lovable-uploads/136602a8-f1a5-4465-8db7-36485b6fc5ae.png')`,
           backgroundAttachment: "fixed"
         }}
       />
@@ -56,7 +61,7 @@ const Index = () => {
             <CarouselContent>
               {images.map((image, index) => (
                 <CarouselItem key={index}>
-                  <Card className="border-none">
+                  <Card className="border-none shadow-lg">
                     <CardContent className="p-0">
                       <div className="relative aspect-video overflow-hidden rounded-xl bg-gray-100">
                         {!imageErrors[index] ? (
@@ -91,16 +96,16 @@ const Index = () => {
         {/* Features Grid */}
         <div className="grid md:grid-cols-3 gap-8 mt-16">
           <Card className="p-6 card-hover">
-            <h3 className="text-xl font-semibold mb-3 text-primary-700">Job Management</h3>
-            <p className="text-gray-600">Efficiently track and manage all your construction projects in one place</p>
+            <h3 className="text-xl font-semibold mb-3 text-primary-700">Project Planning</h3>
+            <p className="text-gray-600">Comprehensive tools for planning and managing construction projects</p>
           </Card>
           <Card className="p-6 card-hover">
-            <h3 className="text-xl font-semibold mb-3 text-primary-700">Cost Tracking</h3>
-            <p className="text-gray-600">Keep your budgets under control with detailed cost tracking and analysis</p>
+            <h3 className="text-xl font-semibold mb-3 text-primary-700">Resource Management</h3>
+            <p className="text-gray-600">Efficiently track and allocate resources across your projects</p>
           </Card>
           <Card className="p-6 card-hover">
-            <h3 className="text-xl font-semibold mb-3 text-primary-700">Team Collaboration</h3>
-            <p className="text-gray-600">Seamlessly collaborate with your team and stakeholders</p>
+            <h3 className="text-xl font-semibold mb-3 text-primary-700">Quality Assurance</h3>
+            <p className="text-gray-600">Maintain high standards with our quality control tools</p>
           </Card>
         </div>
       </div>
