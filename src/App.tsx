@@ -1,12 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+import { Toaster } from "sonner";
 import Customers from "@/pages/Customers";
 import CustomerDetails from "@/pages/CustomerDetails";
 
 const App = () => {
   return (
     <Router>
-      <ToastContainer />
+      <Toaster />
       <Routes>
         <Route path="/customers" element={<Customers />} />
         <Route path="/customers/:id" element={<CustomerDetails />} />

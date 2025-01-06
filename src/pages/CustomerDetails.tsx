@@ -8,12 +8,11 @@ import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CustomerFormValues, customerSchema } from "@/components/customers/types";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 
 const CustomerDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   const form = useForm<CustomerFormValues>({
     resolver: zodResolver(customerSchema),
@@ -29,10 +28,8 @@ const CustomerDetails = () => {
         .single();
       
       if (error) throw error;
-      return data;
-    },
-    onSuccess: (data) => {
-      // Populate form with customer data
+      
+      // Set form values after data is fetched
       form.reset({
         fullName: data.full_name,
         email: data.email,
@@ -41,6 +38,8 @@ const CustomerDetails = () => {
         preferredContactMethod: data.preferred_contact_method,
         notes: data.notes,
       });
+      
+      return data;
     },
   });
 
@@ -60,17 +59,10 @@ const CustomerDetails = () => {
 
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "Customer details updated successfully",
-      });
+      toast.success("Customer details updated successfully");
     } catch (error) {
       console.error('Error updating customer:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update customer details",
-        variant: "destructive",
-      });
+      toast.error("Failed to update customer details");
     }
   };
 
