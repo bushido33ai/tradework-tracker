@@ -23,7 +23,9 @@ const JobNotes = ({ jobId }: JobNotesProps) => {
         .from("job_notes")
         .select(`
           *,
-          profiles(full_name)
+          profiles (
+            full_name
+          )
         `)
         .eq("job_id", jobId)
         .order("created_at", { ascending: false });
