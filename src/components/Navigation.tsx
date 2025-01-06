@@ -20,7 +20,9 @@ const Navigation = () => {
   return (
     <nav className="fixed top-0 left-0 h-screen w-64 bg-white border-r border-gray-200 p-4">
       <div className="flex items-center mb-8 px-2">
-        <h1 className="text-2xl font-bold text-primary-800">TradeMate</h1>
+        <Link to="/" className="hover:opacity-80 transition-opacity">
+          <h1 className="text-2xl font-bold text-primary-800">TradeMate</h1>
+        </Link>
       </div>
       
       <div className="space-y-2">
