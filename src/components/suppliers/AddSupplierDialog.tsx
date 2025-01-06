@@ -40,7 +40,12 @@ const AddSupplierDialog = ({ open, onOpenChange }: AddSupplierDialogProps) => {
 
       // Create the supplier insert object with all required fields
       const supplierData: SupplierInsert = {
-        ...values,
+        company_name: values.company_name,
+        contact_name: values.contact_name,
+        email: values.email,
+        phone: values.phone,
+        address: values.address,
+        business_type: values.business_type,
         created_by: user.id,
         status: "active",
       };
