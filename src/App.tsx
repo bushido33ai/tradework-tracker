@@ -8,6 +8,8 @@ import UserTypeSelection from "./pages/UserTypeSelection";
 import SignUp from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
 import Navigation from "./components/Navigation";
+import Jobs from "./pages/Jobs";
+import CreateJob from "./pages/CreateJob";
 
 const queryClient = new QueryClient();
 
@@ -28,7 +30,8 @@ const App = () => {
                   <Navigation />
                   <main className="flex-1 ml-64 p-8">
                     <Routes>
-                      {/* Add protected routes here */}
+                      <Route path="/jobs" element={<Jobs />} />
+                      <Route path="/jobs/create" element={<CreateJob />} />
                     </Routes>
                   </main>
                 </div>

@@ -9,6 +9,45 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      jobs: {
+        Row: {
+          assigned_to: string | null
+          budget: number | null
+          created_at: string
+          created_by: string
+          description: string
+          id: string
+          location: string
+          status: Database["public"]["Enums"]["job_status"] | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          budget?: number | null
+          created_at?: string
+          created_by: string
+          description: string
+          id?: string
+          location: string
+          status?: Database["public"]["Enums"]["job_status"] | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          budget?: number | null
+          created_at?: string
+          created_by?: string
+          description?: string
+          id?: string
+          location?: string
+          status?: Database["public"]["Enums"]["job_status"] | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           address: string | null
@@ -44,6 +83,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      job_status: "pending" | "in_progress" | "completed" | "cancelled"
       user_type: "tradesman" | "customer" | "merchant"
     }
     CompositeTypes: {

@@ -1,0 +1,66 @@
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+
+type JobStatus = "pending" | "in_progress" | "completed" | "cancelled";
+
+interface JobsListProps {
+  status: JobStatus[];
+}
+
+const JobsList = ({ status }: JobsListProps) => {
+  const { data: jobs, isLoading } = useQuery({
+    queryKey: ["jobs", status],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("jobs")
+        .select("*")
+        .in("status", status)
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  if (isLoading) {
+    return <div>Loading jobs...</div>;
+  }
+
+  if (!jobs?.length) {
+    return <div className="text-muted-foreground">No jobs found.</div>;
+  }
+
+  return (
+    <div className="grid gap-4 mt-4">
+      {jobs.map((job) => (
+        <Card key={job.id} className="p-4">
+          <div className="flex justify-between items-start">
+            <div>
+              <h3 className="font-semibold text-lg">{job.title}</h3>
+              <p className="text-muted-foreground mt-1">{job.description}</p>
+              <div className="flex gap-4 mt-2 text-sm text-muted-foreground">
+                <span>📍 {job.location}</span>
+                {job.budget && <span>💰 ${job.budget}</span>}
+              </div>
+            </div>
+            <Badge
+              variant={
+                job.status === "completed"
+                  ? "default"
+                  : job.status === "cancelled"
+                  ? "destructive"
+                  : "secondary"
+              }
+            >
+              {job.status.replace("_", " ")}
+            </Badge>
+          </div>
+        </Card>
+      ))}
+    </div>
+  );
+};
+
+export default JobsList;
