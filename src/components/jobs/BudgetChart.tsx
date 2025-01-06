@@ -5,7 +5,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
+import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 
 interface BudgetChartProps {
   jobId: string;
@@ -36,6 +36,17 @@ const BudgetChart = ({ jobId, budget }: BudgetChartProps) => {
 
   const COLORS = ["#ef4444", "#22c55e"];
 
+  const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-background border border-border/50 rounded-lg p-2 shadow-lg">
+          <p>{`${payload[0].name}: $${payload[0].value.toFixed(2)}`}</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <div className="h-[300px] w-full">
       <ChartContainer
@@ -59,9 +70,7 @@ const BudgetChart = ({ jobId, budget }: BudgetChartProps) => {
                 <Cell key={`cell-${index}`} fill={COLORS[index]} />
               ))}
             </Pie>
-            <ChartTooltip>
-              <ChartTooltipContent />
-            </ChartTooltip>
+            <Tooltip content={<CustomTooltip />} />
           </PieChart>
         </ResponsiveContainer>
       </ChartContainer>
