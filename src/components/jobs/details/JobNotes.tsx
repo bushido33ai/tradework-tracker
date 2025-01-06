@@ -12,11 +12,21 @@ interface JobNotesProps {
   jobId: string;
 }
 
+type JobNote = {
+  id: string;
+  job_id: string;
+  content: string;
+  created_at: string;
+  creator: {
+    full_name: string | null;
+  } | null;
+}
+
 const JobNotes = ({ jobId }: JobNotesProps) => {
   const [newNote, setNewNote] = useState("");
   const queryClient = useQueryClient();
 
-  const { data: notes, isLoading } = useQuery({
+  const { data: notes, isLoading } = useQuery<JobNote[]>({
     queryKey: ["jobNotes", jobId],
     queryFn: async () => {
       const { data, error } = await supabase
