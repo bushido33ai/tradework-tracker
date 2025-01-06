@@ -34,7 +34,7 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url('/lovable-uploads/342506cf-411e-4195-9c10-5f806c52d3b7.png');
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url('/lovable-uploads/18dc1161-c26f-4cc8-b2fa-25aff475caf9.png');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
