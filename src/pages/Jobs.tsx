@@ -3,12 +3,13 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import JobsList from "@/components/jobs/JobsList";
 import AddJobDialog from "@/components/jobs/AddJobDialog";
+import { Separator } from "@/components/ui/separator";
 
 const Jobs = () => {
   const [showAddDialog, setShowAddDialog] = useState(false);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold">Jobs</h1>
@@ -22,7 +23,19 @@ const Jobs = () => {
         </Button>
       </div>
 
-      <JobsList status={["pending", "in_progress", "completed", "cancelled"]} />
+      <div className="space-y-8">
+        <div>
+          <h2 className="text-2xl font-semibold mb-4">Current Jobs</h2>
+          <JobsList status={["pending", "in_progress"]} />
+        </div>
+
+        <Separator className="my-8" />
+
+        <div>
+          <h2 className="text-2xl font-semibold mb-4">Completed Jobs</h2>
+          <JobsList status={["completed"]} />
+        </div>
+      </div>
       
       <AddJobDialog
         open={showAddDialog}
