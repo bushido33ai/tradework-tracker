@@ -51,23 +51,19 @@ const Navigation = () => {
         </Link>
         
         <Sheet>
-          {({ setOpen }) => (
-            <>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <Menu className="h-5 w-5" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-64 p-4">
-                <div className="flex items-center mb-8 px-2">
-                  <Link to="/" className="hover:opacity-80 transition-opacity">
-                    <h1 className="text-2xl font-bold text-primary-800">TradeMate</h1>
-                  </Link>
-                </div>
-                <NavContent onItemClick={() => setOpen(false)} />
-              </SheetContent>
-            </>
-          )}
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <Menu className="h-5 w-5" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-64 p-4">
+            <div className="flex items-center mb-8 px-2">
+              <Link to="/" className="hover:opacity-80 transition-opacity">
+                <h1 className="text-2xl font-bold text-primary-800">TradeMate</h1>
+              </Link>
+            </div>
+            <NavContent onItemClick={() => setOpen(false)} />
+          </SheetContent>
         </Sheet>
       </div>
     );
