@@ -1,19 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { FileText, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+import FileItem from "./file/FileItem";
 
 interface FileListProps {
   jobId: string;
@@ -92,52 +80,13 @@ const FileList = ({ jobId, type }: FileListProps) => {
   return (
     <div className="space-y-2">
       {files.map((file) => (
-        <div
+        <FileItem
           key={file.id}
-          className="flex items-center gap-2 p-2 hover:bg-accent rounded-md group"
-        >
-          <div
-            className="flex-1 flex items-center gap-2 cursor-pointer"
-            onClick={() => handleFileClick(file.file_path, file.filename)}
-          >
-            <FileText className="w-4 h-4" />
-            <span>{file.filename}</span>
-            {type === "invoice" && (
-              <span className="text-muted-foreground">
-                ${(file as any).amount?.toFixed(2)}
-              </span>
-            )}
-          </div>
-          
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                <Trash2 className="h-4 w-4 text-destructive" />
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Delete {type === "design" ? "Design" : "Invoice"}</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Are you sure you want to delete this {type === "design" ? "design" : "invoice"}? This action cannot be undone.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction
-                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                  onClick={() => handleDelete(file.id, file.file_path)}
-                >
-                  Delete
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </div>
+          file={file}
+          type={type}
+          onFileClick={handleFileClick}
+          onDelete={handleDelete}
+        />
       ))}
     </div>
   );
