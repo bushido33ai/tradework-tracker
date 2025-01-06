@@ -103,7 +103,7 @@ const Landing = () => {
                   to="/jobs"
                   className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium flex items-center space-x-2"
                 >
-                  <span>Hello {session.user?.user_metadata?.full_name || 'there'} - Click here to check your jobs</span>
+                  <span>{session.user?.user_metadata?.full_name || 'User'} - Start here to check your jobs</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               ) : (
