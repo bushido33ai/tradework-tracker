@@ -7,14 +7,14 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { Briefcase, CheckCircle, PoundSterling, Receipt } from "lucide-react";
 
 const Dashboard = () => {
-  // Query for current jobs in flight
+  // Query for current jobs (pending + in_progress)
   const { data: currentJobs } = useQuery({
     queryKey: ['currentJobs'],
     queryFn: async () => {
       const { count } = await supabase
         .from('jobs')
         .select('*', { count: 'exact', head: true })
-        .eq('status', 'in_progress');
+        .in('status', ['pending', 'in_progress']);
       return count || 0;
     },
   });
