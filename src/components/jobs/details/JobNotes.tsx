@@ -17,6 +17,9 @@ type JobNote = {
   job_id: string;
   content: string;
   created_at: string;
+  created_by: string;
+  note_type: "general" | "update" | "issue" | "resolution" | null;
+  updated_at: string;
   creator: {
     full_name: string | null;
   } | null;
