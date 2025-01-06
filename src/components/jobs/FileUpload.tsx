@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Upload } from "lucide-react";
+import { Upload, Camera } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface FileUploadProps {
   jobId: string;
@@ -13,6 +14,7 @@ interface FileUploadProps {
 const FileUpload = ({ jobId, type, onUploadComplete }: FileUploadProps) => {
   const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -78,8 +80,17 @@ const FileUpload = ({ jobId, type, onUploadComplete }: FileUploadProps) => {
     }
   };
 
+  const handleCameraCapture = () => {
+    const cameraInput = document.createElement('input');
+    cameraInput.type = 'file';
+    cameraInput.accept = 'image/*';
+    cameraInput.capture = 'environment'; // Use the back camera
+    cameraInput.onchange = handleFileUpload;
+    cameraInput.click();
+  };
+
   return (
-    <div>
+    <div className="flex gap-2">
       <input
         type="file"
         id={`file-upload-${type}`}
@@ -101,6 +112,18 @@ const FileUpload = ({ jobId, type, onUploadComplete }: FileUploadProps) => {
           </span>
         </Button>
       </label>
+      
+      {isMobile && type === "design" && (
+        <Button
+          variant="outline"
+          className="cursor-pointer"
+          disabled={isUploading}
+          onClick={handleCameraCapture}
+        >
+          <Camera className="w-4 h-4 mr-2" />
+          Take Photo
+        </Button>
+      )}
     </div>
   );
 };
