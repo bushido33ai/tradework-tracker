@@ -9,7 +9,7 @@ interface JobNotesProps {
 }
 
 const JobNotes = ({ jobId }: JobNotesProps) => {
-  const { data: notes, isLoading } = useQuery({
+  const { data: notes, isLoading } = useQuery<JobNote[]>({
     queryKey: ["jobNotes", jobId],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -28,7 +28,7 @@ const JobNotes = ({ jobId }: JobNotesProps) => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return data as JobNote[];
+      return data;
     },
   });
 
