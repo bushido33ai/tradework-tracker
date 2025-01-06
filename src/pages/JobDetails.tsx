@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import JobHeader from "@/components/jobs/details/JobHeader";
 import JobContent from "@/components/jobs/details/JobContent";
 import JobTabs from "@/components/jobs/details/JobTabs";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { jobSchema, type JobFormValues } from "@/components/jobs/types";
@@ -43,7 +43,7 @@ const JobDetails = () => {
   });
 
   // Set form values when job data is loaded
-  React.useEffect(() => {
+  useEffect(() => {
     if (job) {
       form.reset({
         title: job.title,
