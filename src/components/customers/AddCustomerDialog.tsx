@@ -42,19 +42,22 @@ const AddCustomerDialog = ({ open, onOpenChange }: AddCustomerDialogProps) => {
       const { data, error } = await supabase
         .from('profiles')
         .insert({
-          id: crypto.randomUUID(), // Generate a new UUID for the customer
+          id: crypto.randomUUID(),
           user_type: 'customer',
-          address: values.address,
-          telephone: values.telephone,
           full_name: values.fullName,
           email: values.email,
+          telephone: values.telephone,
+          address: values.address,
           preferred_contact_method: values.preferredContactMethod,
           notes: values.notes
         })
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error details:', error);
+        throw error;
+      }
       return data;
     },
     onSuccess: () => {
