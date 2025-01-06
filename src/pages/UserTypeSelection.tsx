@@ -28,7 +28,7 @@ const UserTypeSelection = () => {
     {
       title: "I am a customer/homeowner",
       icon: <Home className="w-8 h-8" />,
-      description: "Find and hire qualified tradesmen for your projects",
+      description: "Register here if you are a customer wanting to keep a track of your building works",
       value: "customer"
     },
     {
