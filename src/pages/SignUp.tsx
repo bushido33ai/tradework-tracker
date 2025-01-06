@@ -24,6 +24,11 @@ const signUpSchema = z.object({
     .min(8, "Password must be at least 8 characters")
     .max(64, "Password must not exceed 64 characters"),
   confirmPassword: z.string(),
+  address: z.string().min(1, "Address is required"),
+  telephone: z
+    .string()
+    .min(10, "Phone number must be at least 10 digits")
+    .regex(/^[0-9]+$/, "Phone number must contain only digits"),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords do not match",
   path: ["confirmPassword"],
@@ -42,6 +47,8 @@ const SignUp = () => {
       email: "",
       password: "",
       confirmPassword: "",
+      address: "",
+      telephone: "",
     },
   });
 
@@ -54,6 +61,8 @@ const SignUp = () => {
         options: {
           data: {
             user_type: userType,
+            address: data.address,
+            telephone: data.telephone,
           },
         },
       });
@@ -146,6 +155,42 @@ const SignUp = () => {
                     <Input
                       type="password"
                       placeholder="Confirm your password"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="address"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Address</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Enter your address"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="telephone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Telephone</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="tel"
+                      placeholder="Enter your phone number"
                       {...field}
                     />
                   </FormControl>
