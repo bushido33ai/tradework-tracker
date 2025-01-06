@@ -11,13 +11,22 @@ const features = [
   "Generate professional reports",
 ];
 
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
+// Only create Supabase client if environment variables are available
+const supabase = import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY
+  ? createClient(
+      import.meta.env.VITE_SUPABASE_URL,
+      import.meta.env.VITE_SUPABASE_ANON_KEY
+    )
+  : null;
 
 const Landing = () => {
   const handleGoogleLogin = async () => {
+    if (!supabase) {
+      toast.error("Authentication is not configured");
+      console.error("Supabase client is not initialized - missing environment variables");
+      return;
+    }
+
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
