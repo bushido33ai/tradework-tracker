@@ -38,31 +38,33 @@ const AddCustomerDialog = ({ open, onOpenChange }: AddCustomerDialogProps) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      // Create a new auth user for the customer
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: values.email,
-        password: Math.random().toString(36).slice(-8), // Generate a random password
-        options: {
-          data: {
-            user_type: 'customer',
-            address: values.address,
-            telephone: values.telephone,
-          },
-        },
-      });
+      // Create a profile entry for the customer
+      const { data, error } = await supabase
+        .from('profiles')
+        .insert({
+          id: crypto.randomUUID(), // Generate a new UUID for the customer
+          user_type: 'customer',
+          address: values.address,
+          telephone: values.telephone,
+          full_name: values.fullName,
+          email: values.email,
+          preferred_contact_method: values.preferredContactMethod,
+          notes: values.notes
+        })
+        .select()
+        .single();
 
-      if (authError) throw authError;
-      if (!authData.user) throw new Error("Failed to create customer account");
-
-      // Additional customer details can be stored in a separate table if needed
-      toast.success("Customer added successfully");
+      if (error) throw error;
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["customers"] });
       form.reset();
       onOpenChange(false);
+      toast.success("Customer added successfully");
     },
     onError: (error) => {
+      console.error('Error adding customer:', error);
       toast.error("Failed to add customer: " + error.message);
     },
   });
