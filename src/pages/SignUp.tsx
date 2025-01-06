@@ -33,42 +33,42 @@ const SignUp = () => {
     try {
       setIsLoading(true);
       
-      // Ensure userType is valid and matches expected enum values
+      // Validate user type
       if (!userType || !['tradesman', 'customer', 'merchant'].includes(userType)) {
         throw new Error('Invalid user type');
       }
 
-      console.log('Attempting signup with data:', {
-        email: data.email,
-        userType,
-        address: data.address || null,
-        telephone: data.telephone || null
-      });
-
-      const signUpResponse = await supabase.auth.signUp({
-        email: data.email,
+      // Clean and prepare the data
+      const cleanData = {
+        email: data.email.trim(),
         password: data.password,
         options: {
-          emailRedirectTo: window.location.origin,
           data: {
             user_type: userType,
-            address: data.address || null,
-            telephone: data.telephone || null,
+            address: data.address.trim(),
+            telephone: data.telephone.trim(),
           },
         },
+      };
+
+      console.log('Attempting signup with data:', {
+        email: cleanData.email,
+        userType: cleanData.options.data.user_type,
+        address: cleanData.options.data.address,
+        telephone: cleanData.options.data.telephone,
       });
 
-      console.log('Raw signup response:', signUpResponse);
+      const { error } = await supabase.auth.signUp(cleanData);
 
-      if (signUpResponse.error) {
-        console.error('Signup error details:', signUpResponse.error);
-        throw signUpResponse.error;
+      if (error) {
+        console.error('Signup error:', error);
+        throw error;
       }
 
       toast.success("Account created successfully! Please check your email to verify your account.");
       navigate("/");
     } catch (error: any) {
-      console.error('Signup error:', error);
+      console.error('Signup process error:', error);
       toast.error(error.message || "An error occurred during sign up");
     } finally {
       setIsLoading(false);
