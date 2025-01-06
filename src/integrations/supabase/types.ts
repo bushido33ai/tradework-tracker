@@ -125,7 +125,11 @@ export type Database = {
         Row: {
           address: string | null
           created_at: string
+          email: string | null
+          full_name: string | null
           id: string
+          notes: string | null
+          preferred_contact_method: string | null
           telephone: string | null
           updated_at: string
           user_type: Database["public"]["Enums"]["user_type"]
@@ -133,7 +137,11 @@ export type Database = {
         Insert: {
           address?: string | null
           created_at?: string
+          email?: string | null
+          full_name?: string | null
           id: string
+          notes?: string | null
+          preferred_contact_method?: string | null
           telephone?: string | null
           updated_at?: string
           user_type: Database["public"]["Enums"]["user_type"]
@@ -141,7 +149,11 @@ export type Database = {
         Update: {
           address?: string | null
           created_at?: string
+          email?: string | null
+          full_name?: string | null
           id?: string
+          notes?: string | null
+          preferred_contact_method?: string | null
           telephone?: string | null
           updated_at?: string
           user_type?: Database["public"]["Enums"]["user_type"]

@@ -21,7 +21,7 @@ const Customers = () => {
     queryFn: async () => {
       const { data: profiles, error } = await supabase
         .from('profiles')
-        .select('*, auth_users:id(email)')
+        .select('*')
         .eq('user_type', 'customer');
       
       if (error) throw error;
@@ -61,7 +61,7 @@ const Customers = () => {
             {customers?.map((customer) => (
               <TableRow key={customer.id}>
                 <TableCell className="font-medium">{customer.full_name}</TableCell>
-                <TableCell>{customer.auth_users?.email}</TableCell>
+                <TableCell>{customer.email}</TableCell>
                 <TableCell>{customer.telephone}</TableCell>
                 <TableCell>{customer.address}</TableCell>
               </TableRow>
