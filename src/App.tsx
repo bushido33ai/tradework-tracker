@@ -10,6 +10,7 @@ import SignIn from "./pages/SignIn";
 import Navigation from "./components/Navigation";
 import Jobs from "./pages/Jobs";
 import CreateJob from "./pages/CreateJob";
+import Profile from "./pages/Profile";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,7 @@ const App = () => {
                     <Routes>
                       <Route path="/jobs" element={<Jobs />} />
                       <Route path="/jobs/create" element={<CreateJob />} />
+                      <Route path="/profile" element={<Profile />} />
                     </Routes>
                   </main>
                 </div>
