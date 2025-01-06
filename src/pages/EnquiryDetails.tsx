@@ -5,7 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { format } from "date-fns";
-import { Calendar, CheckCircle, Trash2 } from "lucide-react";
+import { Calendar, CheckCircle, Trash2, Pencil } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -15,11 +15,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useState } from "react";
+import EnquiryFormFields from "@/components/enquiries/EnquiryFormFields";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { enquirySchema, type EnquiryFormValues } from "@/components/enquiries/types";
+import { Form } from "@/components/ui/form";
 
 const EnquiryDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [showEditDialog, setShowEditDialog] = useState(false);
 
   const { data: enquiry, isLoading } = useQuery({
     queryKey: ["enquiry", id],
@@ -32,6 +39,56 @@ const EnquiryDetails = () => {
 
       if (error) throw error;
       return data;
+    },
+  });
+
+  const form = useForm<EnquiryFormValues>({
+    resolver: zodResolver(enquirySchema),
+    defaultValues: {
+      title: enquiry?.title || "",
+      description: enquiry?.description || "",
+      location: enquiry?.location || "",
+      measurement_notes: enquiry?.measurement_notes || "",
+      visit_date: enquiry?.visit_date ? new Date(enquiry.visit_date) : undefined,
+    },
+  });
+
+  // Update the form values when the enquiry data is loaded
+  React.useEffect(() => {
+    if (enquiry) {
+      form.reset({
+        title: enquiry.title,
+        description: enquiry.description,
+        location: enquiry.location,
+        measurement_notes: enquiry.measurement_notes || "",
+        visit_date: enquiry.visit_date ? new Date(enquiry.visit_date) : undefined,
+      });
+    }
+  }, [enquiry, form]);
+
+  const updateEnquiryMutation = useMutation({
+    mutationFn: async (values: EnquiryFormValues) => {
+      const { error } = await supabase
+        .from("enquiries")
+        .update({
+          title: values.title,
+          description: values.description,
+          location: values.location,
+          measurement_notes: values.measurement_notes || null,
+          visit_date: values.visit_date ? values.visit_date.toISOString() : null,
+        })
+        .eq("id", id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Enquiry updated successfully");
+      queryClient.invalidateQueries({ queryKey: ["enquiry", id] });
+      setShowEditDialog(false);
+    },
+    onError: (error) => {
+      console.error("Error updating enquiry:", error);
+      toast.error("Failed to update enquiry");
     },
   });
 
@@ -76,13 +133,9 @@ const EnquiryDetails = () => {
     },
   });
 
-  if (isLoading) {
-    return <div>Loading enquiry details...</div>;
-  }
-
-  if (!enquiry) {
-    return <div>Enquiry not found</div>;
-  }
+  const handleUpdateEnquiry = (values: EnquiryFormValues) => {
+    updateEnquiryMutation.mutate(values);
+  };
 
   const handleCompleteEnquiry = () => {
     completeEnquiryMutation.mutate();
@@ -91,6 +144,14 @@ const EnquiryDetails = () => {
   const handleDeleteEnquiry = () => {
     deleteEnquiryMutation.mutate();
   };
+
+  if (isLoading) {
+    return <div>Loading enquiry details...</div>;
+  }
+
+  if (!enquiry) {
+    return <div>Enquiry not found</div>;
+  }
 
   return (
     <div className="space-y-6 pt-4 md:pt-0">
@@ -103,6 +164,14 @@ const EnquiryDetails = () => {
             <CardTitle className="text-xl md:text-2xl">{enquiry.title}</CardTitle>
           </div>
           <div className="flex flex-col md:flex-row gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setShowEditDialog(true)}
+              className="w-full md:w-auto"
+            >
+              <Pencil className="mr-2 h-4 w-4" />
+              Edit Enquiry
+            </Button>
             {enquiry.status !== "completed" && enquiry.status !== "cancelled" && (
               <Button
                 onClick={handleCompleteEnquiry}
@@ -164,6 +233,33 @@ const EnquiryDetails = () => {
           </div>
         </CardContent>
       </Card>
+
+      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Edit Enquiry</DialogTitle>
+          </DialogHeader>
+
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleUpdateEnquiry)} className="space-y-4">
+              <EnquiryFormFields form={form} />
+
+              <div className="flex justify-end gap-4 pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setShowEditDialog(false)}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={updateEnquiryMutation.isPending}>
+                  {updateEnquiryMutation.isPending ? "Saving..." : "Save Changes"}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
