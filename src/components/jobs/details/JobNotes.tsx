@@ -23,7 +23,7 @@ const JobNotes = ({ jobId }: JobNotesProps) => {
         .from("job_notes")
         .select(`
           *,
-          created_by_profile:profiles!job_notes_created_by_fkey(full_name)
+          profiles(full_name)
         `)
         .eq("job_id", jobId)
         .order("created_at", { ascending: false });
@@ -35,9 +35,13 @@ const JobNotes = ({ jobId }: JobNotesProps) => {
 
   const addNoteMutation = useMutation({
     mutationFn: async (content: string) => {
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      if (userError) throw userError;
+      
       const { error } = await supabase.from("job_notes").insert({
         job_id: jobId,
         content,
+        created_by: userData.user.id
       });
 
       if (error) throw error;
@@ -86,7 +90,7 @@ const JobNotes = ({ jobId }: JobNotesProps) => {
           <Card key={note.id} className="p-4">
             <div className="flex justify-between items-start mb-2">
               <span className="font-medium">
-                {note.created_by_profile?.full_name || "Unknown User"}
+                {note.profiles?.full_name || "Unknown User"}
               </span>
               <span className="text-sm text-muted-foreground">
                 {format(new Date(note.created_at), "PPp")}
