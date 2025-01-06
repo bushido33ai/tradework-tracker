@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Landing from "./pages/Landing";
+import UserTypeSelection from "./pages/UserTypeSelection";
 import Navigation from "./components/Navigation";
 
 const queryClient = new QueryClient();
@@ -15,6 +16,7 @@ const App = () => {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Landing />} />
+            <Route path="/register" element={<UserTypeSelection />} />
             <Route
               path="/*"
               element={
