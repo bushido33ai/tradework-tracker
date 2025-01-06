@@ -69,7 +69,12 @@ const JobDetails = () => {
     <div className="space-y-6 pt-4 md:pt-0">
       <Card>
         <CardHeader className="space-y-4 md:space-y-0 md:flex md:flex-row md:items-center md:justify-between">
-          <CardTitle className="text-xl md:text-2xl">{job.title}</CardTitle>
+          <div>
+            <div className="text-sm text-muted-foreground mb-1">
+              {job.job_number}
+            </div>
+            <CardTitle className="text-xl md:text-2xl">{job.title}</CardTitle>
+          </div>
           {job.status !== "completed" && job.status !== "cancelled" && (
             <Button
               onClick={handleCompleteJob}

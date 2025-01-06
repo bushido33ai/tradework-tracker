@@ -129,6 +129,7 @@ export type Database = {
           created_by: string
           description: string
           id: string
+          job_number: string
           location: string
           status: Database["public"]["Enums"]["job_status"] | null
           title: string
@@ -141,6 +142,7 @@ export type Database = {
           created_by: string
           description: string
           id?: string
+          job_number?: string
           location: string
           status?: Database["public"]["Enums"]["job_status"] | null
           title: string
@@ -153,6 +155,7 @@ export type Database = {
           created_by?: string
           description?: string
           id?: string
+          job_number?: string
           location?: string
           status?: Database["public"]["Enums"]["job_status"] | null
           title?: string
