@@ -12,6 +12,7 @@ import Jobs from "./pages/Jobs";
 import Enquiries from "./pages/Enquiries";
 import Profile from "./pages/Profile";
 import JobDetails from "./pages/JobDetails";
+import EnquiryDetails from "./pages/EnquiryDetails";
 import Dashboard from "./pages/Dashboard";
 import Suppliers from "./pages/Suppliers";
 import Customers from "./pages/Customers";
@@ -40,6 +41,7 @@ const App = () => {
                         <Route path="/jobs" element={<Jobs />} />
                         <Route path="/jobs/:id" element={<JobDetails />} />
                         <Route path="/enquiries" element={<Enquiries />} />
+                        <Route path="/enquiries/:id" element={<EnquiryDetails />} />
                         <Route path="/suppliers" element={<Suppliers />} />
                         <Route path="/customers" element={<Customers />} />
                         <Route path="/profile" element={<Profile />} />

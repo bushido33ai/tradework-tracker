@@ -28,6 +28,7 @@ const AddEnquiryDialog = ({ open, onOpenChange }: AddEnquiryDialogProps) => {
       description: "",
       location: "",
       measurement_notes: "",
+      visit_date: undefined,
     },
   });
 
@@ -51,8 +52,8 @@ const AddEnquiryDialog = ({ open, onOpenChange }: AddEnquiryDialogProps) => {
         title: values.title,
         description: values.description,
         location: values.location,
-        measurement_notes: values.measurement_notes,
-        visit_date: values.visit_date,
+        measurement_notes: values.measurement_notes || null,
+        visit_date: values.visit_date ? values.visit_date.toISOString() : null,
         created_by: user.id,
         enquiry_number: enquiryNumber,
       };
