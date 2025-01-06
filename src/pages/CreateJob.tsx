@@ -24,9 +24,11 @@ const formSchema = z.object({
   budget: z.string().optional(),
 });
 
+type FormValues = z.infer<typeof formSchema>;
+
 const CreateJob = () => {
   const navigate = useNavigate();
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
@@ -37,16 +39,19 @@ const CreateJob = () => {
   });
 
   const createJob = useMutation({
-    mutationFn: async (values: z.infer<typeof formSchema>) => {
+    mutationFn: async (values: FormValues) => {
       const { data: user } = await supabase.auth.getUser();
       if (!user.user) throw new Error("Not authenticated");
 
-      const { error } = await supabase.from("jobs").insert({
-        ...values,
+      const jobData = {
+        title: values.title,
+        description: values.description,
+        location: values.location,
         budget: values.budget ? parseFloat(values.budget) : null,
         created_by: user.user.id,
-      });
+      };
 
+      const { error } = await supabase.from("jobs").insert(jobData);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -58,7 +63,7 @@ const CreateJob = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = (values: FormValues) => {
     createJob.mutate(values);
   };
 
