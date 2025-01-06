@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { createClient } from "@supabase/supabase-js";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const features = [
   "Track multiple jobs efficiently",
@@ -11,24 +11,9 @@ const features = [
   "Generate professional reports",
 ];
 
-// Create Supabase client with environment variable checks
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error("Supabase credentials are missing");
-}
-
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
 const Landing = () => {
   const handleGoogleLogin = async () => {
     try {
-      if (!supabaseUrl || !supabaseAnonKey) {
-        toast.error("Authentication is not properly configured");
-        return;
-      }
-
       toast.loading("Connecting to Google...", { id: "google-auth" });
       
       const { error } = await supabase.auth.signInWithOAuth({
