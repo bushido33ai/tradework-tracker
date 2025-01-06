@@ -23,7 +23,7 @@ const JobNotes = ({ jobId }: JobNotesProps) => {
         .from("job_notes")
         .select(`
           *,
-          profiles (
+          creator:created_by (
             full_name
           )
         `)
@@ -92,7 +92,7 @@ const JobNotes = ({ jobId }: JobNotesProps) => {
           <Card key={note.id} className="p-4">
             <div className="flex justify-between items-start mb-2">
               <span className="font-medium">
-                {note.profiles?.full_name || "Unknown User"}
+                {note.creator?.full_name || "Unknown User"}
               </span>
               <span className="text-sm text-muted-foreground">
                 {format(new Date(note.created_at), "PPp")}
