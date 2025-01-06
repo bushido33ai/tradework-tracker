@@ -31,6 +31,11 @@ const SignUp = () => {
     try {
       setIsLoading(true);
       
+      // Ensure userType is valid
+      if (!userType || !['tradesman', 'customer', 'merchant'].includes(userType)) {
+        throw new Error('Invalid user type');
+      }
+
       const { error } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
@@ -48,6 +53,7 @@ const SignUp = () => {
       toast.success("Account created successfully! Please check your email to verify your account.");
       navigate("/");
     } catch (error: any) {
+      console.error('Signup error:', error);
       toast.error(error.message || "An error occurred during sign up");
     } finally {
       setIsLoading(false);
