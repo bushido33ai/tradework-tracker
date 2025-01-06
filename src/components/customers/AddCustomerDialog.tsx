@@ -42,7 +42,6 @@ const AddCustomerDialog = ({ open, onOpenChange }: AddCustomerDialogProps) => {
       const { data, error } = await supabase
         .from('profiles')
         .insert({
-          id: crypto.randomUUID(),
           user_type: 'customer',
           full_name: values.fullName,
           email: values.email,
