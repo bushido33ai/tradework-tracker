@@ -4,6 +4,7 @@ import { Loader2, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import AddCustomerDialog from "@/components/customers/AddCustomerDialog";
+import ViewCustomerDialog from "@/components/customers/ViewCustomerDialog";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import {
@@ -17,6 +18,7 @@ import {
 
 const Customers = () => {
   const [showAddDialog, setShowAddDialog] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState<any>(null);
   const isDesktop = useMediaQuery("(min-width: 768px)");
   
   const { data: customers, isLoading } = useQuery({
@@ -59,7 +61,12 @@ const Customers = () => {
           {customers?.map((customer) => (
             <Card key={customer.id}>
               <CardHeader>
-                <h3 className="font-semibold">{customer.full_name}</h3>
+                <button
+                  onClick={() => setSelectedCustomer(customer)}
+                  className="text-left hover:text-primary transition-colors"
+                >
+                  <h3 className="font-semibold">{customer.full_name}</h3>
+                </button>
               </CardHeader>
               <CardContent className="space-y-2 text-sm">
                 <div className="grid grid-cols-2 gap-2">
@@ -88,7 +95,14 @@ const Customers = () => {
             <TableBody>
               {customers?.map((customer) => (
                 <TableRow key={customer.id}>
-                  <TableCell className="font-medium">{customer.full_name}</TableCell>
+                  <TableCell>
+                    <button
+                      onClick={() => setSelectedCustomer(customer)}
+                      className="font-medium hover:text-primary transition-colors text-left"
+                    >
+                      {customer.full_name}
+                    </button>
+                  </TableCell>
                   <TableCell className="break-all">{customer.email}</TableCell>
                   <TableCell>{customer.telephone}</TableCell>
                   <TableCell>{customer.address}</TableCell>
@@ -103,6 +117,14 @@ const Customers = () => {
         open={showAddDialog} 
         onOpenChange={setShowAddDialog} 
       />
+
+      {selectedCustomer && (
+        <ViewCustomerDialog
+          open={!!selectedCustomer}
+          onOpenChange={(open) => !open && setSelectedCustomer(null)}
+          customer={selectedCustomer}
+        />
+      )}
     </div>
   );
 };
