@@ -4,20 +4,28 @@ import { Loader2, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import AddCustomerDialog from "@/components/customers/AddCustomerDialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 const Customers = () => {
   const [showAddDialog, setShowAddDialog] = useState(false);
   
-  const { data: profiles, isLoading } = useQuery({
+  const { data: customers, isLoading } = useQuery({
     queryKey: ['customers'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data: profiles, error } = await supabase
         .from('profiles')
-        .select('*')
+        .select('*, auth_users:id(email)')
         .eq('user_type', 'customer');
       
       if (error) throw error;
-      return data;
+      return profiles;
     },
   });
 
@@ -39,21 +47,27 @@ const Customers = () => {
         </Button>
       </div>
 
-      <div className="grid gap-4">
-        {profiles?.map((profile) => (
-          <div
-            key={profile.id}
-            className="p-4 bg-white rounded-lg shadow border border-gray-100"
-          >
-            <div className="flex justify-between items-start">
-              <div>
-                <h3 className="font-medium">{profile.id}</h3>
-                <p className="text-sm text-gray-500">{profile.telephone}</p>
-                <p className="text-sm text-gray-500">{profile.address}</p>
-              </div>
-            </div>
-          </div>
-        ))}
+      <div className="bg-white rounded-lg shadow">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Name</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Phone</TableHead>
+              <TableHead>Address</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {customers?.map((customer) => (
+              <TableRow key={customer.id}>
+                <TableCell className="font-medium">{customer.full_name}</TableCell>
+                <TableCell>{customer.auth_users?.email}</TableCell>
+                <TableCell>{customer.telephone}</TableCell>
+                <TableCell>{customer.address}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </div>
 
       <AddCustomerDialog 
