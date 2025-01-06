@@ -5,9 +5,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { format } from "date-fns";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Briefcase, CheckCircle, PoundSterling, Receipt } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
-  // Query for current jobs (pending + in_progress)
   const { data: currentJobs } = useQuery({
     queryKey: ['currentJobs'],
     queryFn: async () => {
@@ -83,7 +83,12 @@ const Dashboard = () => {
               <Briefcase className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{currentJobs || 0}</div>
+              <Link 
+                to="/jobs" 
+                className="text-2xl font-bold hover:text-primary transition-colors"
+              >
+                {currentJobs || 0}
+              </Link>
             </CardContent>
           </Card>
 
