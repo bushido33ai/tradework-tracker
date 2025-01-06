@@ -23,7 +23,7 @@ const JobNotes = ({ jobId }: JobNotesProps) => {
         .from("job_notes")
         .select(`
           *,
-          creator:created_by (
+          creator:profiles!job_notes_created_by_fkey (
             full_name
           )
         `)
