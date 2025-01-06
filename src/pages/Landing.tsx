@@ -19,18 +19,23 @@ const Landing = () => {
     >
       <div className="container mx-auto px-4 py-12">
         <nav className="flex justify-between items-center mb-16">
-          <div className="flex items-center gap-2">
-            <img 
-              src="/lovable-uploads/317a517a-5245-4ea6-9e38-bdb24750620c.png" 
-              alt="TradeMate Logo" 
-              className="w-10 h-10 object-contain"
-              onError={(e) => {
-                console.error("Failed to load logo image");
-                e.currentTarget.style.display = 'none';
-              }}
-            />
-            <h1 className="text-2xl font-bold text-primary-800">TradeMate</h1>
-          </div>
+          <Link to="/" className="group flex items-center gap-3 hover:opacity-95 transition-all">
+            <div className="relative">
+              <div className="absolute inset-0 bg-primary-100 rounded-full scale-110 group-hover:scale-125 transition-transform duration-300 blur-md opacity-50"></div>
+              <img 
+                src="/lovable-uploads/317a517a-5245-4ea6-9e38-bdb24750620c.png" 
+                alt="TradeMate Logo" 
+                className="w-12 h-12 object-contain relative transform group-hover:rotate-6 transition-all duration-300 ease-out"
+                onError={(e) => {
+                  console.error("Failed to load logo image");
+                  e.currentTarget.style.display = 'none';
+                }}
+              />
+            </div>
+            <h1 className="text-2xl font-bold text-primary-800 group-hover:text-primary-600 transition-colors">
+              TradeMate
+            </h1>
+          </Link>
           <div className="space-x-4">
             <Link to="/signin">
               <Button
