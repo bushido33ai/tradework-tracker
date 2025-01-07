@@ -34,7 +34,7 @@ export const VisitDateField = ({ form }: VisitDateFieldProps) => {
                   )}
                 >
                   {field.value ? (
-                    format(field.value, "PPP")
+                    format(new Date(field.value), "PPP")
                   ) : (
                     <span>Pick a date</span>
                   )}
@@ -45,10 +45,12 @@ export const VisitDateField = ({ form }: VisitDateFieldProps) => {
             <PopoverContent className="w-auto p-0" align="start">
               <Calendar
                 mode="single"
-                selected={field.value}
+                selected={field.value ? new Date(field.value) : undefined}
                 onSelect={(date) => {
-                  field.onChange(date);
-                  setOpen(false);
+                  if (date) {
+                    field.onChange(date);
+                    setOpen(false);
+                  }
                 }}
                 initialFocus
               />
