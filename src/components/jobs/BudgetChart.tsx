@@ -1,10 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ChartContainer } from "@/components/ui/chart";
-import { Legend, Tooltip } from "recharts";
+import { Legend, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
 import { CustomTooltip } from "./charts/CustomTooltip";
 import { BudgetLegend } from "./charts/BudgetLegend";
-import { BudgetPieChart } from "./charts/BudgetPieChart";
 
 interface BudgetChartProps {
   jobId: string;
@@ -29,11 +28,13 @@ const BudgetChart = ({ jobId, budget }: BudgetChartProps) => {
   const remaining = Math.max(0, budget - spent);
 
   const data = [
-    { name: "Spent", value: spent },
-    { name: "Remaining", value: remaining },
+    { name: "Budget Overview", spent, remaining },
   ];
 
-  const COLORS = ["#ef4444", "#22c55e"];
+  const COLORS = {
+    spent: "#ef4444",
+    remaining: "#22c55e"
+  };
 
   return (
     <div className="space-y-4">
@@ -44,18 +45,28 @@ const BudgetChart = ({ jobId, budget }: BudgetChartProps) => {
         </p>
       </div>
       
-      <div className="w-full h-[250px] md:h-[300px] mt-4">
+      <div className="w-full h-[300px] mt-4">
         <ChartContainer
           config={{
-            spent: { color: COLORS[0] },
-            remaining: { color: COLORS[1] },
+            spent: { color: COLORS.spent },
+            remaining: { color: COLORS.remaining },
           }}
         >
-          <>
-            <BudgetPieChart data={data} colors={COLORS} />
-            <Tooltip content={<CustomTooltip />} />
-            <Legend content={<BudgetLegend data={data} />} />
-          </>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={data}
+              margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+              layout="vertical"
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis type="number" tickFormatter={(value) => `$${value}`} />
+              <YAxis type="category" dataKey="name" hide />
+              <Tooltip content={<CustomTooltip />} />
+              <Bar dataKey="spent" stackId="a" fill={COLORS.spent} name="Spent" />
+              <Bar dataKey="remaining" stackId="a" fill={COLORS.remaining} name="Remaining" />
+              <Legend content={<BudgetLegend />} />
+            </BarChart>
+          </ResponsiveContainer>
         </ChartContainer>
       </div>
     </div>
