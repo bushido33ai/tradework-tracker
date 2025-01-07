@@ -37,7 +37,7 @@ const BudgetChart = ({ jobId, budget }: BudgetChartProps) => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col space-y-4">
       <div className="text-center">
         <h3 className="text-lg font-medium mb-1">Budget Overview</h3>
         <p className="text-sm text-muted-foreground">
@@ -45,26 +45,42 @@ const BudgetChart = ({ jobId, budget }: BudgetChartProps) => {
         </p>
       </div>
       
-      <div className="w-full h-[300px] mt-4">
+      <div className="flex-1 min-h-[300px]">
         <ChartContainer
           config={{
             spent: { color: COLORS.spent },
             remaining: { color: COLORS.remaining },
           }}
         >
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height={300}>
             <BarChart
               data={data}
               margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
               layout="vertical"
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis type="number" tickFormatter={(value) => `$${value}`} />
+              <XAxis 
+                type="number" 
+                tickFormatter={(value) => `$${value}`}
+                domain={[0, budget]}
+              />
               <YAxis type="category" dataKey="name" hide />
               <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="spent" stackId="a" fill={COLORS.spent} name="Spent" />
-              <Bar dataKey="remaining" stackId="a" fill={COLORS.remaining} name="Remaining" />
-              <Legend content={<BudgetLegend />} />
+              <Bar 
+                dataKey="spent" 
+                stackId="a" 
+                fill={COLORS.spent} 
+                name="Spent"
+                radius={[4, 0, 0, 4]}
+              />
+              <Bar 
+                dataKey="remaining" 
+                stackId="a" 
+                fill={COLORS.remaining} 
+                name="Remaining"
+                radius={[0, 4, 4, 0]}
+              />
+              <Legend content={<BudgetLegend />} verticalAlign="bottom" height={36} />
             </BarChart>
           </ResponsiveContainer>
         </ChartContainer>
