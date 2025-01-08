@@ -12,30 +12,11 @@ export const LandingNav = ({ session }: LandingNavProps) => {
 
   const handleSignOut = async () => {
     try {
-      // First try to get the current session
-      const { data: { session: currentSession } } = await supabase.auth.getSession();
-      
-      if (!currentSession) {
-        // If no session exists, just navigate away
-        toast.success("Already signed out");
-        navigate("/");
-        return;
-      }
-
-      // Attempt to sign out
-      const { error } = await supabase.auth.signOut();
-      
-      if (error) {
-        console.error("Sign out error:", error);
-        // Even if server-side sign out fails, we'll clear local state
-        toast.success("Signed out locally");
-      } else {
-        toast.success("Signed out successfully");
-      }
-      
+      await supabase.auth.signOut();
+      toast.success("Signed out successfully");
       navigate("/");
     } catch (error) {
-      console.error("Error during sign out:", error);
+      console.error("Error signing out:", error);
       toast.error("Error signing out");
     }
   };
