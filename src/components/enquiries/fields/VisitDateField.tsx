@@ -43,9 +43,7 @@ export const VisitDateField = ({ form }: VisitDateFieldProps) => {
               <Calendar
                 mode="single"
                 selected={field.value}
-                onSelect={(date) => {
-                  field.onChange(date);
-                }}
+                onSelect={field.onChange}
                 disabled={(date) =>
                   date < new Date(new Date().setHours(0, 0, 0, 0))
                 }
