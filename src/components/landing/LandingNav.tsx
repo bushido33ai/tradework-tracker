@@ -12,6 +12,16 @@ export const LandingNav = ({ session }: LandingNavProps) => {
 
   const handleSignOut = async () => {
     try {
+      // First try to get the current session
+      const { data: currentSession } = await supabase.auth.getSession();
+      
+      if (!currentSession.session) {
+        // If no session exists, just navigate away
+        navigate("/");
+        return;
+      }
+
+      // Attempt to sign out
       const { error } = await supabase.auth.signOut();
       
       if (error) {
