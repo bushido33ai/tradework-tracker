@@ -38,7 +38,7 @@ const EnquiryDetails = () => {
       description: "",
       location: "",
       measurement_notes: "",
-      visit_date: null,
+      visit_date: undefined,
     },
   });
 
@@ -49,7 +49,7 @@ const EnquiryDetails = () => {
         description: enquiry.description,
         location: enquiry.location,
         measurement_notes: enquiry.measurement_notes || "",
-        visit_date: enquiry.visit_date || null,
+        visit_date: enquiry.visit_date ? new Date(enquiry.visit_date) : undefined,
       });
     }
   }, [enquiry, form]);
@@ -63,7 +63,7 @@ const EnquiryDetails = () => {
           description: values.description,
           location: values.location,
           measurement_notes: values.measurement_notes || null,
-          visit_date: values.visit_date || null,
+          visit_date: values.visit_date ? values.visit_date.toISOString() : null,
         })
         .eq("id", id);
 
