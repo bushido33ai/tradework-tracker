@@ -12,8 +12,13 @@ export const LandingNav = ({ session }: LandingNavProps) => {
 
   const handleSignOut = async () => {
     try {
-      // Sign out from Supabase
-      const { error } = await supabase.auth.signOut();
+      // First clear any local session data
+      await supabase.auth.clearSession();
+      
+      // Then attempt to sign out
+      const { error } = await supabase.auth.signOut({
+        scope: 'local'  // Only clear local session to avoid 403 error
+      });
       
       if (error) {
         console.error("Error signing out:", error);
@@ -22,13 +27,12 @@ export const LandingNav = ({ session }: LandingNavProps) => {
         toast.success("Signed out successfully");
       }
 
-      // Always navigate to home page regardless of sign out success
+      // Always navigate to home page
       navigate("/");
       
     } catch (error) {
       console.error("Error in sign out process:", error);
       toast.error("An unexpected error occurred. Please try again.");
-      // Still navigate to home page
       navigate("/");
     }
   };
