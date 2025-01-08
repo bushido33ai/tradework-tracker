@@ -14,10 +14,10 @@ export const MeasurementNotesField = ({ form }: MeasurementNotesFieldProps) => {
       name="measurement_notes"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>Measurement Notes (optional)</FormLabel>
+          <FormLabel>Additional Notes (optional)</FormLabel>
           <FormControl>
             <Textarea
-              placeholder="Enter measurement notes"
+              placeholder="Enter any additional notes about your enquiry"
               className="min-h-[100px]"
               {...field}
             />
