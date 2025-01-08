@@ -18,10 +18,11 @@ export const LandingNav = ({ session }: LandingNavProps) => {
       if (!currentSession.session) {
         // If no session exists, just navigate away
         navigate("/");
+        toast.info("No active session found");
         return;
       }
 
-      // Attempt to sign out
+      // Attempt to sign out without specifying scope
       const { error } = await supabase.auth.signOut();
       
       if (error) {
