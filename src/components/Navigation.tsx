@@ -1,17 +1,32 @@
-import { Link, useLocation } from "react-router-dom";
-import { Building2, ClipboardList, Home, Users, UserCircle, Menu, MessageSquare } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Building2, ClipboardList, Home, Users, UserCircle, Menu, MessageSquare, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const Navigation = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [isOpen, setIsOpen] = useState(false);
   
   const isActive = (path: string) => {
     return location.pathname === path;
+  };
+
+  const handleSignOut = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      toast.success("Signed out successfully");
+      navigate("/");
+    } catch (error) {
+      console.error("Error signing out:", error);
+      toast.error("Error signing out");
+    }
   };
 
   const navItems = [
@@ -28,25 +43,36 @@ const Navigation = () => {
   };
 
   const NavContent = () => (
-    <div className="space-y-2">
-      {navItems.map((item) => {
-        const Icon = item.icon;
-        return (
-          <Link
-            key={item.path}
-            to={item.path}
-            onClick={handleNavigation}
-            className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
-              isActive(item.path)
-                ? "bg-primary-50 text-primary-800"
-                : "text-gray-600 hover:bg-gray-50"
-            }`}
-          >
-            <Icon className="w-5 h-5" />
-            <span className="font-medium">{item.label}</span>
-          </Link>
-        );
-      })}
+    <div className="flex flex-col justify-between h-full">
+      <div className="space-y-2">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          return (
+            <Link
+              key={item.path}
+              to={item.path}
+              onClick={handleNavigation}
+              className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
+                isActive(item.path)
+                  ? "bg-primary-50 text-primary-800"
+                  : "text-gray-600 hover:bg-gray-50"
+              }`}
+            >
+              <Icon className="w-5 h-5" />
+              <span className="font-medium">{item.label}</span>
+            </Link>
+          );
+        })}
+      </div>
+      
+      <Button
+        variant="ghost"
+        className="w-full justify-start mt-auto text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+        onClick={handleSignOut}
+      >
+        <LogOut className="w-5 h-5 mr-3" />
+        <span className="font-medium">Sign out</span>
+      </Button>
     </div>
   );
 
@@ -83,7 +109,9 @@ const Navigation = () => {
           <h1 className="text-2xl font-bold text-primary-800">TradeMate</h1>
         </Link>
       </div>
-      <NavContent />
+      <div className="h-[calc(100vh-5rem)]">
+        <NavContent />
+      </div>
     </nav>
   );
 };
