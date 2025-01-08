@@ -7,15 +7,12 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { UseFormReturn } from "react-hook-form";
 import type { EnquiryFormValues } from "../types";
-import { useState } from "react";
 
 interface VisitDateFieldProps {
   form: UseFormReturn<EnquiryFormValues>;
 }
 
 export const VisitDateField = ({ form }: VisitDateFieldProps) => {
-  const [open, setOpen] = useState(false);
-
   return (
     <FormField
       control={form.control}
@@ -23,7 +20,7 @@ export const VisitDateField = ({ form }: VisitDateFieldProps) => {
       render={({ field }) => (
         <FormItem className="flex flex-col">
           <FormLabel>Visit Date (optional)</FormLabel>
-          <Popover open={open} onOpenChange={setOpen}>
+          <Popover>
             <PopoverTrigger asChild>
               <FormControl>
                 <Button
@@ -34,7 +31,7 @@ export const VisitDateField = ({ form }: VisitDateFieldProps) => {
                   )}
                 >
                   {field.value ? (
-                    format(new Date(field.value), "PPP")
+                    format(field.value, "PPP")
                   ) : (
                     <span>Pick a date</span>
                   )}
@@ -45,13 +42,13 @@ export const VisitDateField = ({ form }: VisitDateFieldProps) => {
             <PopoverContent className="w-auto p-0" align="start">
               <Calendar
                 mode="single"
-                selected={field.value ? new Date(field.value) : undefined}
+                selected={field.value}
                 onSelect={(date) => {
-                  if (date) {
-                    field.onChange(date);
-                    setOpen(false);
-                  }
+                  field.onChange(date);
                 }}
+                disabled={(date) =>
+                  date < new Date(new Date().setHours(0, 0, 0, 0))
+                }
                 initialFocus
               />
             </PopoverContent>
