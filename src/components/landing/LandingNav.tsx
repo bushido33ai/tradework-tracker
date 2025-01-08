@@ -12,25 +12,24 @@ export const LandingNav = ({ session }: LandingNavProps) => {
 
   const handleSignOut = async () => {
     try {
-      const { error } = await supabase.auth.signOut({
-        scope: 'local'  // Only clear local session if server-side fails
-      });
+      // First attempt to clear the session locally
+      await supabase.auth.clearSession();
+      
+      // Then attempt server-side cleanup
+      const { error } = await supabase.auth.signOut();
       
       if (error) {
         console.error("Sign out error:", error);
-        // Still show success since local session is cleared
-        toast.success("Signed out locally");
-      } else {
-        toast.success("Signed out successfully");
       }
       
-      // Always navigate to home page
+      // Always show success and redirect since local session is cleared
+      toast.success("Signed out successfully");
       navigate("/");
       
     } catch (error: any) {
       console.error("Error during sign out:", error);
-      // Still show success since we're signing out locally
-      toast.success("Signed out locally");
+      // Still show success since local session is cleared
+      toast.success("Signed out successfully");
       navigate("/");
     }
   };
