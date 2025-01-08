@@ -12,12 +12,9 @@ export const LandingNav = ({ session }: LandingNavProps) => {
 
   const handleSignOut = async () => {
     try {
-      // First clear any local session data
-      await supabase.auth.clearSession();
-      
-      // Then attempt to sign out
+      // Attempt to sign out with local scope to avoid 403 errors
       const { error } = await supabase.auth.signOut({
-        scope: 'local'  // Only clear local session to avoid 403 error
+        scope: 'local'
       });
       
       if (error) {
