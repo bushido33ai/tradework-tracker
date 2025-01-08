@@ -12,12 +12,34 @@ export const LandingNav = ({ session }: LandingNavProps) => {
 
   const handleSignOut = async () => {
     try {
-      await supabase.auth.signOut();
-      toast.success("Signed out successfully");
+      // First check if we have a valid session
+      const { data: { session: currentSession } } = await supabase.auth.getSession();
+      
+      if (!currentSession) {
+        // If no session exists, just redirect to home
+        navigate("/");
+        return;
+      }
+
+      // Proceed with sign out
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        console.error("Sign out error:", error);
+        // If it's a session error, we should still redirect the user
+        if (error.message.includes("session")) {
+          navigate("/");
+          return;
+        }
+        toast.error(error.message);
+      } else {
+        toast.success("Signed out successfully");
+        navigate("/");
+      }
+    } catch (error: any) {
+      console.error("Error during sign out:", error);
+      // Even if there's an error, redirect to home for safety
       navigate("/");
-    } catch (error) {
-      console.error("Error signing out:", error);
-      toast.error("Error signing out");
     }
   };
 
