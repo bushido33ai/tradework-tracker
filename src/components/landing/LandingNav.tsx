@@ -12,22 +12,21 @@ export const LandingNav = ({ session }: LandingNavProps) => {
 
   const handleSignOut = async () => {
     try {
-      // First clear local session
-      localStorage.removeItem('supabase.auth.token');
+      const { error } = await supabase.auth.signOut();
       
-      // Attempt server-side sign out without waiting for response
-      supabase.auth.signOut().catch(error => {
-        console.error("Server-side sign out error:", error);
-        // We don't need to handle this error as we're already clearing local session
-      });
-
-      // Always show success and redirect, regardless of server response
-      toast.success("Signed out successfully");
+      if (error) {
+        console.error("Sign out error:", error);
+        toast.error("An error occurred during sign out");
+      } else {
+        toast.success("Signed out successfully");
+      }
+      
+      // Always navigate to home page
       navigate("/");
       
     } catch (error: any) {
       console.error("Error during sign out:", error);
-      // Even if there's an error, we should still redirect
+      toast.error("An error occurred during sign out");
       navigate("/");
     }
   };
