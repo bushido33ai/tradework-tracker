@@ -47,7 +47,7 @@ const Profile = () => {
     <div className="max-w-2xl mx-auto space-y-8 p-4">
       <h1 className="text-3xl font-bold">Profile Settings</h1>
       
-      <Card>
+      <Card className="bg-blue-50/80 shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-1 border-l-4 border-l-primary-600">
         <CardContent className="pt-6 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="flex items-center space-x-3">
@@ -85,7 +85,7 @@ const Profile = () => {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="bg-blue-50/80 shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-1 border-l-4 border-l-primary-600">
         <CardContent className="pt-6">
           <h2 className="text-xl font-semibold mb-6">Edit Profile</h2>
           <ProfileForm 
