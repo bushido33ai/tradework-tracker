@@ -24,7 +24,7 @@ const FileUpload = ({ jobId, type, onUploadComplete }: FileUploadProps) => {
         id={`file-upload-${type}`}
         className="hidden"
         onChange={handleFileUpload}
-        accept={type === "design" ? "image/*,.pdf" : ".pdf"}
+        accept={type === "design" ? "image/*,.pdf" : ".pdf,image/*"}
         disabled={isUploading}
       />
       <FileUploadButton 
@@ -33,7 +33,7 @@ const FileUpload = ({ jobId, type, onUploadComplete }: FileUploadProps) => {
         id={`file-upload-${type}`} 
       />
       
-      {isMobile && type === "design" && (
+      {isMobile && (
         <CameraButton 
           isUploading={isUploading}
           onCapture={handleCameraCapture}
