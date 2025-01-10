@@ -11,6 +11,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { jobSchema, type JobFormValues } from "@/components/jobs/types";
 import { EditJobDialog } from "@/components/jobs/details/EditJobDialog";
+import { Loader2 } from "lucide-react";
 
 const JobDetails = () => {
   const { id } = useParams();
@@ -122,7 +123,11 @@ const JobDetails = () => {
   });
 
   if (isLoading) {
-    return <div>Loading job details...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-[200px]">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
   }
 
   if (!job) {
@@ -131,7 +136,7 @@ const JobDetails = () => {
 
   return (
     <div className="space-y-6 pt-4 md:pt-0">
-      <Card>
+      <Card className="bg-blue-50/80 shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-1 border-l-4 border-l-primary-600">
         <JobHeader
           jobNumber={job.job_number}
           title={job.title}
@@ -149,7 +154,9 @@ const JobDetails = () => {
         />
       </Card>
 
-      <JobTabs jobId={job.id} budget={job.budget} />
+      <div className="bg-blue-50/80 rounded-lg shadow-lg border-l-4 border-l-primary-600">
+        <JobTabs jobId={job.id} budget={job.budget} />
+      </div>
 
       <EditJobDialog
         open={showEditDialog}

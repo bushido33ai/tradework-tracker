@@ -13,7 +13,7 @@ interface JobTabsProps {
 const JobTabs = ({ jobId, budget }: JobTabsProps) => {
   return (
     <Tabs defaultValue="designs" className="w-full">
-      <TabsList className="w-full flex">
+      <TabsList className="w-full flex bg-white/50 backdrop-blur-sm">
         <TabsTrigger value="designs" className="flex-1">Designs</TabsTrigger>
         <TabsTrigger value="invoices" className="flex-1">Invoices</TabsTrigger>
         <TabsTrigger value="notes" className="flex-1">Notes</TabsTrigger>
@@ -23,7 +23,7 @@ const JobTabs = ({ jobId, budget }: JobTabsProps) => {
       </TabsList>
       
       <TabsContent value="designs">
-        <Card>
+        <Card className="bg-white/90 backdrop-blur-sm shadow-md hover:shadow-lg transition-all duration-200">
           <div className="p-6">
             <div className="flex justify-end mb-4">
               <FileUpload jobId={jobId} type="design" />
@@ -34,7 +34,7 @@ const JobTabs = ({ jobId, budget }: JobTabsProps) => {
       </TabsContent>
 
       <TabsContent value="invoices">
-        <Card>
+        <Card className="bg-white/90 backdrop-blur-sm shadow-md hover:shadow-lg transition-all duration-200">
           <div className="p-6">
             <div className="flex justify-end mb-4">
               <FileUpload jobId={jobId} type="invoice" />
@@ -45,7 +45,7 @@ const JobTabs = ({ jobId, budget }: JobTabsProps) => {
       </TabsContent>
 
       <TabsContent value="notes">
-        <Card>
+        <Card className="bg-white/90 backdrop-blur-sm shadow-md hover:shadow-lg transition-all duration-200">
           <div className="p-6">
             <JobNotes jobId={jobId} />
           </div>
@@ -54,7 +54,7 @@ const JobTabs = ({ jobId, budget }: JobTabsProps) => {
 
       {budget && budget > 0 && (
         <TabsContent value="budget">
-          <Card>
+          <Card className="bg-white/90 backdrop-blur-sm shadow-md hover:shadow-lg transition-all duration-200">
             <div className="p-6">
               <BudgetChart jobId={jobId} budget={budget} />
             </div>
