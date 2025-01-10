@@ -20,18 +20,20 @@ export const HeroSection = ({ session }: HeroSectionProps) => {
         {session ? (
           <Link
             to="/jobs"
-            className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium flex items-center space-x-2"
+            className="group relative px-6 py-3 bg-primary-600 text-white rounded-lg transition-all duration-300 hover:bg-primary-700 hover:-translate-y-1 hover:shadow-lg font-medium flex items-center space-x-2 animate-fade-in"
           >
             <span>Start here to check your jobs</span>
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+            <div className="absolute inset-0 rounded-lg bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
           </Link>
         ) : (
           <Link
             to="/register"
-            className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium flex items-center space-x-2"
+            className="group relative px-6 py-3 bg-primary-600 text-white rounded-lg transition-all duration-300 hover:bg-primary-700 hover:-translate-y-1 hover:shadow-lg font-medium flex items-center space-x-2 animate-fade-in"
           >
             <span>Start Free Trial</span>
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+            <div className="absolute inset-0 rounded-lg bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
           </Link>
         )}
       </div>
