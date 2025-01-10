@@ -16,7 +16,7 @@ const JobContent = ({ description, location, budget }: JobContentProps) => {
         </div>
         <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
           <span>📍 {location}</span>
-          {budget && <span>💰 ${budget}</span>}
+          {budget && <span>💰 £{budget}</span>}
         </div>
       </div>
     </CardContent>

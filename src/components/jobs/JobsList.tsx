@@ -52,7 +52,7 @@ const JobsList = ({ status }: JobsListProps) => {
               <p className="text-muted-foreground mt-1">{job.description}</p>
               <div className="flex gap-4 mt-2 text-sm text-muted-foreground">
                 <span>📍 {job.location}</span>
-                {job.budget && <span>💰 ${job.budget}</span>}
+                {job.budget && <span>💰 £{job.budget}</span>}
               </div>
             </div>
             <Badge

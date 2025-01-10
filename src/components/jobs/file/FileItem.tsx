@@ -24,7 +24,7 @@ const FileItem = ({ file, type, onFileClick, onDelete }: FileItemProps) => {
         <span>{file.filename}</span>
         {type === "invoice" && (
           <span className="text-muted-foreground">
-            ${(file as any).amount?.toFixed(2)}
+            £{(file as any).amount?.toFixed(2)}
           </span>
         )}
       </div>

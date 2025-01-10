@@ -21,7 +21,7 @@ export const BudgetPieChart = ({ data, colors }: BudgetPieChartProps) => {
           outerRadius={isMobile ? 60 : 80}
           paddingAngle={5}
           dataKey="value"
-          label={({ name, value }) => `${name}: $${value.toFixed(2)}`}
+          label={({ name, value }) => `${name}: £${value.toFixed(2)}`}
           labelLine={false}
         >
           {data.map((_, index) => (

@@ -41,7 +41,7 @@ const BudgetChart = ({ jobId, budget }: BudgetChartProps) => {
       <div className="text-center">
         <h3 className="text-lg font-medium mb-1">Budget Overview</h3>
         <p className="text-sm text-muted-foreground">
-          Total Budget: ${budget.toFixed(2)}
+          Total Budget: £{budget.toFixed(2)}
         </p>
       </div>
       
@@ -61,7 +61,7 @@ const BudgetChart = ({ jobId, budget }: BudgetChartProps) => {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis 
                 type="number" 
-                tickFormatter={(value) => `$${value}`}
+                tickFormatter={(value) => `£${value}`}
                 domain={[0, budget]}
               />
               <YAxis type="category" dataKey="name" hide />
