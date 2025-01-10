@@ -76,7 +76,7 @@ const Dashboard = () => {
         <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card>
+          <Card className="bg-blue-50/80 shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-1 border-l-4 border-l-primary-600">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
               <CardTitle className="text-sm font-medium">Active Jobs</CardTitle>
               <Briefcase className="h-4 w-4 text-muted-foreground" />
@@ -91,7 +91,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-blue-50/80 shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-1 border-l-4 border-l-primary-600">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
               <CardTitle className="text-sm font-medium">Completed Jobs (YTD)</CardTitle>
               <CheckCircle className="h-4 w-4 text-muted-foreground" />
@@ -106,7 +106,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-blue-50/80 shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-1 border-l-4 border-l-primary-600">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
               <CardTitle className="text-sm font-medium">Total Spend (YTD)</CardTitle>
               <PoundSterling className="h-4 w-4 text-muted-foreground" />
@@ -118,7 +118,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-blue-50/80 shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-1 border-l-4 border-l-primary-600">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
               <CardTitle className="text-sm font-medium">Total Invoiced (YTD)</CardTitle>
               <Receipt className="h-4 w-4 text-muted-foreground" />
@@ -132,7 +132,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <Card>
+      <Card className="bg-blue-50/80 shadow-lg hover:shadow-xl transition-all duration-200 border-l-4 border-l-primary-600">
         <CardHeader>
           <CardTitle>Completed Jobs by Month</CardTitle>
         </CardHeader>
