@@ -42,7 +42,7 @@ const EnquiriesList = ({ status }: EnquiriesListProps) => {
       {enquiries.map((enquiry) => (
         <Card 
           key={enquiry.id} 
-          className="p-4 cursor-pointer hover:shadow-md transition-shadow"
+          className="p-4 cursor-pointer bg-white shadow-md hover:shadow-xl transition-all duration-200 hover:-translate-y-1 border-l-4 border-l-primary-600"
           onClick={() => navigate(`/enquiries/${enquiry.id}`)}
         >
           <div className="flex justify-between items-start">
