@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { Building2 } from "lucide-react";
 
 interface LandingNavProps {
   session: any;
@@ -23,8 +24,11 @@ export const LandingNav = ({ session }: LandingNavProps) => {
 
   return (
     <nav className="flex justify-between items-center mb-16">
-      <Link to="/" className="group transition-all">
-        <h1 className="text-2xl font-bold text-primary-800 group-hover:text-primary-600 transition-colors">
+      <Link to="/" className="group transition-all flex items-center gap-2">
+        <div className="bg-gradient-to-br from-primary-600 to-primary-800 p-2 rounded-lg shadow-lg group-hover:shadow-xl transition-all">
+          <Building2 className="w-8 h-8 text-white group-hover:scale-110 transition-transform" />
+        </div>
+        <h1 className="text-2xl font-bold bg-gradient-to-r from-primary-800 to-primary-600 bg-clip-text text-transparent group-hover:from-primary-700 group-hover:to-primary-500 transition-all">
           TradeMate
         </h1>
       </Link>
