@@ -54,7 +54,7 @@ const SuppliersList = ({ suppliers, isLoading }: SuppliersListProps) => {
     return (
       <div className="space-y-4">
         {suppliers.map((supplier) => (
-          <Card key={supplier.id}>
+          <Card key={supplier.id} className="bg-blue-50/80 shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-1 border-l-4 border-l-primary-600">
             <CardHeader>
               <div className="flex justify-between items-start">
                 <div>
@@ -95,7 +95,7 @@ const SuppliersList = ({ suppliers, isLoading }: SuppliersListProps) => {
   }
 
   return (
-    <div className="border rounded-lg">
+    <div className="border rounded-lg bg-blue-50/80 shadow-lg">
       <Table>
         <TableHeader>
           <TableRow>
