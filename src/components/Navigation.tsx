@@ -42,6 +42,29 @@ const Navigation = () => {
     setIsOpen(false);
   };
 
+  const Logo = () => (
+    <Link 
+      to="/" 
+      className="group relative flex items-center gap-3 p-2 transition-all duration-300 rounded-xl hover:-translate-y-0.5"
+      onClick={handleNavigation}
+    >
+      <div className="relative">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-400 to-primary-700 rounded-lg blur-lg opacity-50 group-hover:opacity-75 transition-all duration-300"></div>
+        <div className="relative bg-gradient-to-br from-primary-600 to-primary-800 p-3 rounded-lg shadow-lg group-hover:shadow-2xl transition-all duration-300 animate-fade-in">
+          <Building2 className="w-8 h-8 text-white group-hover:scale-110 transition-transform duration-300 group-hover:rotate-6" />
+        </div>
+      </div>
+      <div className="flex flex-col items-start">
+        <h1 className="text-2xl font-bold bg-gradient-to-r from-primary-800 to-primary-600 bg-clip-text text-transparent group-hover:from-primary-600 group-hover:to-primary-400 transition-all duration-300">
+          TradeMate
+        </h1>
+        <span className="text-xs text-primary-600/80 group-hover:text-primary-500 transition-colors duration-300">
+          Building Excellence
+        </span>
+      </div>
+    </Link>
+  );
+
   const NavContent = () => (
     <div className="flex flex-col justify-between h-full">
       <div className="space-y-2">
@@ -79,9 +102,7 @@ const Navigation = () => {
   if (isMobile) {
     return (
       <div className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 px-4 flex items-center justify-between z-50">
-        <Link to="/" className="hover:opacity-80 transition-opacity">
-          <h1 className="text-xl font-bold text-primary-800">TradeMate</h1>
-        </Link>
+        <Logo />
         
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
@@ -90,10 +111,8 @@ const Navigation = () => {
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-64 p-4">
-            <div className="flex items-center mb-8 px-2">
-              <Link to="/" className="hover:opacity-80 transition-opacity">
-                <h1 className="text-2xl font-bold text-primary-800">TradeMate</h1>
-              </Link>
+            <div className="mb-8">
+              <Logo />
             </div>
             <NavContent />
           </SheetContent>
@@ -104,12 +123,10 @@ const Navigation = () => {
 
   return (
     <nav className="fixed top-0 left-0 h-screen w-64 bg-white border-r border-gray-200 p-4 hidden md:block">
-      <div className="flex items-center mb-8 px-2">
-        <Link to="/" className="hover:opacity-80 transition-opacity">
-          <h1 className="text-2xl font-bold text-primary-800">TradeMate</h1>
-        </Link>
+      <div className="mb-8">
+        <Logo />
       </div>
-      <div className="h-[calc(100vh-5rem)]">
+      <div className="h-[calc(100vh-8rem)]">
         <NavContent />
       </div>
     </nav>
