@@ -59,7 +59,7 @@ const Customers = () => {
       {!isDesktop ? (
         <div className="space-y-4">
           {customers?.map((customer) => (
-            <Card key={customer.id}>
+            <Card key={customer.id} className="bg-blue-50/80 shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-1 border-l-4 border-l-primary-600">
               <CardHeader>
                 <button
                   onClick={() => setSelectedCustomer(customer)}
@@ -82,7 +82,7 @@ const Customers = () => {
           ))}
         </div>
       ) : (
-        <div className="bg-white rounded-lg shadow">
+        <div className="bg-blue-50/80 rounded-lg shadow-lg border-l-4 border-l-primary-600">
           <Table>
             <TableHeader>
               <TableRow>
@@ -94,7 +94,7 @@ const Customers = () => {
             </TableHeader>
             <TableBody>
               {customers?.map((customer) => (
-                <TableRow key={customer.id}>
+                <TableRow key={customer.id} className="hover:bg-blue-100/50 transition-colors">
                   <TableCell>
                     <button
                       onClick={() => setSelectedCustomer(customer)}
