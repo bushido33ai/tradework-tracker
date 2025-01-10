@@ -40,7 +40,7 @@ const JobsList = ({ status }: JobsListProps) => {
       {jobs.map((job) => (
         <Card 
           key={job.id} 
-          className="p-4 cursor-pointer hover:shadow-md transition-shadow"
+          className="p-4 cursor-pointer bg-white shadow-md hover:shadow-xl transition-all duration-200 hover:-translate-y-1 border-l-4 border-l-primary-600"
           onClick={() => navigate(`/jobs/${job.id}`)}
         >
           <div className="flex justify-between items-start">
