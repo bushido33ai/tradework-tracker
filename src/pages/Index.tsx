@@ -35,7 +35,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen relative">
-      {/* Background with overlay */}
+      {/* Background with gradient overlay */}
       <div 
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-10"
         style={{ 
@@ -46,8 +46,8 @@ const Index = () => {
       
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 py-12">
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-primary-800">
+        <div className="text-center mb-16 animate-fade-in">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary-700 to-primary-500 bg-clip-text text-transparent">
             Welcome to TradeMate
           </h1>
           <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto">
@@ -56,12 +56,12 @@ const Index = () => {
         </div>
 
         {/* Image Carousel */}
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-5xl mx-auto mb-16">
           <Carousel className="w-full">
             <CarouselContent>
               {images.map((image, index) => (
                 <CarouselItem key={index}>
-                  <Card className="border-none shadow-lg">
+                  <Card className="border-none shadow-xl hover:shadow-2xl transition-shadow duration-300">
                     <CardContent className="p-0">
                       <div className="relative aspect-video overflow-hidden rounded-xl bg-gray-100">
                         {!imageErrors[index] ? (
@@ -77,7 +77,7 @@ const Index = () => {
                             Image failed to load
                           </div>
                         )}
-                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-6">
+                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6">
                           <h3 className="text-white text-2xl font-semibold">
                             {image.caption}
                           </h3>
@@ -95,15 +95,15 @@ const Index = () => {
 
         {/* Features Grid */}
         <div className="grid md:grid-cols-3 gap-8 mt-16">
-          <Card className="p-6 card-hover">
+          <Card className="p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 bg-gradient-to-br from-white to-gray-50 border-none">
             <h3 className="text-xl font-semibold mb-3 text-primary-700">Project Planning</h3>
             <p className="text-gray-600">Comprehensive tools for planning and managing construction projects</p>
           </Card>
-          <Card className="p-6 card-hover">
+          <Card className="p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 bg-gradient-to-br from-white to-gray-50 border-none">
             <h3 className="text-xl font-semibold mb-3 text-primary-700">Resource Management</h3>
             <p className="text-gray-600">Efficiently track and allocate resources across your projects</p>
           </Card>
-          <Card className="p-6 card-hover">
+          <Card className="p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 bg-gradient-to-br from-white to-gray-50 border-none">
             <h3 className="text-xl font-semibold mb-3 text-primary-700">Quality Assurance</h3>
             <p className="text-gray-600">Maintain high standards with our quality control tools</p>
           </Card>
