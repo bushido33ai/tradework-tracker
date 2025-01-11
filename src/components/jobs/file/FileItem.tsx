@@ -1,6 +1,7 @@
 import { FileText, Image } from "lucide-react";
 import DeleteFileDialog from "./DeleteFileDialog";
 import { formatFileSize } from "@/lib/utils";
+import { formatDistanceToNow } from "date-fns";
 
 interface FileItemProps {
   file: {
@@ -8,6 +9,7 @@ interface FileItemProps {
     filename: string;
     file_path: string;
     amount?: number;
+    uploaded_at?: string;
   };
   type: "design" | "invoice";
   onFileClick: (filePath: string, filename: string) => void;
@@ -44,11 +46,18 @@ const FileItem = ({ file, type, onFileClick, onDelete }: FileItemProps) => {
           <span className="font-medium truncate">{file.filename}</span>
           {isImage && <Image className="w-4 h-4 text-gray-500" />}
         </div>
-        <div className="text-sm text-muted-foreground">
-          {type === "invoice" && file.amount && (
-            <span className="mr-2">£{file.amount.toFixed(2)}</span>
+        <div className="text-sm text-muted-foreground space-y-0.5">
+          <div>
+            {type === "invoice" && file.amount && (
+              <span className="mr-2">£{file.amount.toFixed(2)}</span>
+            )}
+            <span>{formatFileSize(file.file_path.length * 1024)}</span>
+          </div>
+          {file.uploaded_at && (
+            <div className="text-xs">
+              Uploaded {formatDistanceToNow(new Date(file.uploaded_at), { addSuffix: true })}
+            </div>
           )}
-          <span>{formatFileSize(file.file_path.length * 1024)}</span>
         </div>
       </div>
       
