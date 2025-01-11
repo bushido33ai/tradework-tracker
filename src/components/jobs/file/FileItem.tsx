@@ -2,6 +2,8 @@ import { FileText, Image } from "lucide-react";
 import DeleteFileDialog from "./DeleteFileDialog";
 import { formatFileSize } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
 
 interface FileItemProps {
   file: {
@@ -17,20 +19,43 @@ interface FileItemProps {
 }
 
 const FileItem = ({ file, type, onFileClick, onDelete }: FileItemProps) => {
+  const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
   const isImage = file.filename.match(/\.(jpg|jpeg|png|gif|webp)$/i);
+  
+  useEffect(() => {
+    const fetchThumbnailUrl = async () => {
+      if (!isImage) return;
+      
+      const { data } = await supabase.storage
+        .from(type === "design" ? "designs" : "invoices")
+        .createSignedUrl(file.file_path, 3600); // 1 hour expiry
+
+      if (data?.signedUrl) {
+        setThumbnailUrl(data.signedUrl);
+      }
+    };
+
+    fetchThumbnailUrl();
+  }, [file.file_path, isImage, type]);
   
   return (
     <div className="flex items-center gap-4 p-3 hover:bg-accent rounded-md group">
       {isImage ? (
         <div className="relative w-12 h-12 rounded-md overflow-hidden bg-gray-100">
-          <img
-            src={`/storage/${type === "design" ? "designs" : "invoices"}/${file.file_path}`}
-            alt={file.filename}
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              e.currentTarget.src = "/placeholder.svg";
-            }}
-          />
+          {thumbnailUrl ? (
+            <img
+              src={thumbnailUrl}
+              alt={file.filename}
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                e.currentTarget.src = "/placeholder.svg";
+              }}
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <Image className="w-6 h-6 text-gray-500" />
+            </div>
+          )}
         </div>
       ) : (
         <div className="w-12 h-12 flex items-center justify-center rounded-md bg-gray-100">
