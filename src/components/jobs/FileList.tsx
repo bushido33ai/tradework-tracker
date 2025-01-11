@@ -2,6 +2,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import FileItem from "./file/FileItem";
+import { Loader2 } from "lucide-react";
 
 interface FileListProps {
   jobId: string;
@@ -66,7 +67,11 @@ const FileList = ({ jobId, type }: FileListProps) => {
   };
 
   if (isLoading) {
-    return <div>Loading files...</div>;
+    return (
+      <div className="flex items-center justify-center py-8">
+        <Loader2 className="h-6 w-6 animate-spin" />
+      </div>
+    );
   }
 
   if (!files?.length) {
