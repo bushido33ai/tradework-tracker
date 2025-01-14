@@ -7,7 +7,7 @@ interface HeroSectionProps {
 
 export const HeroSection = ({ session }: HeroSectionProps) => {
   return (
-    <div className="text-center mb-12">
+    <div className="text-center pt-24 mb-12">
       <h2 className="text-5xl font-bold text-gray-900 mb-6">
         Manage Your Trade Business{" "}
         <span className="text-primary-600">Efficiently</span>
