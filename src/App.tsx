@@ -5,6 +5,7 @@ import { SessionContextProvider } from '@supabase/auth-helpers-react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern";
 import Landing from "./pages/Landing";
 import UserTypeSelection from "./pages/UserTypeSelection";
 import SignUp from "./pages/SignUp";
@@ -32,22 +33,41 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+const AppBackground = ({ children, showPattern = true }: { children: React.ReactNode, showPattern?: boolean }) => {
+  return (
+    <div className="min-h-screen relative">
+      {showPattern && (
+        <AnimatedGridPattern
+          numSquares={30}
+          maxOpacity={0.1}
+          duration={3}
+          repeatDelay={1}
+          className="[mask-image:radial-gradient(600px_circle_at_center,white,transparent)]"
+        />
+      )}
+      <div className="relative z-10">
+        {children}
+      </div>
+    </div>
+  );
+};
+
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <SessionContextProvider supabaseClient={supabase}>
         <TooltipProvider>
           <BrowserRouter>
-            <div className="min-h-screen">
-              <Routes>
-                <Route path="/" element={<Landing />} />
-                <Route path="/register" element={<UserTypeSelection />} />
-                <Route path="/signup/:userType" element={<SignUp />} />
-                <Route path="/signin" element={<SignIn />} />
-                <Route
-                  path="/*"
-                  element={
-                    <PrivateRoute>
+            <Routes>
+              <Route path="/" element={<AppBackground showPattern={false}><Landing /></AppBackground>} />
+              <Route path="/register" element={<AppBackground><UserTypeSelection /></AppBackground>} />
+              <Route path="/signup/:userType" element={<AppBackground><SignUp /></AppBackground>} />
+              <Route path="/signin" element={<AppBackground><SignIn /></AppBackground>} />
+              <Route
+                path="/*"
+                element={
+                  <PrivateRoute>
+                    <AppBackground>
                       <div className="flex min-h-screen">
                         <Navigation />
                         <main className="flex-1 p-2 md:p-8 content-container mt-20 md:mt-4 mx-2 md:mx-4 md:ml-64">
@@ -63,14 +83,14 @@ const App = () => {
                           </Routes>
                         </main>
                       </div>
-                    </PrivateRoute>
-                  }
-                />
-              </Routes>
-            </div>
+                    </AppBackground>
+                  </PrivateRoute>
+                }
+              />
+            </Routes>
+            <Toaster />
+            <Sonner />
           </BrowserRouter>
-          <Toaster />
-          <Sonner />
         </TooltipProvider>
       </SessionContextProvider>
     </QueryClientProvider>
