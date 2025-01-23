@@ -1,9 +1,11 @@
 import { supabase } from "@/integrations/supabase/client";
 
+type HttpMethod = "GET" | "POST" | "PATCH" | "DELETE" | "PUT";
+
 export async function callApi<T>(
   functionName: string,
   options: {
-    method?: string;
+    method?: HttpMethod;
     body?: any;
     queryParams?: Record<string, string>;
   } = {}
