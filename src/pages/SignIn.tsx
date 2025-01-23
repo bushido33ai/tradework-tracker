@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Building2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern";
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -38,8 +39,16 @@ const SignIn = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gray-50">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden">
+      <AnimatedGridPattern
+        numSquares={30}
+        maxOpacity={0.1}
+        duration={3}
+        repeatDelay={1}
+        className="[mask-image:radial-gradient(600px_circle_at_center,white,transparent)]"
+      />
+      
+      <div className="w-full max-w-md relative z-10">
         <div className="mb-8 text-center">
           <Link 
             to="/" 
@@ -64,7 +73,7 @@ const SignIn = () => {
           <p className="mt-2 text-gray-600">Sign in to your account</p>
         </div>
 
-        <div className="bg-white p-8 rounded-lg shadow-lg space-y-6">
+        <div className="bg-white/80 backdrop-blur-sm p-8 rounded-lg shadow-lg space-y-6">
           <form onSubmit={handleSignIn} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
