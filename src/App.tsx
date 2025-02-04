@@ -59,7 +59,7 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 const Footer = () => (
-  <footer className="w-full py-6 text-center text-sm text-gray-600 mt-auto flex flex-col items-center justify-center">
+  <footer className="w-full py-6 text-center text-sm text-gray-600">
     <p>Created by</p>
     <p className="font-semibold">Hailo Digital Ltd</p>
     <p>2025</p>
@@ -94,26 +94,34 @@ const App = () => {
             <Routes>
               <Route path="/" element={
                 <AppBackground showPattern={false}>
-                  <Landing />
-                  <Footer />
+                  <div className="container mx-auto">
+                    <Landing />
+                    <Footer />
+                  </div>
                 </AppBackground>
               } />
               <Route path="/register" element={
                 <AppBackground>
-                  <UserTypeSelection />
-                  <Footer />
+                  <div className="container mx-auto">
+                    <UserTypeSelection />
+                    <Footer />
+                  </div>
                 </AppBackground>
               } />
               <Route path="/signup/:userType" element={
                 <AppBackground>
-                  <SignUp />
-                  <Footer />
+                  <div className="container mx-auto">
+                    <SignUp />
+                    <Footer />
+                  </div>
                 </AppBackground>
               } />
               <Route path="/signin" element={
                 <AppBackground>
-                  <SignIn />
-                  <Footer />
+                  <div className="container mx-auto">
+                    <SignIn />
+                    <Footer />
+                  </div>
                 </AppBackground>
               } />
               <Route
@@ -123,19 +131,21 @@ const App = () => {
                     <AppBackground>
                       <div className="flex min-h-screen">
                         <Navigation />
-                        <main className="flex-1 p-2 md:p-8 mt-20 md:mt-4 mx-2 md:mx-4 md:ml-64">
-                          <Routes>
-                            <Route path="/dashboard" element={<Dashboard />} />
-                            <Route path="/jobs" element={<Jobs />} />
-                            <Route path="/jobs/:id" element={<JobDetails />} />
-                            <Route path="/enquiries" element={<Enquiries />} />
-                            <Route path="/enquiries/:id" element={<EnquiryDetails />} />
-                            <Route path="/suppliers" element={<Suppliers />} />
-                            <Route path="/customers" element={<Customers />} />
-                            <Route path="/profile" element={<Profile />} />
-                          </Routes>
-                        </main>
-                        <Footer />
+                        <div className="flex-1 flex flex-col min-h-screen">
+                          <main className="flex-1 p-2 md:p-8 mt-20 md:mt-4 mx-2 md:mx-4 md:ml-64">
+                            <Routes>
+                              <Route path="/dashboard" element={<Dashboard />} />
+                              <Route path="/jobs" element={<Jobs />} />
+                              <Route path="/jobs/:id" element={<JobDetails />} />
+                              <Route path="/enquiries" element={<Enquiries />} />
+                              <Route path="/enquiries/:id" element={<EnquiryDetails />} />
+                              <Route path="/suppliers" element={<Suppliers />} />
+                              <Route path="/customers" element={<Customers />} />
+                              <Route path="/profile" element={<Profile />} />
+                            </Routes>
+                          </main>
+                          <Footer />
+                        </div>
                       </div>
                     </AppBackground>
                   </PrivateRoute>
