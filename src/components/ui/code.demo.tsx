@@ -1,16 +1,22 @@
-"use client";
-import React from "react";
-import { WavyBackground } from "@/components/ui/wavy-background";
+import { cn } from "@/lib/utils";
+import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern";
 
-export function WavyBackgroundDemo() {
+export function AnimatedGridPatternDemo() {
   return (
-    <WavyBackground className="max-w-4xl mx-auto pb-40">
-      <p className="text-2xl md:text-4xl lg:text-7xl text-white font-bold inter-var text-center">
-        Hero waves are cool
+    <div className="relative flex h-[500px] w-full items-center justify-center overflow-hidden rounded-lg border bg-background p-20 md:shadow-xl">
+      <p className="z-10 whitespace-pre-wrap text-center text-5xl font-medium tracking-tighter text-black dark:text-white">
+        Animated Grid Pattern
       </p>
-      <p className="text-base md:text-lg mt-4 text-white font-normal inter-var text-center">
-        Leverage the power of canvas to create a beautiful hero section
-      </p>
-    </WavyBackground>
+      <AnimatedGridPattern
+        numSquares={30}
+        maxOpacity={0.1}
+        duration={3}
+        repeatDelay={1}
+        className={cn(
+          "[mask-image:radial-gradient(500px_circle_at_center,white,transparent)]",
+          "inset-x-0 inset-y-[-30%] h-[200%] skew-y-12",
+        )}
+      />
+    </div>
   );
 }
