@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { Logo } from "./navigation/Logo";
 import { NavContent } from "./navigation/NavContent";
 
-const Navigation = () => {
+export const Navigation = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [isOpen, setIsOpen] = useState(false);
@@ -63,5 +63,3 @@ const Navigation = () => {
     </nav>
   );
 };
-
-export default Navigation;
