@@ -19,6 +19,7 @@ import EnquiryDetails from "./pages/EnquiryDetails";
 import Dashboard from "./pages/Dashboard";
 import Suppliers from "./pages/Suppliers";
 import Customers from "./pages/Customers";
+import Footer from "./components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -57,14 +58,6 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
 
   return <>{children}</>;
 };
-
-const Footer = () => (
-  <footer className="w-full py-6 text-center text-sm text-gray-600 mt-auto flex flex-col items-center justify-center">
-    <p>Created by</p>
-    <p className="font-semibold">Hailo Digital Ltd</p>
-    <p>2025</p>
-  </footer>
-);
 
 const AppBackground = ({ children, showPattern = true }: { children: React.ReactNode, showPattern?: boolean }) => {
   return (
