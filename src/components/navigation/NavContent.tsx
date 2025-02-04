@@ -34,13 +34,13 @@ export const NavContent = ({ onNavigate, onSignOut }: NavContentProps) => {
               key={item.path}
               to={item.path}
               onClick={onNavigate}
-              className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
+              className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 ${
                 isActive(item.path)
-                  ? "bg-primary-50 text-primary-800"
-                  : "text-gray-600 hover:bg-gray-50"
+                  ? "bg-white/10 text-white font-medium"
+                  : "text-gray-300 hover:bg-white/5 hover:text-white"
               }`}
             >
-              <Icon className="w-5 h-5" />
+              <Icon className={`w-5 h-5 ${isActive(item.path) ? "text-white" : "text-gray-300"}`} />
               <span className="font-medium">{item.label}</span>
             </Link>
           );
@@ -49,7 +49,7 @@ export const NavContent = ({ onNavigate, onSignOut }: NavContentProps) => {
       
       <Button
         variant="ghost"
-        className="w-full justify-start mt-auto text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+        className="w-full justify-start text-gray-300 hover:text-white hover:bg-white/5"
         onClick={onSignOut}
       >
         <LogOut className="w-5 h-5 mr-3" />
