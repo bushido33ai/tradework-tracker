@@ -3,7 +3,7 @@ import { Plus } from "lucide-react";
 import JobsList from "@/components/jobs/JobsList";
 import AddJobDialog from "@/components/jobs/AddJobDialog";
 import { Separator } from "@/components/ui/separator";
-import { RainbowButton } from "@/components/ui/rainbow-button";
+import { GradientButton } from "@/components/ui/gradient-button";
 
 const Jobs = () => {
   const [showAddDialog, setShowAddDialog] = useState(false);
@@ -17,12 +17,12 @@ const Jobs = () => {
             Manage your jobs and track their progress
           </p>
         </div>
-        <RainbowButton onClick={() => setShowAddDialog(true)}>
+        <GradientButton onClick={() => setShowAddDialog(true)}>
           <span className="flex items-center">
             <Plus className="mr-2 h-4 w-4" />
             Create Job
           </span>
-        </RainbowButton>
+        </GradientButton>
       </div>
 
       <div className="space-y-8">
