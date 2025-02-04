@@ -1,15 +1,16 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { createClient } from '@supabase/supabase-js';
 import { SessionContextProvider, useSessionContext } from '@supabase/auth-helpers-react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { AuthLayout } from "@/components/layouts/AuthLayout";
-import { DashboardLayout } from "@/components/layouts/DashboardLayout";
+import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern";
 import Landing from "./pages/Landing";
 import UserTypeSelection from "./pages/UserTypeSelection";
 import SignUp from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
+import Navigation from "./components/Navigation";
 import Jobs from "./pages/Jobs";
 import Enquiries from "./pages/Enquiries";
 import Profile from "./pages/Profile";
@@ -57,6 +58,33 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+const Footer = () => (
+  <footer className="w-full py-6 text-center text-sm text-gray-600 mt-auto flex flex-col items-center justify-center">
+    <p>Created by</p>
+    <p className="font-semibold">Hailo Digital Ltd</p>
+    <p>2025</p>
+  </footer>
+);
+
+const AppBackground = ({ children, showPattern = true }: { children: React.ReactNode, showPattern?: boolean }) => {
+  return (
+    <div className="min-h-screen relative flex flex-col">
+      {showPattern && (
+        <AnimatedGridPattern
+          numSquares={30}
+          maxOpacity={0.1}
+          duration={3}
+          repeatDelay={1}
+          className="[mask-image:radial-gradient(600px_circle_at_center,white,transparent)]"
+        />
+      )}
+      <div className="relative z-10 flex-1">
+        {children}
+      </div>
+    </div>
+  );
+};
+
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
@@ -65,41 +93,51 @@ const App = () => {
           <BrowserRouter>
             <Routes>
               <Route path="/" element={
-                <AuthLayout showPattern={false}>
+                <AppBackground showPattern={false}>
                   <Landing />
-                </AuthLayout>
+                  <Footer />
+                </AppBackground>
               } />
               <Route path="/register" element={
-                <AuthLayout>
+                <AppBackground>
                   <UserTypeSelection />
-                </AuthLayout>
+                  <Footer />
+                </AppBackground>
               } />
               <Route path="/signup/:userType" element={
-                <AuthLayout>
+                <AppBackground>
                   <SignUp />
-                </AuthLayout>
+                  <Footer />
+                </AppBackground>
               } />
               <Route path="/signin" element={
-                <AuthLayout>
+                <AppBackground>
                   <SignIn />
-                </AuthLayout>
+                  <Footer />
+                </AppBackground>
               } />
               <Route
                 path="/*"
                 element={
                   <PrivateRoute>
-                    <DashboardLayout>
-                      <Routes>
-                        <Route path="/dashboard" element={<Dashboard />} />
-                        <Route path="/jobs" element={<Jobs />} />
-                        <Route path="/jobs/:id" element={<JobDetails />} />
-                        <Route path="/enquiries" element={<Enquiries />} />
-                        <Route path="/enquiries/:id" element={<EnquiryDetails />} />
-                        <Route path="/suppliers" element={<Suppliers />} />
-                        <Route path="/customers" element={<Customers />} />
-                        <Route path="/profile" element={<Profile />} />
-                      </Routes>
-                    </DashboardLayout>
+                    <AppBackground>
+                      <div className="flex min-h-screen">
+                        <Navigation />
+                        <main className="flex-1 p-2 md:p-8 mt-20 md:mt-4 mx-2 md:mx-4 md:ml-64">
+                          <Routes>
+                            <Route path="/dashboard" element={<Dashboard />} />
+                            <Route path="/jobs" element={<Jobs />} />
+                            <Route path="/jobs/:id" element={<JobDetails />} />
+                            <Route path="/enquiries" element={<Enquiries />} />
+                            <Route path="/enquiries/:id" element={<EnquiryDetails />} />
+                            <Route path="/suppliers" element={<Suppliers />} />
+                            <Route path="/customers" element={<Customers />} />
+                            <Route path="/profile" element={<Profile />} />
+                          </Routes>
+                        </main>
+                        <Footer />
+                      </div>
+                    </AppBackground>
                   </PrivateRoute>
                 }
               />

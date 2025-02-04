@@ -9,39 +9,6 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      access_requests: {
-        Row: {
-          approved_at: string | null
-          approved_by: string | null
-          id: string
-          notes: string | null
-          requested_at: string | null
-          status: Database["public"]["Enums"]["access_request_status"] | null
-          trial_end_at: string | null
-          user_id: string | null
-        }
-        Insert: {
-          approved_at?: string | null
-          approved_by?: string | null
-          id?: string
-          notes?: string | null
-          requested_at?: string | null
-          status?: Database["public"]["Enums"]["access_request_status"] | null
-          trial_end_at?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          approved_at?: string | null
-          approved_by?: string | null
-          id?: string
-          notes?: string | null
-          requested_at?: string | null
-          status?: Database["public"]["Enums"]["access_request_status"] | null
-          trial_end_at?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
       customer_profiles: {
         Row: {
           address: string | null
@@ -368,7 +335,6 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      access_request_status: "pending" | "approved" | "rejected"
       enquiry_status: "pending" | "in_progress" | "completed" | "cancelled"
       job_status: "pending" | "in_progress" | "completed" | "cancelled"
       note_type: "general" | "update" | "issue" | "resolution"

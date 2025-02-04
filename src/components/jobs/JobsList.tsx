@@ -36,7 +36,7 @@ const JobsList = ({ status }: JobsListProps) => {
   }
 
   return (
-    <div className="grid gap-4">
+    <div className="grid gap-4 mt-4">
       {jobs.map((job) => (
         <Card 
           key={job.id} 
