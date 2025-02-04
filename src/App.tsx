@@ -59,16 +59,18 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 const Footer = () => (
-  <footer className="py-6 text-center text-sm text-gray-600 mt-auto">
-    <p>Created by</p>
-    <p className="font-semibold">Hailo Digital Ltd</p>
-    <p>2025</p>
+  <footer className="w-full py-6 text-center text-sm text-gray-600 mt-auto border-t">
+    <div className="container mx-auto px-4">
+      <p>Created by</p>
+      <p className="font-semibold">Hailo Digital Ltd</p>
+      <p>2025</p>
+    </div>
   </footer>
 );
 
 const AppBackground = ({ children, showPattern = true }: { children: React.ReactNode, showPattern?: boolean }) => {
   return (
-    <div className="min-h-screen relative flex flex-col">
+    <div className="min-h-screen flex flex-col">
       {showPattern && (
         <AnimatedGridPattern
           numSquares={30}
@@ -78,7 +80,7 @@ const AppBackground = ({ children, showPattern = true }: { children: React.React
           className="[mask-image:radial-gradient(600px_circle_at_center,white,transparent)]"
         />
       )}
-      <div className="relative z-10 flex-1">
+      <div className="flex-1 relative z-10">
         {children}
       </div>
     </div>
@@ -121,7 +123,7 @@ const App = () => {
                 element={
                   <PrivateRoute>
                     <AppBackground>
-                      <div className="flex min-h-screen">
+                      <div className="flex min-h-screen flex-col">
                         <Navigation />
                         <main className="flex-1 p-2 md:p-8 mt-20 md:mt-4 mx-2 md:mx-4 md:ml-64">
                           <Routes>
