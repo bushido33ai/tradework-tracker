@@ -38,7 +38,7 @@ const SignIn = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen flex flex-col items-center justify-start p-4 relative overflow-hidden">
       <AnimatedGridPattern
         numSquares={30}
         maxOpacity={0.1}
@@ -47,11 +47,11 @@ const SignIn = () => {
         className="[mask-image:radial-gradient(600px_circle_at_center,white,transparent)]"
       />
       
-      <div className="w-full max-w-md relative z-10">
-        <div className="mb-8 text-center">
+      <div className="w-full max-w-md relative z-10 -mt-8">
+        <div className="text-center">
           <Link 
             to="/" 
-            className="inline-flex items-center justify-center mb-12 group"
+            className="inline-flex items-center justify-center mb-8 group"
           >
             <img 
               src="/lovable-uploads/15450379-3a61-442e-83d8-3bd0bc091a36.png" 
@@ -63,7 +63,7 @@ const SignIn = () => {
           <p className="mt-2 text-gray-600">Sign in to your account</p>
         </div>
 
-        <div className="bg-white/80 backdrop-blur-sm p-8 rounded-lg shadow-lg space-y-6">
+        <div className="bg-white/80 backdrop-blur-sm p-8 rounded-lg shadow-lg space-y-6 mt-6">
           <form onSubmit={handleSignIn} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
