@@ -38,7 +38,7 @@ const AccessRequests = () => {
         .from("access_requests")
         .select(`
           *,
-          profiles!access_requests_user_id_fkey (
+          profiles:user_id(
             email,
             full_name,
             user_type
@@ -70,7 +70,7 @@ const AccessRequests = () => {
         .eq("id", id)
         .select(`
           *,
-          profiles!access_requests_user_id_fkey (
+          profiles:user_id(
             email,
             full_name
           )
@@ -116,7 +116,7 @@ const AccessRequests = () => {
         .eq("id", id)
         .select(`
           *,
-          profiles!access_requests_user_id_fkey (
+          profiles:user_id(
             email,
             full_name
           )
