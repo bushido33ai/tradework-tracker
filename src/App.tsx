@@ -19,6 +19,7 @@ import EnquiryDetails from "./pages/EnquiryDetails";
 import Dashboard from "./pages/Dashboard";
 import Suppliers from "./pages/Suppliers";
 import Customers from "./pages/Customers";
+import AccessRequests from "./pages/AccessRequests";
 import Footer from "./components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
@@ -26,9 +27,10 @@ import { toast } from "sonner";
 
 const queryClient = new QueryClient();
 
-const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isLoading, session, error } = useSessionContext();
+const PrivateRoute = ({ children, requiresMerchant = false }: { children: React.ReactNode, requiresMerchant?: boolean }) => {
+  const { isLoading, session } = useSessionContext();
   const [isChecking, setIsChecking] = useState(true);
+  const [isMerchant, setIsMerchant] = useState(false);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -38,6 +40,17 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
           console.error("Session check error:", error);
           toast.error("Authentication error. Please sign in again.");
         }
+
+        if (session) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('user_type')
+            .eq('id', session.user.id)
+            .single();
+          
+          setIsMerchant(profile?.user_type === 'merchant');
+        }
+        
         setIsChecking(false);
       } catch (err) {
         console.error("Session check failed:", err);
@@ -54,6 +67,11 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
 
   if (!session) {
     return <Navigate to="/signin" replace />;
+  }
+
+  if (requiresMerchant && !isMerchant) {
+    toast.error("You don't have permission to access this page");
+    return <Navigate to="/dashboard" replace />;
   }
 
   return <>{children}</>;
@@ -126,6 +144,14 @@ const App = () => {
                             <Route path="/suppliers" element={<Suppliers />} />
                             <Route path="/customers" element={<Customers />} />
                             <Route path="/profile" element={<Profile />} />
+                            <Route 
+                              path="/access-requests" 
+                              element={
+                                <PrivateRoute requiresMerchant={true}>
+                                  <AccessRequests />
+                                </PrivateRoute>
+                              } 
+                            />
                           </Routes>
                         </main>
                         <Footer />
