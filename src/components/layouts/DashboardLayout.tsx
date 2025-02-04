@@ -12,8 +12,8 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       <div className="flex min-h-screen">
         <Navigation />
         <div className="flex-1 flex flex-col min-h-screen">
-          <div className="flex-1 flex flex-col mx-auto w-full max-w-[1400px] px-2 md:px-6 mt-20 md:mt-4 md:ml-64">
-            <main className="flex-1">
+          <div className="flex-1 flex flex-col w-full px-2 md:px-4 mt-20 md:mt-4 md:ml-64">
+            <main className="flex-1 container mx-auto">
               {children}
             </main>
           </div>
