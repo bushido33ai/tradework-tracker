@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import { RainbowButton } from "@/components/ui/rainbow-button";
 
 interface HeroSectionProps {
   session: any;
@@ -18,22 +19,22 @@ export const HeroSection = ({ session }: HeroSectionProps) => {
 
       <div className="flex justify-center space-x-4 mb-12">
         {session ? (
-          <Link
-            to="/jobs"
-            className="group relative px-6 py-3 bg-primary-600 text-white rounded-lg transition-all duration-300 hover:bg-primary-700 hover:-translate-y-1 hover:shadow-lg font-medium flex items-center space-x-2 animate-fade-in"
-          >
-            <span>Start here to check your jobs</span>
-            <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
-            <div className="absolute inset-0 rounded-lg bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+          <Link to="/jobs">
+            <RainbowButton className="group">
+              <span className="flex items-center space-x-2">
+                <span>Start here to check your jobs</span>
+                <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+              </span>
+            </RainbowButton>
           </Link>
         ) : (
-          <Link
-            to="/register"
-            className="group relative px-6 py-3 bg-primary-600 text-white rounded-lg transition-all duration-300 hover:bg-primary-700 hover:-translate-y-1 hover:shadow-lg font-medium flex items-center space-x-2 animate-fade-in"
-          >
-            <span>Start Free Trial</span>
-            <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
-            <div className="absolute inset-0 rounded-lg bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+          <Link to="/register">
+            <RainbowButton className="group">
+              <span className="flex items-center space-x-2">
+                <span>Start Free Trial</span>
+                <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+              </span>
+            </RainbowButton>
           </Link>
         )}
       </div>
