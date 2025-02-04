@@ -3,7 +3,6 @@ import { ButtonColorful } from "@/components/ui/button-colorful";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Building2 } from "lucide-react";
-import { RainbowButton } from "@/components/ui/rainbow-button";
 
 interface LandingNavProps {
   session: any;
@@ -54,18 +53,11 @@ export const LandingNav = ({ session }: LandingNavProps) => {
                 onClick={handleSignOut}
               />
             ) : (
-              <>
-                <Link to="/signin">
-                  <ButtonColorful
-                    label="Sign in"
-                  />
-                </Link>
-                <Link to="/register">
-                  <RainbowButton>
-                    Get Started
-                  </RainbowButton>
-                </Link>
-              </>
+              <Link to="/signin">
+                <ButtonColorful
+                  label="Sign in"
+                />
+              </Link>
             )}
           </div>
         </div>
