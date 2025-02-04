@@ -8,7 +8,7 @@ export const Logo = ({ onClick }: LogoProps) => {
   return (
     <Link 
       to="/" 
-      className="group relative flex items-center gap-3 p-2 pt-4 transition-all duration-300 rounded-xl hover:-translate-y-0.5"
+      className="group relative flex items-center gap-3 p-2 pt-6 transition-all duration-300 rounded-xl hover:-translate-y-0.5"
       onClick={onClick}
     >
       <img 
