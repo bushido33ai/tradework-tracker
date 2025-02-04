@@ -15,7 +15,9 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           <main className="flex-1 p-2 md:p-8 mt-20 md:mt-4 mx-2 md:mx-4 md:ml-64">
             {children}
           </main>
-          <Footer />
+          <div className="flex justify-center w-full md:ml-64">
+            <Footer />
+          </div>
         </div>
       </div>
     </AppBackground>
