@@ -51,7 +51,7 @@ const SignIn = () => {
         <div className="mb-8 text-center">
           <Link 
             to="/" 
-            className="inline-flex items-center justify-center mb-8 group"
+            className="inline-flex items-center justify-center mb-12 group"
           >
             <img 
               src="/lovable-uploads/15450379-3a61-442e-83d8-3bd0bc091a36.png" 
