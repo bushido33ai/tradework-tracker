@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import { RainbowButton } from "@/components/ui/rainbow-button";
+import { GradientButton } from "@/components/ui/gradient-button";
 
 interface HeroSectionProps {
   session: any;
@@ -20,21 +20,21 @@ export const HeroSection = ({ session }: HeroSectionProps) => {
       <div className="flex justify-center space-x-4 mb-12">
         {session ? (
           <Link to="/jobs">
-            <RainbowButton className="group">
+            <GradientButton className="group">
               <span className="flex items-center space-x-2">
                 <span>Start here to check your jobs</span>
                 <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
               </span>
-            </RainbowButton>
+            </GradientButton>
           </Link>
         ) : (
           <Link to="/register">
-            <RainbowButton className="group">
+            <GradientButton variant="variant" className="group">
               <span className="flex items-center space-x-2">
                 <span>Start Free Trial</span>
                 <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
               </span>
-            </RainbowButton>
+            </GradientButton>
           </Link>
         )}
       </div>
