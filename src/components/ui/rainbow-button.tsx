@@ -12,21 +12,26 @@ export function RainbowButton({
   return (
     <button
       className={cn(
-        "group relative inline-flex h-11 animate-rainbow cursor-pointer items-center justify-center rounded-xl border-0 bg-[length:200%] px-8 py-2 font-medium text-white transition-colors [background-clip:padding-box,border-box,border-box] [background-origin:border-box] [border:calc(0.08*1rem)_solid_transparent] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
-
-        // before styles - darker background with increased opacity
-        "before:absolute before:bottom-[-20%] before:left-1/2 before:z-0 before:h-1/5 before:w-3/5 before:-translate-x-1/2 before:animate-rainbow before:bg-[linear-gradient(90deg,hsl(var(--color-1)),hsl(var(--color-5)),hsl(var(--color-3)),hsl(var(--color-4)),hsl(var(--color-2)))] before:bg-[length:200%] before:[filter:blur(calc(0.8*1rem))] before:opacity-90",
-
-        // light mode colors - using darker slate
-        "bg-[linear-gradient(#020617,#020617),linear-gradient(#020617_50%,rgba(2,6,23,0.95)_80%,rgba(2,6,23,0.9)),linear-gradient(90deg,hsl(var(--color-1)),hsl(var(--color-5)),hsl(var(--color-3)),hsl(var(--color-4)),hsl(var(--color-2)))]",
-
-        // dark mode colors - maintaining high contrast
-        "dark:bg-[linear-gradient(#020617,#020617),linear-gradient(#020617_50%,rgba(2,6,23,0.95)_80%,rgba(2,6,23,0.9)),linear-gradient(90deg,hsl(var(--color-1)),hsl(var(--color-5)),hsl(var(--color-3)),hsl(var(--color-4)),hsl(var(--color-2)))]",
-
-        // hover effect
-        "hover:scale-[1.02] transition-transform duration-200",
-
-        className,
+        "group relative inline-flex h-11 items-center justify-center rounded-xl px-8 py-2 font-medium text-white transition-all",
+        
+        // Base styles with solid dark background
+        "bg-[#1A1F2C] hover:bg-[#2A2F3C]",
+        
+        // Shadow and border effects
+        "shadow-lg border border-slate-700/50",
+        
+        // Rainbow gradient on hover
+        "before:absolute before:inset-0 before:rounded-xl before:transition-opacity before:duration-500",
+        "before:bg-gradient-to-r before:from-indigo-500 before:via-purple-500 before:to-pink-500",
+        "before:opacity-0 hover:before:opacity-10",
+        
+        // Scale effect on hover
+        "hover:scale-[1.02] active:scale-[0.98]",
+        
+        // Disabled state
+        "disabled:pointer-events-none disabled:opacity-50",
+        
+        className
       )}
       {...props}
     >
