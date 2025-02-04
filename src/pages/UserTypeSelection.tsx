@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { ArrowLeft, Hammer, Home, Store } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { RainbowButton } from "@/components/ui/rainbow-button";
+import { ButtonColorful } from "@/components/ui/button-colorful";
 
 const UserTypeSelection = () => {
   const navigate = useNavigate();
@@ -64,12 +64,11 @@ const UserTypeSelection = () => {
                 <div className="mb-4 text-primary">{option.icon}</div>
                 <h3 className="text-xl font-semibold mb-2">{option.title}</h3>
                 <p className="text-gray-600 mb-4">{option.description}</p>
-                <RainbowButton 
-                  className="w-full"
+                <ButtonColorful 
+                  label="Continue"
                   onClick={() => handleUserTypeSelection(option.value)}
-                >
-                  Continue
-                </RainbowButton>
+                  className="w-full"
+                />
               </Card>
             ))}
           </div>
