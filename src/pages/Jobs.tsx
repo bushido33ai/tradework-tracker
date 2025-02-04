@@ -9,7 +9,7 @@ const Jobs = () => {
   const [showAddDialog, setShowAddDialog] = useState(false);
 
   return (
-    <div className="space-y-8">
+    <div className="container mx-auto px-4 space-y-8 max-w-5xl">
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold">Jobs</h1>
