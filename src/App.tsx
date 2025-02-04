@@ -1,11 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { createClient } from '@supabase/supabase-js';
 import { SessionContextProvider, useSessionContext } from '@supabase/auth-helpers-react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern";
 import Landing from "./pages/Landing";
 import UserTypeSelection from "./pages/UserTypeSelection";
 import SignUp from "./pages/SignUp";
@@ -22,6 +20,8 @@ import Customers from "./pages/Customers";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import Footer from "@/components/Footer";
+import AppBackground from "@/components/AppBackground";
 
 const queryClient = new QueryClient();
 
@@ -56,35 +56,6 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   }
 
   return <>{children}</>;
-};
-
-const Footer = () => (
-  <footer className="w-full py-6 text-center text-sm text-gray-600 mt-auto border-t">
-    <div className="container mx-auto px-4">
-      <p>Created by</p>
-      <p className="font-semibold">Hailo Digital Ltd</p>
-      <p>2025</p>
-    </div>
-  </footer>
-);
-
-const AppBackground = ({ children, showPattern = true }: { children: React.ReactNode, showPattern?: boolean }) => {
-  return (
-    <div className="min-h-screen flex flex-col">
-      {showPattern && (
-        <AnimatedGridPattern
-          numSquares={30}
-          maxOpacity={0.1}
-          duration={3}
-          repeatDelay={1}
-          className="[mask-image:radial-gradient(600px_circle_at_center,white,transparent)]"
-        />
-      )}
-      <div className="flex-1 relative z-10">
-        {children}
-      </div>
-    </div>
-  );
 };
 
 const App = () => {
