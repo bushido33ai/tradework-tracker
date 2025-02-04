@@ -1,9 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, Hammer, Home, Store } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { RainbowButton } from "@/components/ui/rainbow-button";
 
 const UserTypeSelection = () => {
   const navigate = useNavigate();
@@ -64,12 +64,12 @@ const UserTypeSelection = () => {
                 <div className="mb-4 text-primary">{option.icon}</div>
                 <h3 className="text-xl font-semibold mb-2">{option.title}</h3>
                 <p className="text-gray-600 mb-4">{option.description}</p>
-                <Button 
+                <RainbowButton 
                   className="w-full"
                   onClick={() => handleUserTypeSelection(option.value)}
                 >
                   Continue
-                </Button>
+                </RainbowButton>
               </Card>
             ))}
           </div>
