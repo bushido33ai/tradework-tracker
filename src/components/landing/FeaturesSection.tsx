@@ -13,10 +13,10 @@ export const FeaturesSection = () => {
       {features.map((feature) => (
         <div
           key={feature}
-          className="flex items-center space-x-3 bg-white/80 p-4 rounded-lg shadow-sm backdrop-blur-sm"
+          className="flex items-center space-x-3 bg-white/90 p-4 rounded-lg shadow-md backdrop-blur-sm border border-primary-100 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:bg-primary-50/80"
         >
-          <CheckCircle2 className="w-5 h-5 text-primary-600" />
-          <span className="text-gray-700 font-medium">{feature}</span>
+          <CheckCircle2 className="w-5 h-5 text-primary-600 flex-shrink-0" />
+          <span className="text-gray-800 font-medium">{feature}</span>
         </div>
       ))}
     </div>
