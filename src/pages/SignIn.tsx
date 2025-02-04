@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { Building2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern";
 
@@ -52,22 +51,13 @@ const SignIn = () => {
         <div className="mb-8 text-center">
           <Link 
             to="/" 
-            className="inline-flex items-center gap-3 mb-8 group"
+            className="inline-flex items-center justify-center mb-8 group"
           >
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary-400 to-primary-700 rounded-lg blur-lg opacity-50 group-hover:opacity-75 transition-all duration-300"></div>
-              <div className="relative bg-gradient-to-br from-primary-600 to-primary-800 p-3 rounded-lg shadow-lg group-hover:shadow-2xl transition-all duration-300">
-                <Building2 className="w-8 h-8 text-white" />
-              </div>
-            </div>
-            <div className="flex flex-col items-start">
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-primary-800 to-primary-600 bg-clip-text text-transparent">
-                TradeMate
-              </h1>
-              <span className="text-xs text-primary-600/80">
-                Building Excellence
-              </span>
-            </div>
+            <img 
+              src="/lovable-uploads/2ac19722-4b11-4ce1-8bd1-d28ef2a06b97.png" 
+              alt="TradeMate Logo" 
+              className="w-48 h-auto group-hover:scale-105 transition-transform duration-300"
+            />
           </Link>
           <h2 className="text-3xl font-bold text-gray-900">Welcome back</h2>
           <p className="mt-2 text-gray-600">Sign in to your account</p>
