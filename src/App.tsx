@@ -58,9 +58,17 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+const Footer = () => (
+  <footer className="py-6 text-center text-sm text-gray-600 mt-auto">
+    <p>Created by</p>
+    <p className="font-semibold">Hailo Digital Ltd</p>
+    <p>2025</p>
+  </footer>
+);
+
 const AppBackground = ({ children, showPattern = true }: { children: React.ReactNode, showPattern?: boolean }) => {
   return (
-    <div className="min-h-screen relative">
+    <div className="min-h-screen relative flex flex-col">
       {showPattern && (
         <AnimatedGridPattern
           numSquares={30}
@@ -70,7 +78,7 @@ const AppBackground = ({ children, showPattern = true }: { children: React.React
           className="[mask-image:radial-gradient(600px_circle_at_center,white,transparent)]"
         />
       )}
-      <div className="relative z-10">
+      <div className="relative z-10 flex-1">
         {children}
       </div>
     </div>
@@ -84,10 +92,30 @@ const App = () => {
         <TooltipProvider>
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<AppBackground showPattern={false}><Landing /></AppBackground>} />
-              <Route path="/register" element={<AppBackground><UserTypeSelection /></AppBackground>} />
-              <Route path="/signup/:userType" element={<AppBackground><SignUp /></AppBackground>} />
-              <Route path="/signin" element={<AppBackground><SignIn /></AppBackground>} />
+              <Route path="/" element={
+                <AppBackground showPattern={false}>
+                  <Landing />
+                  <Footer />
+                </AppBackground>
+              } />
+              <Route path="/register" element={
+                <AppBackground>
+                  <UserTypeSelection />
+                  <Footer />
+                </AppBackground>
+              } />
+              <Route path="/signup/:userType" element={
+                <AppBackground>
+                  <SignUp />
+                  <Footer />
+                </AppBackground>
+              } />
+              <Route path="/signin" element={
+                <AppBackground>
+                  <SignIn />
+                  <Footer />
+                </AppBackground>
+              } />
               <Route
                 path="/*"
                 element={
@@ -107,6 +135,7 @@ const App = () => {
                             <Route path="/profile" element={<Profile />} />
                           </Routes>
                         </main>
+                        <Footer />
                       </div>
                     </AppBackground>
                   </PrivateRoute>
