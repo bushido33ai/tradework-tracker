@@ -14,6 +14,19 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 
+type AccessRequest = {
+  id: string;
+  user_id: string;
+  status: 'pending' | 'approved' | 'rejected';
+  requested_at: string;
+  trial_end_at: string | null;
+  profile: {
+    email: string;
+    full_name: string | null;
+    user_type: string;
+  } | null;
+}
+
 const AccessRequests = () => {
   const { data: requests, isLoading, refetch } = useQuery({
     queryKey: ["access-requests"],
@@ -22,7 +35,7 @@ const AccessRequests = () => {
         .from("access_requests")
         .select(`
           *,
-          profile:user_id (
+          profile:profiles!inner(
             email,
             full_name,
             user_type
@@ -35,7 +48,7 @@ const AccessRequests = () => {
         throw error;
       }
 
-      return data;
+      return data as AccessRequest[];
     },
   });
 
@@ -54,7 +67,7 @@ const AccessRequests = () => {
         .eq("id", id)
         .select(`
           *,
-          profile:user_id (
+          profile:profiles!inner(
             email,
             full_name
           )
@@ -100,7 +113,7 @@ const AccessRequests = () => {
         .eq("id", id)
         .select(`
           *,
-          profile:user_id (
+          profile:profiles!inner(
             email,
             full_name
           )
