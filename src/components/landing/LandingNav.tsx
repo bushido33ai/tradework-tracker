@@ -1,5 +1,4 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { ButtonColorful } from "@/components/ui/button-colorful";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -49,22 +48,18 @@ export const LandingNav = ({ session }: LandingNavProps) => {
 
           <div className="flex items-center gap-3">
             {session ? (
-              <Button
-                variant="outline"
-                className="px-4 py-2 text-primary-600 hover:text-primary-700 font-medium border-primary-200 hover:bg-primary-50 transition-all duration-300"
+              <ButtonColorful
+                className="bg-white hover:bg-gray-50"
+                label="Sign out"
                 onClick={handleSignOut}
-              >
-                Sign out
-              </Button>
+              />
             ) : (
               <>
                 <Link to="/signin">
-                  <Button
-                    variant="outline"
-                    className="px-4 py-2 text-primary-600 hover:text-primary-700 font-medium border-primary-200 hover:bg-primary-50 transition-all duration-300"
-                  >
-                    Sign in
-                  </Button>
+                  <ButtonColorful
+                    className="bg-white hover:bg-gray-50"
+                    label="Sign in"
+                  />
                 </Link>
                 <Link to="/register">
                   <ButtonColorful
