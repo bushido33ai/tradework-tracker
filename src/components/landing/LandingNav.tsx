@@ -57,7 +57,6 @@ export const LandingNav = ({ session }: LandingNavProps) => {
               <>
                 <Link to="/signin">
                   <ButtonColorful
-                    className="bg-white hover:bg-gray-50"
                     label="Sign in"
                   />
                 </Link>
