@@ -1,6 +1,6 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { Loader2, CheckCircle, XCircle, Clock } from "lucide-react";
+import { Loader2, CheckCircle, XCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,7 +22,7 @@ const AccessRequests = () => {
         .from("access_requests")
         .select(`
           *,
-          profiles:user_id (
+          profile:user_id (
             email,
             full_name,
             user_type
@@ -30,7 +30,11 @@ const AccessRequests = () => {
         `)
         .order("requested_at", { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching access requests:", error);
+        throw error;
+      }
+
       return data;
     },
   });
@@ -48,7 +52,13 @@ const AccessRequests = () => {
           trial_end_at: trialEndDate.toISOString(),
         })
         .eq("id", id)
-        .select("*, profiles:user_id (email, full_name)")
+        .select(`
+          *,
+          profile:user_id (
+            email,
+            full_name
+          )
+        `)
         .single();
 
       if (requestError) throw requestError;
@@ -61,9 +71,9 @@ const AccessRequests = () => {
           Authorization: `Bearer ${process.env.SUPABASE_ANON_KEY}`,
         },
         body: JSON.stringify({
-          to: request.profiles.email,
+          to: request.profile.email,
           type: "approved",
-          userName: request.profiles.full_name,
+          userName: request.profile.full_name,
           trialEndDate: format(new Date(request.trial_end_at), "PPP"),
         }),
       });
@@ -88,7 +98,13 @@ const AccessRequests = () => {
         .from("access_requests")
         .update({ status: "rejected" })
         .eq("id", id)
-        .select("*, profiles:user_id (email, full_name)")
+        .select(`
+          *,
+          profile:user_id (
+            email,
+            full_name
+          )
+        `)
         .single();
 
       if (requestError) throw requestError;
@@ -101,9 +117,9 @@ const AccessRequests = () => {
           Authorization: `Bearer ${process.env.SUPABASE_ANON_KEY}`,
         },
         body: JSON.stringify({
-          to: request.profiles.email,
+          to: request.profile.email,
           type: "rejected",
-          userName: request.profiles.full_name,
+          userName: request.profile.full_name,
         }),
       });
 
@@ -161,11 +177,11 @@ const AccessRequests = () => {
               <TableRow key={request.id}>
                 <TableCell>
                   <div>
-                    <p className="font-medium">{request.profiles?.full_name}</p>
-                    <p className="text-sm text-gray-500">{request.profiles?.email}</p>
+                    <p className="font-medium">{request.profile?.full_name}</p>
+                    <p className="text-sm text-gray-500">{request.profile?.email}</p>
                   </div>
                 </TableCell>
-                <TableCell className="capitalize">{request.profiles?.user_type}</TableCell>
+                <TableCell className="capitalize">{request.profile?.user_type}</TableCell>
                 <TableCell>
                   {format(new Date(request.requested_at), "PPP")}
                 </TableCell>
