@@ -19,18 +19,15 @@ import EnquiryDetails from "./pages/EnquiryDetails";
 import Dashboard from "./pages/Dashboard";
 import Suppliers from "./pages/Suppliers";
 import Customers from "./pages/Customers";
-import AccessRequests from "./pages/AccessRequests";
-import Footer from "./components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 const queryClient = new QueryClient();
 
-const PrivateRoute = ({ children, requiresMerchant = false }: { children: React.ReactNode, requiresMerchant?: boolean }) => {
-  const { isLoading, session } = useSessionContext();
+const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isLoading, session, error } = useSessionContext();
   const [isChecking, setIsChecking] = useState(true);
-  const [isMerchant, setIsMerchant] = useState(false);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -40,17 +37,6 @@ const PrivateRoute = ({ children, requiresMerchant = false }: { children: React.
           console.error("Session check error:", error);
           toast.error("Authentication error. Please sign in again.");
         }
-
-        if (session) {
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('user_type')
-            .eq('id', session.user.id)
-            .single();
-          
-          setIsMerchant(profile?.user_type === 'merchant');
-        }
-        
         setIsChecking(false);
       } catch (err) {
         console.error("Session check failed:", err);
@@ -69,13 +55,16 @@ const PrivateRoute = ({ children, requiresMerchant = false }: { children: React.
     return <Navigate to="/signin" replace />;
   }
 
-  if (requiresMerchant && !isMerchant) {
-    toast.error("You don't have permission to access this page");
-    return <Navigate to="/dashboard" replace />;
-  }
-
   return <>{children}</>;
 };
+
+const Footer = () => (
+  <footer className="w-full py-6 text-center text-sm text-gray-600 mt-auto flex flex-col items-center justify-center">
+    <p>Created by</p>
+    <p className="font-semibold">Hailo Digital Ltd</p>
+    <p>2025</p>
+  </footer>
+);
 
 const AppBackground = ({ children, showPattern = true }: { children: React.ReactNode, showPattern?: boolean }) => {
   return (
@@ -144,14 +133,6 @@ const App = () => {
                             <Route path="/suppliers" element={<Suppliers />} />
                             <Route path="/customers" element={<Customers />} />
                             <Route path="/profile" element={<Profile />} />
-                            <Route 
-                              path="/access-requests" 
-                              element={
-                                <PrivateRoute requiresMerchant={true}>
-                                  <AccessRequests />
-                                </PrivateRoute>
-                              } 
-                            />
                           </Routes>
                         </main>
                         <Footer />

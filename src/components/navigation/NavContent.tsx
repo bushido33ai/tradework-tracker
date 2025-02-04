@@ -1,112 +1,60 @@
-import { Link, useLocation } from "react-router-dom";
-import {
-  LayoutDashboard,
-  Briefcase,
-  MessageSquare,
-  Users,
-  Store,
-  UserCircle,
-  LogOut,
-  ShieldCheck,
-} from "lucide-react";
+import { Link } from "react-router-dom";
+import { Home, ClipboardList, MessageSquare, Users, Building2, UserCircle, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { useLocation } from "react-router-dom";
 
 interface NavContentProps {
   onNavigate?: () => void;
-  onSignOut?: () => void;
+  onSignOut: () => void;
 }
 
 export const NavContent = ({ onNavigate, onSignOut }: NavContentProps) => {
   const location = useLocation();
-  const currentPath = location.pathname;
+  
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
 
-  const { data: userProfile } = useQuery({
-    queryKey: ["user-profile"],
-    queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return null;
-
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("user_type")
-        .eq("id", user.id)
-        .single();
-
-      return profile;
-    },
-  });
-
-  const isMerchant = userProfile?.user_type === "merchant";
-
-  const links = [
-    {
-      href: "/dashboard",
-      label: "Dashboard",
-      icon: LayoutDashboard,
-    },
-    {
-      href: "/jobs",
-      label: "Jobs",
-      icon: Briefcase,
-    },
-    {
-      href: "/enquiries",
-      label: "Enquiries",
-      icon: MessageSquare,
-    },
-    {
-      href: "/customers",
-      label: "Customers",
-      icon: Users,
-    },
-    {
-      href: "/suppliers",
-      label: "Suppliers",
-      icon: Store,
-    },
-    {
-      href: "/profile",
-      label: "Profile",
-      icon: UserCircle,
-    },
-    ...(isMerchant ? [{
-      href: "/access-requests",
-      label: "Access Requests",
-      icon: ShieldCheck,
-    }] : []),
+  const navItems = [
+    { icon: Home, label: "Dashboard", path: "/dashboard" },
+    { icon: ClipboardList, label: "Jobs", path: "/jobs" },
+    { icon: MessageSquare, label: "Enquiries", path: "/enquiries" },
+    { icon: Users, label: "Suppliers", path: "/suppliers" },
+    { icon: Building2, label: "Customers", path: "/customers" },
+    { icon: UserCircle, label: "Profile", path: "/profile" },
   ];
 
   return (
-    <div className="space-y-4">
-      <nav className="flex flex-col space-y-2">
-        {links.map((link) => (
-          <Link
-            key={link.href}
-            to={link.href}
-            onClick={onNavigate}
-            className={cn(
-              "flex items-center gap-3 rounded-lg px-3 py-2 text-gray-300 transition-all hover:text-white",
-              currentPath === link.href && "bg-[#2A2F3C] text-white"
-            )}
-          >
-            <link.icon className="h-5 w-5" />
-            {link.label}
-          </Link>
-        ))}
-      </nav>
-      <div className="pt-4 border-t border-[#2A2F3C]">
-        <Button
-          variant="ghost"
-          className="w-full justify-start gap-3 text-gray-300 hover:text-white hover:bg-[#2A2F3C]"
-          onClick={onSignOut}
-        >
-          <LogOut className="h-5 w-5" />
-          Sign out
-        </Button>
+    <div className="flex flex-col justify-between h-full">
+      <div className="space-y-2">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          return (
+            <Link
+              key={item.path}
+              to={item.path}
+              onClick={onNavigate}
+              className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 ${
+                isActive(item.path)
+                  ? "bg-white/10 text-white font-medium"
+                  : "text-gray-300 hover:bg-white/5 hover:text-white"
+              }`}
+            >
+              <Icon className={`w-5 h-5 ${isActive(item.path) ? "text-white" : "text-gray-300"}`} />
+              <span className="font-medium">{item.label}</span>
+            </Link>
+          );
+        })}
       </div>
+      
+      <Button
+        variant="ghost"
+        className="w-full justify-start text-gray-300 hover:text-white hover:bg-white/5"
+        onClick={onSignOut}
+      >
+        <LogOut className="w-5 h-5 mr-3" />
+        <span className="font-medium">Sign out</span>
+      </Button>
     </div>
   );
 };
