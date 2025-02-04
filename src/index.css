@@ -46,8 +46,8 @@
     @apply transition-all duration-200 hover:shadow-lg hover:-translate-y-1;
   }
 
-  /* Add a white background with some opacity to content containers */
-  .content-container {
+  /* Update card styles to ensure they have a white background and float */
+  .card {
     @apply bg-white/90 backdrop-blur-sm rounded-lg shadow-sm;
   }
 }

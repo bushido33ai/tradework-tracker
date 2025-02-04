@@ -70,7 +70,7 @@ const App = () => {
                     <AppBackground>
                       <div className="flex min-h-screen">
                         <Navigation />
-                        <main className="flex-1 p-2 md:p-8 content-container mt-20 md:mt-4 mx-2 md:mx-4 md:ml-64">
+                        <main className="flex-1 p-2 md:p-8 mt-20 md:mt-4 mx-2 md:mx-4 md:ml-64">
                           <Routes>
                             <Route path="/dashboard" element={<Dashboard />} />
                             <Route path="/jobs" element={<Jobs />} />
