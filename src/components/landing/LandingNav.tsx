@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { ButtonColorful } from "@/components/ui/button-colorful";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Building2 } from "lucide-react";
@@ -66,11 +67,9 @@ export const LandingNav = ({ session }: LandingNavProps) => {
                   </Button>
                 </Link>
                 <Link to="/register">
-                  <Button
-                    className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-all duration-300 shadow-sm hover:shadow-md"
-                  >
-                    Get Started
-                  </Button>
+                  <ButtonColorful
+                    label="Get Started"
+                  />
                 </Link>
               </>
             )}
