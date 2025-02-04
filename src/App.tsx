@@ -59,7 +59,7 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 const Footer = () => (
-  <footer className="w-full py-6 text-center text-sm text-gray-600 mt-auto flex flex-col items-center justify-center">
+  <footer className="py-6 text-center text-sm text-gray-600 mt-auto">
     <p>Created by</p>
     <p className="font-semibold">Hailo Digital Ltd</p>
     <p>2025</p>
