@@ -16,9 +16,9 @@ import { toast } from "sonner";
 
 type AccessRequest = {
   id: string;
-  user_id: string;
+  user_id: string | null;
   status: 'pending' | 'approved' | 'rejected';
-  requested_at: string;
+  requested_at: string | null;
   trial_end_at: string | null;
   approved_at: string | null;
   approved_by: string | null;
@@ -27,7 +27,7 @@ type AccessRequest = {
     email: string | null;
     full_name: string | null;
     user_type: string;
-  };
+  } | null;
 }
 
 const AccessRequests = () => {
@@ -38,7 +38,7 @@ const AccessRequests = () => {
         .from("access_requests")
         .select(`
           *,
-          profiles:user_id(
+          profiles:profiles!inner(
             email,
             full_name,
             user_type
@@ -70,7 +70,7 @@ const AccessRequests = () => {
         .eq("id", id)
         .select(`
           *,
-          profiles:user_id(
+          profiles:profiles!inner(
             email,
             full_name
           )
@@ -116,7 +116,7 @@ const AccessRequests = () => {
         .eq("id", id)
         .select(`
           *,
-          profiles:user_id(
+          profiles:profiles!inner(
             email,
             full_name
           )
@@ -193,13 +193,13 @@ const AccessRequests = () => {
               <TableRow key={request.id}>
                 <TableCell>
                   <div>
-                    <p className="font-medium">{request.profiles.full_name}</p>
-                    <p className="text-sm text-gray-500">{request.profiles.email}</p>
+                    <p className="font-medium">{request.profiles?.full_name}</p>
+                    <p className="text-sm text-gray-500">{request.profiles?.email}</p>
                   </div>
                 </TableCell>
-                <TableCell className="capitalize">{request.profiles.user_type}</TableCell>
+                <TableCell className="capitalize">{request.profiles?.user_type}</TableCell>
                 <TableCell>
-                  {format(new Date(request.requested_at), "PPP")}
+                  {request.requested_at && format(new Date(request.requested_at), "PPP")}
                 </TableCell>
                 <TableCell>{getStatusBadge(request.status)}</TableCell>
                 <TableCell>
