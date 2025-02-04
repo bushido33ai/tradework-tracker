@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
+import { GradientButton } from "@/components/ui/gradient-button";
 import AddSupplierDialog from "@/components/suppliers/AddSupplierDialog";
 import SuppliersList from "@/components/suppliers/SuppliersList";
 
@@ -31,10 +31,12 @@ const Suppliers = () => {
             Manage your suppliers and their information
           </p>
         </div>
-        <Button onClick={() => setIsAddDialogOpen(true)} className="w-full sm:w-auto">
-          <Plus className="mr-2 h-4 w-4" />
-          Add Supplier
-        </Button>
+        <GradientButton onClick={() => setIsAddDialogOpen(true)} className="w-full sm:w-auto">
+          <span className="flex items-center">
+            <Plus className="mr-2 h-4 w-4" />
+            Add Supplier
+          </span>
+        </GradientButton>
       </div>
 
       <SuppliersList suppliers={suppliers || []} isLoading={isLoading} />

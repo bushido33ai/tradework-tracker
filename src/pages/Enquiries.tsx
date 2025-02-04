@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { GradientButton } from "@/components/ui/gradient-button";
 import EnquiriesList from "@/components/enquiries/EnquiriesList";
 import AddEnquiryDialog from "@/components/enquiries/AddEnquiryDialog";
 import { Separator } from "@/components/ui/separator";
@@ -17,10 +17,12 @@ const Enquiries = () => {
             Manage your enquiries and schedule site visits
           </p>
         </div>
-        <Button onClick={() => setShowAddDialog(true)}>
-          <Plus className="mr-2 h-4 w-4" />
-          Create Enquiry
-        </Button>
+        <GradientButton onClick={() => setShowAddDialog(true)}>
+          <span className="flex items-center">
+            <Plus className="mr-2 h-4 w-4" />
+            Create Enquiry
+          </span>
+        </GradientButton>
       </div>
 
       <div className="space-y-8">

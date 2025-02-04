@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2, UserPlus } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { GradientButton } from "@/components/ui/gradient-button";
 import { supabase } from "@/integrations/supabase/client";
 import AddCustomerDialog from "@/components/customers/AddCustomerDialog";
 import ViewCustomerDialog from "@/components/customers/ViewCustomerDialog";
@@ -50,10 +50,12 @@ const Customers = () => {
             Manage your customer relationships
           </p>
         </div>
-        <Button onClick={() => setShowAddDialog(true)} className="w-full sm:w-auto">
-          <UserPlus className="w-4 h-4 mr-2" />
-          Add Customer
-        </Button>
+        <GradientButton onClick={() => setShowAddDialog(true)} className="w-full sm:w-auto">
+          <span className="flex items-center">
+            <UserPlus className="w-4 h-4 mr-2" />
+            Add Customer
+          </span>
+        </GradientButton>
       </div>
 
       {!isDesktop ? (
