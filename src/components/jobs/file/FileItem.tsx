@@ -1,4 +1,4 @@
-import { FileText, Image } from "lucide-react";
+import { FileText, Image, Link as LinkIcon } from "lucide-react";
 import DeleteFileDialog from "./DeleteFileDialog";
 import { formatFileSize } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
@@ -21,6 +21,7 @@ interface FileItemProps {
 const FileItem = ({ file, type, onFileClick, onDelete }: FileItemProps) => {
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
   const isImage = file.filename.match(/\.(jpg|jpeg|png|gif|webp)$/i);
+  const isUrl = file.filename.match(/^https?:\/\//i);
   
   useEffect(() => {
     const fetchThumbnailUrl = async () => {
@@ -57,6 +58,17 @@ const FileItem = ({ file, type, onFileClick, onDelete }: FileItemProps) => {
             </div>
           )}
         </div>
+      ) : isUrl ? (
+        <div className="w-12 h-12 flex items-center justify-center rounded-md bg-gray-100">
+          <img
+            src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b"
+            alt="URL thumbnail"
+            className="w-full h-full object-cover rounded-md"
+            onError={(e) => {
+              e.currentTarget.src = "/placeholder.svg";
+            }}
+          />
+        </div>
       ) : (
         <div className="w-12 h-12 flex items-center justify-center rounded-md bg-gray-100">
           <FileText className="w-6 h-6 text-gray-500" />
@@ -70,6 +82,7 @@ const FileItem = ({ file, type, onFileClick, onDelete }: FileItemProps) => {
         <div className="flex items-center gap-2">
           <span className="font-medium truncate">{file.filename}</span>
           {isImage && <Image className="w-4 h-4 text-gray-500" />}
+          {isUrl && <LinkIcon className="w-4 h-4 text-gray-500" />}
         </div>
         <div className="text-sm text-muted-foreground space-y-0.5">
           <div>
