@@ -13,17 +13,37 @@ interface JobTabsProps {
 const JobTabs = ({ jobId, budget }: JobTabsProps) => {
   return (
     <Tabs defaultValue="designs" className="w-full">
-      <TabsList className="w-full flex bg-white/50 backdrop-blur-sm">
-        <TabsTrigger value="designs" className="flex-1">Designs</TabsTrigger>
-        <TabsTrigger value="invoices" className="flex-1">Invoices</TabsTrigger>
-        <TabsTrigger value="notes" className="flex-1">Notes</TabsTrigger>
+      <TabsList className="w-full flex bg-white/90 backdrop-blur-sm border-b">
+        <TabsTrigger 
+          value="designs" 
+          className="flex-1 data-[state=active]:bg-primary-50 data-[state=active]:text-primary-800"
+        >
+          Designs
+        </TabsTrigger>
+        <TabsTrigger 
+          value="invoices" 
+          className="flex-1 data-[state=active]:bg-primary-50 data-[state=active]:text-primary-800"
+        >
+          Invoices
+        </TabsTrigger>
+        <TabsTrigger 
+          value="notes" 
+          className="flex-1 data-[state=active]:bg-primary-50 data-[state=active]:text-primary-800"
+        >
+          Notes
+        </TabsTrigger>
         {budget && budget > 0 && (
-          <TabsTrigger value="budget" className="flex-1">Budget</TabsTrigger>
+          <TabsTrigger 
+            value="budget" 
+            className="flex-1 data-[state=active]:bg-primary-50 data-[state=active]:text-primary-800"
+          >
+            Budget
+          </TabsTrigger>
         )}
       </TabsList>
       
       <TabsContent value="designs">
-        <Card className="bg-white/90 backdrop-blur-sm shadow-md hover:shadow-lg transition-all duration-200">
+        <Card className="bg-white/90 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-200">
           <div className="p-6">
             <div className="flex justify-end mb-4">
               <FileUpload jobId={jobId} type="design" />
@@ -34,7 +54,7 @@ const JobTabs = ({ jobId, budget }: JobTabsProps) => {
       </TabsContent>
 
       <TabsContent value="invoices">
-        <Card className="bg-white/90 backdrop-blur-sm shadow-md hover:shadow-lg transition-all duration-200">
+        <Card className="bg-white/90 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-200">
           <div className="p-6">
             <div className="flex justify-end mb-4">
               <FileUpload jobId={jobId} type="invoice" />
@@ -45,7 +65,7 @@ const JobTabs = ({ jobId, budget }: JobTabsProps) => {
       </TabsContent>
 
       <TabsContent value="notes">
-        <Card className="bg-white/90 backdrop-blur-sm shadow-md hover:shadow-lg transition-all duration-200">
+        <Card className="bg-white/90 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-200">
           <div className="p-6">
             <JobNotes jobId={jobId} />
           </div>
@@ -54,7 +74,7 @@ const JobTabs = ({ jobId, budget }: JobTabsProps) => {
 
       {budget && budget > 0 && (
         <TabsContent value="budget">
-          <Card className="bg-white/90 backdrop-blur-sm shadow-md hover:shadow-lg transition-all duration-200">
+          <Card className="bg-white/90 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-200">
             <div className="p-6">
               <BudgetChart jobId={jobId} budget={budget} />
             </div>
