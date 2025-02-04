@@ -26,6 +26,11 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 221 83% 53%;
     --radius: 0.75rem;
+    --color-1: 0 100% 63%;
+    --color-2: 270 100% 63%;
+    --color-3: 210 100% 63%;
+    --color-4: 195 100% 63%;
+    --color-5: 90 100% 63%;
   }
 
   * {
@@ -46,7 +51,6 @@
     @apply transition-all duration-200 hover:shadow-lg hover:-translate-y-1;
   }
 
-  /* Update card styles to ensure they have a white background and float */
   .card {
     @apply bg-white/90 backdrop-blur-sm rounded-lg shadow-sm;
   }
