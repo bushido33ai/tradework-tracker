@@ -20,11 +20,14 @@ type AccessRequest = {
   status: 'pending' | 'approved' | 'rejected';
   requested_at: string;
   trial_end_at: string | null;
-  profile: {
-    email: string;
+  approved_at: string | null;
+  approved_by: string | null;
+  notes: string | null;
+  profiles: {
+    email: string | null;
     full_name: string | null;
     user_type: string;
-  } | null;
+  };
 }
 
 const AccessRequests = () => {
@@ -35,7 +38,7 @@ const AccessRequests = () => {
         .from("access_requests")
         .select(`
           *,
-          profile:profiles!inner(
+          profiles!access_requests_user_id_fkey (
             email,
             full_name,
             user_type
@@ -67,7 +70,7 @@ const AccessRequests = () => {
         .eq("id", id)
         .select(`
           *,
-          profile:profiles!inner(
+          profiles!access_requests_user_id_fkey (
             email,
             full_name
           )
@@ -84,9 +87,9 @@ const AccessRequests = () => {
           Authorization: `Bearer ${process.env.SUPABASE_ANON_KEY}`,
         },
         body: JSON.stringify({
-          to: request.profile.email,
+          to: request.profiles.email,
           type: "approved",
-          userName: request.profile.full_name,
+          userName: request.profiles.full_name,
           trialEndDate: format(new Date(request.trial_end_at), "PPP"),
         }),
       });
@@ -113,7 +116,7 @@ const AccessRequests = () => {
         .eq("id", id)
         .select(`
           *,
-          profile:profiles!inner(
+          profiles!access_requests_user_id_fkey (
             email,
             full_name
           )
@@ -130,9 +133,9 @@ const AccessRequests = () => {
           Authorization: `Bearer ${process.env.SUPABASE_ANON_KEY}`,
         },
         body: JSON.stringify({
-          to: request.profile.email,
+          to: request.profiles.email,
           type: "rejected",
-          userName: request.profile.full_name,
+          userName: request.profiles.full_name,
         }),
       });
 
@@ -190,11 +193,11 @@ const AccessRequests = () => {
               <TableRow key={request.id}>
                 <TableCell>
                   <div>
-                    <p className="font-medium">{request.profile?.full_name}</p>
-                    <p className="text-sm text-gray-500">{request.profile?.email}</p>
+                    <p className="font-medium">{request.profiles.full_name}</p>
+                    <p className="text-sm text-gray-500">{request.profiles.email}</p>
                   </div>
                 </TableCell>
-                <TableCell className="capitalize">{request.profile?.user_type}</TableCell>
+                <TableCell className="capitalize">{request.profiles.user_type}</TableCell>
                 <TableCell>
                   {format(new Date(request.requested_at), "PPP")}
                 </TableCell>
