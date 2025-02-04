@@ -12,9 +12,9 @@ export const Logo = ({ onClick }: LogoProps) => {
       onClick={onClick}
     >
       <img 
-        src="/lovable-uploads/9a2a11b3-e135-4b23-9ebf-e3361f4a90c4.png" 
+        src="/lovable-uploads/2ac19722-4b11-4ce1-8bd1-d28ef2a06b97.png" 
         alt="TradeMate Logo" 
-        className="w-32 h-auto group-hover:scale-105 transition-transform duration-300"
+        className="w-48 h-auto group-hover:scale-105 transition-transform duration-300"
       />
     </Link>
   );
