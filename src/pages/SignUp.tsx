@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -36,7 +37,9 @@ const SignUp = () => {
     try {
       // Validate user type
       const validUserTypes = ['tradesman', 'customer', 'merchant'] as const;
-      if (!validUserTypes.includes(userType as typeof validUserTypes[number])) {
+      type UserType = typeof validUserTypes[number];
+      
+      if (!validUserTypes.includes(userType as UserType)) {
         throw new Error('Invalid user type');
       }
 
@@ -45,7 +48,7 @@ const SignUp = () => {
         password: data.password,
         options: {
           data: {
-            user_type: userType,
+            user_type: userType as UserType,
             address: data.address.trim(),
             telephone: data.telephone.trim(),
             email: data.email.trim(),
