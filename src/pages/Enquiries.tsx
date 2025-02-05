@@ -19,10 +19,10 @@ const Enquiries = () => {
         </div>
         <GradientButton 
           onClick={() => setShowAddDialog(true)}
-          className="px-4 py-2 text-sm h-9"
+          className="px-6 py-2.5 text-base h-10"
         >
           <span className="flex items-center">
-            <Plus className="mr-1.5 h-4 w-4" />
+            <Plus className="mr-2 h-5 w-5" />
             Create Enquiry
           </span>
         </GradientButton>
