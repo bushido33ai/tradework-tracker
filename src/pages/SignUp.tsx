@@ -48,22 +48,30 @@ const SignUp = () => {
       const cleanedAddress = data.address.trim();
       const cleanedTelephone = data.telephone.trim();
 
+      // Set up metadata with all required fields
+      const metadata = {
+        user_type: userType,
+        address: cleanedAddress,
+        telephone: cleanedTelephone,
+        email: cleanedEmail,
+      };
+
+      console.log("Sending signup request with metadata:", metadata);
+
       const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
         email: cleanedEmail,
         password: data.password,
         options: {
-          data: {
-            user_type: userType,
-            address: cleanedAddress,
-            telephone: cleanedTelephone,
-            email: cleanedEmail,
-          },
+          data: metadata,
         },
       });
 
       console.log("Signup response:", { signUpData, signUpError });
 
-      if (signUpError) throw signUpError;
+      if (signUpError) {
+        console.error("Signup error:", signUpError);
+        throw signUpError;
+      }
 
       if (signUpData.user) {
         toast.success("Account created successfully! Please check your email to verify your account.");
