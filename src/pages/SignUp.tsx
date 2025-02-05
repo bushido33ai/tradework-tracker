@@ -31,6 +31,7 @@ const SignUp = () => {
     if (isLoading || !userType) return;
     
     setIsLoading(true);
+    console.log("Starting signup process with data:", { ...data, userType });
     
     try {
       // Validate user type
@@ -51,6 +52,8 @@ const SignUp = () => {
           },
         },
       });
+
+      console.log("Signup response:", { signUpData, signUpError });
 
       if (signUpError) throw signUpError;
 
