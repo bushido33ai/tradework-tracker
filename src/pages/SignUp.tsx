@@ -43,15 +43,20 @@ const SignUp = () => {
         throw new Error('Invalid user type');
       }
 
+      // Clean up the data before sending
+      const cleanedEmail = data.email.trim();
+      const cleanedAddress = data.address.trim();
+      const cleanedTelephone = data.telephone.trim();
+
       const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-        email: data.email.trim(),
+        email: cleanedEmail,
         password: data.password,
         options: {
           data: {
-            user_type: userType as UserType,
-            address: data.address.trim(),
-            telephone: data.telephone.trim(),
-            email: data.email.trim(),
+            user_type: userType,
+            address: cleanedAddress,
+            telephone: cleanedTelephone,
+            email: cleanedEmail,
           },
         },
       });
