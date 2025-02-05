@@ -17,12 +17,9 @@ const Enquiries = () => {
             Manage your enquiries and schedule site visits
           </p>
         </div>
-        <GradientButton 
-          onClick={() => setShowAddDialog(true)}
-          className="px-6 py-2.5 text-base h-10"
-        >
-          <span className="inline-flex items-center justify-center">
-            <Plus className="mr-2 h-5 w-5" />
+        <GradientButton onClick={() => setShowAddDialog(true)}>
+          <span className="flex items-center">
+            <Plus className="mr-2 h-4 w-4" />
             Create Enquiry
           </span>
         </GradientButton>
