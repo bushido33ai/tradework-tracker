@@ -17,12 +17,9 @@ const Jobs = () => {
             Manage your jobs and track their progress
           </p>
         </div>
-        <GradientButton 
-          onClick={() => setShowAddDialog(true)}
-          className="px-4 py-2 text-sm h-9"
-        >
+        <GradientButton onClick={() => setShowAddDialog(true)}>
           <span className="flex items-center">
-            <Plus className="mr-1.5 h-4 w-4" />
+            <Plus className="mr-2 h-4 w-4" />
             Create Job
           </span>
         </GradientButton>
