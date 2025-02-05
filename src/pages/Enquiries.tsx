@@ -21,7 +21,7 @@ const Enquiries = () => {
           onClick={() => setShowAddDialog(true)}
           className="px-6 py-2.5 text-base h-10"
         >
-          <span className="flex items-center">
+          <span className="inline-flex items-center justify-center">
             <Plus className="mr-2 h-5 w-5" />
             Create Enquiry
           </span>
