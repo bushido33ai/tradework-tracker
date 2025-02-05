@@ -44,7 +44,7 @@ const SignUp = () => {
       }
 
       // Clean up the data before sending
-      const cleanedEmail = data.email.trim();
+      const cleanedEmail = data.email.trim().toLowerCase();
       const cleanedAddress = data.address.trim();
       const cleanedTelephone = data.telephone.trim();
 
