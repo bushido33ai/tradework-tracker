@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { format } from "date-fns";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { format, startOfYear, getYear } from "date-fns";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { Briefcase, CheckCircle, PoundSterling, Receipt } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -18,7 +18,6 @@ const Dashboard = () => {
     },
   });
 
-  // Query for completed jobs by month/year
   const { data: completedJobs } = useQuery({
     queryKey: ['completedJobs'],
     queryFn: async () => {
@@ -42,7 +41,6 @@ const Dashboard = () => {
     },
   });
 
-  // Query for total job spend this year
   const { data: totalSpend } = useQuery({
     queryKey: ['totalSpend'],
     queryFn: async () => {
@@ -56,7 +54,6 @@ const Dashboard = () => {
     },
   });
 
-  // Query for total invoices this year
   const { data: totalInvoices } = useQuery({
     queryKey: ['totalInvoices'],
     queryFn: async () => {
@@ -67,6 +64,53 @@ const Dashboard = () => {
         .gte('uploaded_at', startOfYear);
 
       return data?.reduce((sum, invoice) => sum + (invoice.amount || 0), 0) || 0;
+    },
+  });
+
+  // New query for profit/loss data
+  const { data: profitLossData } = useQuery({
+    queryKey: ['profitLoss'],
+    queryFn: async () => {
+      const startDate = startOfYear(new Date()).toISOString();
+      
+      // Fetch all jobs created this year
+      const { data: jobs } = await supabase
+        .from('jobs')
+        .select('budget, created_at')
+        .gte('created_at', startDate);
+
+      // Fetch all invoices created this year
+      const { data: invoices } = await supabase
+        .from('job_invoices')
+        .select('amount, uploaded_at')
+        .gte('uploaded_at', startDate);
+
+      // Initialize monthly data
+      const monthlyData = Array(12).fill(0).map((_, index) => ({
+        month: format(new Date(2024, index), 'MMM'),
+        budget: 0,
+        invoices: 0,
+        profit: 0
+      }));
+
+      // Aggregate job budgets by month
+      jobs?.forEach(job => {
+        const month = new Date(job.created_at).getMonth();
+        monthlyData[month].budget += Number(job.budget || 0);
+      });
+
+      // Aggregate invoices by month
+      invoices?.forEach(invoice => {
+        const month = new Date(invoice.uploaded_at).getMonth();
+        monthlyData[month].invoices += Number(invoice.amount || 0);
+      });
+
+      // Calculate profit/loss for each month
+      monthlyData.forEach(data => {
+        data.profit = data.budget - data.invoices;
+      });
+
+      return monthlyData;
     },
   });
 
@@ -132,37 +176,87 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <Card className="bg-blue-50/80 shadow-lg hover:shadow-xl transition-all duration-200 border-l-4 border-l-primary-600">
-        <CardHeader>
-          <CardTitle>Completed Jobs by Month</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="h-[300px] mt-4">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={completedJobs}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis allowDecimals={false} />
-                <Tooltip 
-                  formatter={(value: any) => [`${value} jobs`, 'Completed']}
-                  labelStyle={{ color: 'black' }}
-                  contentStyle={{ 
-                    backgroundColor: 'white',
-                    border: '1px solid #e2e8f0',
-                    borderRadius: '0.5rem',
-                    padding: '0.5rem'
-                  }}
-                />
-                <Bar 
-                  dataKey="count" 
-                  fill="#1E40AF"
-                  radius={[4, 4, 0, 0]}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card className="bg-blue-50/80 shadow-lg hover:shadow-xl transition-all duration-200 border-l-4 border-l-primary-600">
+          <CardHeader>
+            <CardTitle>Completed Jobs by Month</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[300px] mt-4">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={completedJobs}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis allowDecimals={false} />
+                  <Tooltip 
+                    formatter={(value: any) => [`${value} jobs`, 'Completed']}
+                    labelStyle={{ color: 'black' }}
+                    contentStyle={{ 
+                      backgroundColor: 'white',
+                      border: '1px solid #e2e8f0',
+                      borderRadius: '0.5rem',
+                      padding: '0.5rem'
+                    }}
+                  />
+                  <Bar 
+                    dataKey="count" 
+                    fill="#1E40AF"
+                    radius={[4, 4, 0, 0]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-blue-50/80 shadow-lg hover:shadow-xl transition-all duration-200 border-l-4 border-l-primary-600">
+          <CardHeader>
+            <CardTitle>Profit/Loss Overview {getYear(new Date())}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[300px] mt-4">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={profitLossData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <Tooltip
+                    formatter={(value: number) => [`£${value.toFixed(2)}`, '']}
+                    labelStyle={{ color: 'black' }}
+                    contentStyle={{ 
+                      backgroundColor: 'white',
+                      border: '1px solid #e2e8f0',
+                      borderRadius: '0.5rem',
+                      padding: '0.5rem'
+                    }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="budget" 
+                    stroke="#22c55e" 
+                    name="Budget"
+                    strokeWidth={2}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="invoices" 
+                    stroke="#ef4444" 
+                    name="Invoices"
+                    strokeWidth={2}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="profit" 
+                    stroke="#1E40AF" 
+                    name="Profit/Loss"
+                    strokeWidth={3}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
