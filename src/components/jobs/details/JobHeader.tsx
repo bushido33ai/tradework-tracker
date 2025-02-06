@@ -27,7 +27,7 @@ const JobHeader = ({
   return (
     <CardHeader className="space-y-4 md:space-y-0 md:flex md:flex-row md:items-center md:justify-between">
       <div>
-        <div className="text-sm text-muted-foreground mb-1">{jobNumber}</div>
+        <div className="text-base font-semibold text-[#ea384c] mb-1">{jobNumber}</div>
         <CardTitle className="text-xl md:text-2xl">{title}</CardTitle>
       </div>
       <div className="flex flex-col md:flex-row gap-2">
