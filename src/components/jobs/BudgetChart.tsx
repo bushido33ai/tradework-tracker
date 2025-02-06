@@ -38,11 +38,19 @@ const BudgetChart = ({ jobId, budget }: BudgetChartProps) => {
 
   return (
     <div className="flex flex-col space-y-4">
-      <div className="text-center">
+      <div className="text-center space-y-2">
         <h3 className="text-lg font-medium mb-1">Budget Overview</h3>
-        <p className="text-sm text-muted-foreground">
-          Total Budget: £{budget.toFixed(2)}
-        </p>
+        <div className="space-y-1">
+          <p className="text-sm text-muted-foreground">
+            Total Budget: £{budget.toFixed(2)}
+          </p>
+          <p className="text-sm text-red-500">
+            Total Spent: £{spent.toFixed(2)}
+          </p>
+          <p className="text-sm text-green-500">
+            Remaining: £{remaining.toFixed(2)}
+          </p>
+        </div>
       </div>
       
       <div className="flex-1 min-h-[300px]">
