@@ -19,19 +19,37 @@ const SignIn = () => {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      // Validate input
+      if (!email.trim() || !password.trim()) {
+        toast.error("Please enter both email and password");
+        return;
+      }
+
+      // Clean up the email
+      const cleanEmail = email.trim().toLowerCase();
+
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: cleanEmail,
+        password: password.trim(),
       });
 
       if (error) {
-        toast.error(error.message);
-      } else {
+        console.error("Sign in error:", error);
+        if (error.message === "Invalid login credentials") {
+          toast.error("Invalid email or password. Please try again.");
+        } else {
+          toast.error(error.message);
+        }
+        return;
+      }
+
+      if (data?.user) {
         toast.success("Signed in successfully!");
         navigate("/dashboard");
       }
-    } catch (error) {
-      toast.error("An unexpected error occurred");
+    } catch (error: any) {
+      console.error("Unexpected error during sign in:", error);
+      toast.error("An unexpected error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -75,6 +93,7 @@ const SignIn = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="w-full"
+                disabled={isLoading}
               />
             </div>
 
@@ -88,6 +107,7 @@ const SignIn = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 className="w-full"
+                disabled={isLoading}
               />
             </div>
 
@@ -105,7 +125,7 @@ const SignIn = () => {
               Don't have an account?{" "}
               <Link 
                 to="/register" 
-                className="text-primary-600 hover:text-primary-700 font-medium"
+                className="text-primary hover:text-primary-600 font-medium"
               >
                 Sign up
               </Link>
