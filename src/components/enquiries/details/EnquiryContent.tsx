@@ -1,7 +1,10 @@
-import { Calendar } from "lucide-react";
+import { Card } from "@/components/ui/card";
 import { format } from "date-fns";
+import FileList from "../FileList";
+import FileUpload from "../FileUpload";
 
 interface EnquiryContentProps {
+  id: string;
   description: string;
   measurementNotes?: string | null;
   location: string;
@@ -9,32 +12,50 @@ interface EnquiryContentProps {
 }
 
 export const EnquiryContent = ({
+  id,
   description,
   measurementNotes,
   location,
   visitDate,
 }: EnquiryContentProps) => {
   return (
-    <div className="grid gap-4">
-      <div>
-        <h3 className="font-medium">Description</h3>
-        <p className="text-muted-foreground mt-1">{description}</p>
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Card className="p-6">
+          <h3 className="font-semibold mb-2">Description</h3>
+          <p className="text-muted-foreground whitespace-pre-wrap">{description}</p>
+        </Card>
+
+        <Card className="p-6">
+          <h3 className="font-semibold mb-2">Location</h3>
+          <p className="text-muted-foreground">{location}</p>
+          {visitDate && (
+            <>
+              <h3 className="font-semibold mb-2 mt-4">Visit Date</h3>
+              <p className="text-muted-foreground">
+                {format(new Date(visitDate), "PPP")}
+              </p>
+            </>
+          )}
+        </Card>
       </div>
+
       {measurementNotes && (
-        <div>
-          <h3 className="font-medium">Measurement Notes</h3>
-          <p className="text-muted-foreground mt-1">{measurementNotes}</p>
-        </div>
+        <Card className="p-6">
+          <h3 className="font-semibold mb-2">Measurement Notes</h3>
+          <p className="text-muted-foreground whitespace-pre-wrap">
+            {measurementNotes}
+          </p>
+        </Card>
       )}
-      <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-        <span>📍 {location}</span>
-        {visitDate && (
-          <span className="flex items-center gap-1">
-            <Calendar className="h-4 w-4" />
-            {format(new Date(visitDate), "PPP")}
-          </span>
-        )}
-      </div>
+
+      <Card className="p-6">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="font-semibold">Designs</h3>
+          <FileUpload enquiryId={id} />
+        </div>
+        <FileList enquiryId={id} />
+      </Card>
     </div>
   );
 };

@@ -126,6 +126,41 @@ export type Database = {
         }
         Relationships: []
       }
+      enquiry_designs: {
+        Row: {
+          enquiry_id: string | null
+          file_path: string
+          filename: string
+          id: string
+          uploaded_at: string | null
+          uploaded_by: string | null
+        }
+        Insert: {
+          enquiry_id?: string | null
+          file_path: string
+          filename: string
+          id?: string
+          uploaded_at?: string | null
+          uploaded_by?: string | null
+        }
+        Update: {
+          enquiry_id?: string | null
+          file_path?: string
+          filename?: string
+          id?: string
+          uploaded_at?: string | null
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "enquiry_designs_enquiry_id_fkey"
+            columns: ["enquiry_id"]
+            isOneToOne: false
+            referencedRelation: "enquiries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       job_designs: {
         Row: {
           file_path: string

@@ -149,6 +149,7 @@ const EnquiryDetails = () => {
         </CardHeader>
         <CardContent>
           <EnquiryContent
+            id={enquiry.id}
             description={enquiry.description}
             measurementNotes={enquiry.measurement_notes}
             location={enquiry.location}
