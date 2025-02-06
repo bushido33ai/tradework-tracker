@@ -76,25 +76,8 @@ export const useFileUpload = ({ jobId, type, onUploadComplete }: UseFileUploadPr
     }
   };
 
-  const handleCameraCapture = () => {
-    const cameraInput = document.createElement('input');
-    cameraInput.type = 'file';
-    cameraInput.accept = 'image/*';
-    cameraInput.capture = 'environment'; // Use the back camera
-    
-    // Create a wrapper function to handle the DOM event
-    cameraInput.onchange = (e: Event) => {
-      if (e.target instanceof HTMLInputElement) {
-        handleFileUpload(e as unknown as React.ChangeEvent<HTMLInputElement>);
-      }
-    };
-    
-    cameraInput.click();
-  };
-
   return {
     isUploading,
     handleFileUpload,
-    handleCameraCapture,
   };
 };

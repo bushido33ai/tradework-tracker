@@ -1,6 +1,5 @@
 import { useIsMobile } from "@/hooks/use-mobile";
 import FileUploadButton from "./upload/FileUploadButton";
-import CameraButton from "./upload/CameraButton";
 import { useFileUpload } from "./upload/useFileUpload";
 
 interface FileUploadProps {
@@ -10,8 +9,7 @@ interface FileUploadProps {
 }
 
 const FileUpload = ({ jobId, type, onUploadComplete }: FileUploadProps) => {
-  const isMobile = useIsMobile();
-  const { isUploading, handleFileUpload, handleCameraCapture } = useFileUpload({
+  const { isUploading, handleFileUpload } = useFileUpload({
     jobId,
     type,
     onUploadComplete,
@@ -32,13 +30,6 @@ const FileUpload = ({ jobId, type, onUploadComplete }: FileUploadProps) => {
         isUploading={isUploading} 
         id={`file-upload-${type}`} 
       />
-      
-      {isMobile && (
-        <CameraButton 
-          isUploading={isUploading}
-          onCapture={handleCameraCapture}
-        />
-      )}
     </div>
   );
 };
