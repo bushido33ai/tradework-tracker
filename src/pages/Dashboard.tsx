@@ -85,6 +85,11 @@ const Dashboard = () => {
         .select('amount, uploaded_at')
         .gte('uploaded_at', startDate);
 
+      // Calculate totals
+      const totalBudget = jobs?.reduce((sum, job) => sum + (Number(job.budget) || 0), 0) || 0;
+      const totalInvoiced = invoices?.reduce((sum, invoice) => sum + (Number(invoice.amount) || 0), 0) || 0;
+      const totalProfit = totalBudget - totalInvoiced;
+
       // Initialize monthly data
       const monthlyData = Array(12).fill(0).map((_, index) => ({
         month: format(new Date(2024, index), 'MMM'),
@@ -110,7 +115,14 @@ const Dashboard = () => {
         data.profit = data.budget - data.invoices;
       });
 
-      return monthlyData;
+      return {
+        monthlyData,
+        totals: {
+          budget: totalBudget,
+          invoiced: totalInvoiced,
+          profit: totalProfit
+        }
+      };
     },
   });
 
@@ -212,11 +224,31 @@ const Dashboard = () => {
         <Card className="bg-blue-50/80 shadow-lg hover:shadow-xl transition-all duration-200 border-l-4 border-l-primary-600">
           <CardHeader>
             <CardTitle>Profit/Loss Overview {getYear(new Date())}</CardTitle>
+            <div className="grid grid-cols-3 gap-4 mt-2 text-sm">
+              <div>
+                <span className="text-muted-foreground">Total Budget:</span>
+                <p className="text-lg font-bold text-green-600">
+                  £{profitLossData?.totals.budget.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
+                </p>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Total Invoiced:</span>
+                <p className="text-lg font-bold text-red-600">
+                  £{profitLossData?.totals.invoiced.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
+                </p>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Total Profit:</span>
+                <p className={`text-lg font-bold ${profitLossData?.totals.profit >= 0 ? 'text-primary-600' : 'text-red-600'}`}>
+                  £{profitLossData?.totals.profit.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
+                </p>
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="h-[300px] mt-4">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={profitLossData}>
+                <LineChart data={profitLossData?.monthlyData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="month" />
                   <YAxis />
