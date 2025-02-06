@@ -81,7 +81,7 @@ const SignIn = () => {
           <p className="mt-2 text-gray-600">Sign in to your account</p>
         </div>
 
-        <div className="bg-white/80 backdrop-blur-sm p-8 rounded-lg shadow-lg space-y-6 mt-6">
+        <div className="bg-white/90 backdrop-blur-md p-8 rounded-xl shadow-[0_0_15px_rgba(0,0,0,0.1)] space-y-6 mt-6 border-2 border-primary-100 hover:shadow-[0_0_25px_rgba(30,64,175,0.15)] transition-all duration-300 transform hover:-translate-y-1">
           <form onSubmit={handleSignIn} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
