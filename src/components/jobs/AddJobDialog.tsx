@@ -42,10 +42,21 @@ const AddJobDialog = ({ open, onOpenChange }: AddJobDialogProps) => {
         location: values.location,
         budget: values.budget ? parseFloat(values.budget) : null,
         created_by: user.id,
+        job_number: undefined, // This explicitly tells Supabase to use the default value
       };
 
-      const { error } = await supabase.from("jobs").insert(jobData);
-      if (error) throw error;
+      const { error, data } = await supabase
+        .from("jobs")
+        .insert(jobData)
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Error details:", error);
+        throw error;
+      }
+
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["jobs"] });
