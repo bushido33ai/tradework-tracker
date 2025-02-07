@@ -58,7 +58,6 @@ const AdminDashboard = () => {
         throw error;
       }
       
-      console.log("Fetched profiles:", data);
       return data || [];
     },
     enabled: !!session?.user?.id,
@@ -80,13 +79,20 @@ const AdminDashboard = () => {
         throw error;
       }
 
-      console.log("Fetched jobs:", data);
       return data || [];
     },
     enabled: !!session?.user?.id,
   });
 
   const isLoading = isLoadingProfiles || isLoadingJobs;
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
 
   // Calculate job statistics per user
   const jobStats = jobs?.reduce((acc: Record<string, { total: number, pending: number, in_progress: number, completed: number }>, job) => {
@@ -107,91 +113,69 @@ const AdminDashboard = () => {
         
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="p-6 bg-white shadow-lg">
+          <Card className="p-6">
             <h3 className="text-lg font-medium text-muted-foreground mb-2">Total Users</h3>
-            <p className="text-3xl font-bold">
-              {isLoading ? (
-                <Loader2 className="h-6 w-6 animate-spin" />
-              ) : (
-                profiles?.length || 0
-              )}
-            </p>
+            <p className="text-3xl font-bold">{profiles?.length || 0}</p>
           </Card>
           
-          <Card className="p-6 bg-white shadow-lg">
+          <Card className="p-6">
             <h3 className="text-lg font-medium text-muted-foreground mb-2">Total Jobs</h3>
-            <p className="text-3xl font-bold">
-              {isLoading ? (
-                <Loader2 className="h-6 w-6 animate-spin" />
-              ) : (
-                jobs?.length || 0
-              )}
-            </p>
+            <p className="text-3xl font-bold">{jobs?.length || 0}</p>
           </Card>
 
-          <Card className="p-6 bg-white shadow-lg">
+          <Card className="p-6">
             <h3 className="text-lg font-medium text-muted-foreground mb-2">Active Users</h3>
             <p className="text-3xl font-bold">
-              {isLoading ? (
-                <Loader2 className="h-6 w-6 animate-spin" />
-              ) : (
-                profiles?.filter(p => p.user_type === 'tradesman').length || 0
-              )}
+              {profiles?.filter(p => p.user_type === 'tradesman').length || 0}
             </p>
           </Card>
         </div>
 
         {/* Users Table */}
-        <Card className="bg-white shadow-lg">
+        <Card className="bg-white">
           <div className="p-6">
             <h2 className="text-xl font-semibold mb-4">User Details & Job Statistics</h2>
-            {isLoading ? (
-              <div className="flex justify-center py-8">
-                <Loader2 className="h-8 w-8 animate-spin" />
-              </div>
-            ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>User Type</TableHead>
-                    <TableHead>Total Jobs</TableHead>
-                    <TableHead>In Progress</TableHead>
-                    <TableHead>Completed</TableHead>
-                    <TableHead>Join Date</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {profiles?.map((profile) => {
-                    const stats = jobStats?.[profile.id] || { 
-                      total: 0, 
-                      pending: 0, 
-                      in_progress: 0, 
-                      completed: 0 
-                    };
-                    
-                    return (
-                      <TableRow key={profile.id}>
-                        <TableCell>{profile.full_name || "Not set"}</TableCell>
-                        <TableCell>{profile.email || "Not set"}</TableCell>
-                        <TableCell>
-                          <Badge variant={profile.user_type === "tradesman" ? "default" : "secondary"}>
-                            {profile.user_type}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>{stats.total}</TableCell>
-                        <TableCell>{stats.in_progress || 0}</TableCell>
-                        <TableCell>{stats.completed || 0}</TableCell>
-                        <TableCell>
-                          {new Date(profile.created_at).toLocaleDateString()}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            )}
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>User Type</TableHead>
+                  <TableHead>Total Jobs</TableHead>
+                  <TableHead>In Progress</TableHead>
+                  <TableHead>Completed</TableHead>
+                  <TableHead>Join Date</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {profiles?.map((profile) => {
+                  const stats = jobStats?.[profile.id] || { 
+                    total: 0, 
+                    pending: 0, 
+                    in_progress: 0, 
+                    completed: 0 
+                  };
+                  
+                  return (
+                    <TableRow key={profile.id}>
+                      <TableCell>{profile.full_name || "Not set"}</TableCell>
+                      <TableCell>{profile.email || "Not set"}</TableCell>
+                      <TableCell>
+                        <Badge variant={profile.user_type === "tradesman" ? "default" : "secondary"}>
+                          {profile.user_type}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>{stats.total}</TableCell>
+                      <TableCell>{stats.in_progress || 0}</TableCell>
+                      <TableCell>{stats.completed || 0}</TableCell>
+                      <TableCell>
+                        {new Date(profile.created_at).toLocaleDateString()}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
           </div>
         </Card>
       </div>
