@@ -80,8 +80,6 @@ const UsersList = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>First Name</TableHead>
-              <TableHead>Surname</TableHead>
               <TableHead>Full Name</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>User Type</TableHead>
@@ -91,8 +89,6 @@ const UsersList = () => {
           <TableBody>
             {users?.map((user) => (
               <TableRow key={user.id}>
-                <TableCell>{user.first_name || "N/A"}</TableCell>
-                <TableCell>{user.surname || "N/A"}</TableCell>
                 <TableCell>{user.full_name || "N/A"}</TableCell>
                 <TableCell>{user.email || "N/A"}</TableCell>
                 <TableCell className="capitalize">{user.user_type}</TableCell>
