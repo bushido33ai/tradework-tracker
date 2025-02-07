@@ -79,16 +79,15 @@ export const DashboardStats = () => {
       const startOfYear = new Date(new Date().getFullYear(), 0, 1).toISOString();
       let query = supabase
         .from('job_invoices')
-        .select('job_invoices.amount, jobs.created_by')
-        .join('jobs', 'job_invoices.job_id', 'jobs.id')
-        .gte('job_invoices.uploaded_at', startOfYear);
+        .select('amount, jobs!inner(created_by)')
+        .gte('uploaded_at', startOfYear);
 
       if (userId) {
         query = query.eq('jobs.created_by', userId);
       }
 
       const { data } = await query;
-      return data?.reduce((sum, invoice) => sum + (invoice.amount || 0), 0) || 0;
+      return data?.reduce((sum, row) => sum + (row.amount || 0), 0) || 0;
     },
   });
 
