@@ -13,20 +13,6 @@ export function SignUpFormFields({ form }: SignUpFormFieldsProps) {
     <>
       <FormField
         control={form.control}
-        name="email"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Email</FormLabel>
-            <FormControl>
-              <Input type="email" placeholder="Enter your email" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
         name="firstName"
         render={({ field }) => (
           <FormItem>
@@ -55,12 +41,12 @@ export function SignUpFormFields({ form }: SignUpFormFieldsProps) {
 
       <FormField
         control={form.control}
-        name="password"
+        name="email"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Password</FormLabel>
+            <FormLabel>Email</FormLabel>
             <FormControl>
-              <Input type="password" placeholder="Create a password" {...field} />
+              <Input type="email" placeholder="Enter your email" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -69,12 +55,12 @@ export function SignUpFormFields({ form }: SignUpFormFieldsProps) {
 
       <FormField
         control={form.control}
-        name="confirmPassword"
+        name="telephone"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Confirm Password</FormLabel>
+            <FormLabel>Telephone</FormLabel>
             <FormControl>
-              <Input type="password" placeholder="Confirm your password" {...field} />
+              <Input type="tel" placeholder="Enter your phone number" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -97,12 +83,26 @@ export function SignUpFormFields({ form }: SignUpFormFieldsProps) {
 
       <FormField
         control={form.control}
-        name="telephone"
+        name="password"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Telephone</FormLabel>
+            <FormLabel>Password</FormLabel>
             <FormControl>
-              <Input type="tel" placeholder="Enter your phone number" {...field} />
+              <Input type="password" placeholder="Create a password" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="confirmPassword"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Confirm Password</FormLabel>
+            <FormControl>
+              <Input type="password" placeholder="Confirm your password" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
