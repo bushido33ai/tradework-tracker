@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, Users, UserCircle, Building } from "lucide-react";
 
 const Admin = () => {
   return <AdminDashboard />;
@@ -47,29 +47,54 @@ const AdminDashboard = () => {
     );
   }
 
+  const tradesmen = profiles?.filter(p => p.user_type === 'tradesman').length || 0;
+  const customers = profiles?.filter(p => p.user_type === 'customer').length || 0;
+  const merchants = profiles?.filter(p => p.user_type === 'merchant').length || 0;
+
   return (
     <div className="container mx-auto p-8">
-      <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-6">User Statistics</h1>
       
-      {/* Basic Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <Card className="p-6">
-          <h3 className="text-lg font-medium mb-2">Total Users</h3>
-          <p className="text-3xl font-bold">{profiles?.length || 0}</p>
+      {/* User Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <Card className="p-6 bg-white">
+          <div className="flex items-center gap-4">
+            <Users className="h-8 w-8 text-blue-500" />
+            <div>
+              <h3 className="text-lg font-medium mb-1">Total Users</h3>
+              <p className="text-3xl font-bold">{profiles?.length || 0}</p>
+            </div>
+          </div>
         </Card>
         
-        <Card className="p-6">
-          <h3 className="text-lg font-medium mb-2">Tradesmen</h3>
-          <p className="text-3xl font-bold">
-            {profiles?.filter(p => p.user_type === 'tradesman').length || 0}
-          </p>
+        <Card className="p-6 bg-white">
+          <div className="flex items-center gap-4">
+            <UserCircle className="h-8 w-8 text-green-500" />
+            <div>
+              <h3 className="text-lg font-medium mb-1">Tradesmen</h3>
+              <p className="text-3xl font-bold">{tradesmen}</p>
+            </div>
+          </div>
         </Card>
 
-        <Card className="p-6">
-          <h3 className="text-lg font-medium mb-2">Customers</h3>
-          <p className="text-3xl font-bold">
-            {profiles?.filter(p => p.user_type === 'customer').length || 0}
-          </p>
+        <Card className="p-6 bg-white">
+          <div className="flex items-center gap-4">
+            <Users className="h-8 w-8 text-purple-500" />
+            <div>
+              <h3 className="text-lg font-medium mb-1">Customers</h3>
+              <p className="text-3xl font-bold">{customers}</p>
+            </div>
+          </div>
+        </Card>
+
+        <Card className="p-6 bg-white">
+          <div className="flex items-center gap-4">
+            <Building className="h-8 w-8 text-orange-500" />
+            <div>
+              <h3 className="text-lg font-medium mb-1">Merchants</h3>
+              <p className="text-3xl font-bold">{merchants}</p>
+            </div>
+          </div>
         </Card>
       </div>
 
@@ -93,7 +118,15 @@ const AdminDashboard = () => {
                     <TableCell>{profile.full_name || "Not set"}</TableCell>
                     <TableCell>{profile.email || "Not set"}</TableCell>
                     <TableCell>
-                      <Badge variant={profile.user_type === "tradesman" ? "default" : "secondary"}>
+                      <Badge 
+                        variant={
+                          profile.user_type === "tradesman" 
+                            ? "default" 
+                            : profile.user_type === "merchant"
+                            ? "destructive"
+                            : "secondary"
+                        }
+                      >
                         {profile.user_type}
                       </Badge>
                     </TableCell>
