@@ -1,6 +1,3 @@
-import { useSessionContext } from "@supabase/auth-helpers-react";
-import { useAdminRole } from "@/hooks/useAdminRole";
-import { Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
@@ -17,24 +14,6 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
 const Admin = () => {
-  const { session } = useSessionContext();
-  const { data: isAdmin, isLoading: isLoadingAdmin } = useAdminRole(session?.user?.id);
-
-  // Show loading state while checking admin status
-  if (isLoadingAdmin) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
-  }
-
-  // If not admin, redirect to dashboard
-  if (!isAdmin) {
-    toast.error("You don't have permission to access this page");
-    return <Navigate to="/dashboard" replace />;
-  }
-
   return <AdminDashboard />;
 };
 
@@ -70,7 +49,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="container mx-auto p-8">
-      <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
       
       {/* Basic Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
