@@ -1,3 +1,4 @@
+
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
@@ -18,6 +19,34 @@ export function SignUpFormFields({ form }: SignUpFormFieldsProps) {
             <FormLabel>Email</FormLabel>
             <FormControl>
               <Input type="email" placeholder="Enter your email" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="firstName"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>First Name</FormLabel>
+            <FormControl>
+              <Input type="text" placeholder="Enter your first name" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="surname"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Surname</FormLabel>
+            <FormControl>
+              <Input type="text" placeholder="Enter your surname" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>

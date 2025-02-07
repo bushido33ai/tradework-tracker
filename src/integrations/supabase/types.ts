@@ -319,10 +319,12 @@ export type Database = {
           address: string | null
           created_at: string
           email: string | null
+          first_name: string | null
           full_name: string | null
           id: string
           notes: string | null
           preferred_contact_method: string | null
+          surname: string | null
           telephone: string | null
           updated_at: string
           user_type: Database["public"]["Enums"]["user_type"]
@@ -331,10 +333,12 @@ export type Database = {
           address?: string | null
           created_at?: string
           email?: string | null
+          first_name?: string | null
           full_name?: string | null
           id: string
           notes?: string | null
           preferred_contact_method?: string | null
+          surname?: string | null
           telephone?: string | null
           updated_at?: string
           user_type: Database["public"]["Enums"]["user_type"]
@@ -343,10 +347,12 @@ export type Database = {
           address?: string | null
           created_at?: string
           email?: string | null
+          first_name?: string | null
           full_name?: string | null
           id?: string
           notes?: string | null
           preferred_contact_method?: string | null
+          surname?: string | null
           telephone?: string | null
           updated_at?: string
           user_type?: Database["public"]["Enums"]["user_type"]

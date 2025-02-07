@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -22,6 +23,8 @@ const SignUp = () => {
       email: "",
       password: "",
       confirmPassword: "",
+      firstName: "",
+      surname: "",
       address: "",
       telephone: "",
     },
@@ -46,6 +49,8 @@ const SignUp = () => {
       const cleanedEmail = data.email.trim().toLowerCase();
       const cleanedAddress = data.address.trim();
       const cleanedTelephone = data.telephone.trim();
+      const cleanedFirstName = data.firstName.trim();
+      const cleanedSurname = data.surname.trim();
 
       // Set up metadata with all required fields
       const metadata = {
@@ -53,6 +58,8 @@ const SignUp = () => {
         address: cleanedAddress,
         telephone: cleanedTelephone,
         email: cleanedEmail,
+        first_name: cleanedFirstName,
+        surname: cleanedSurname,
       };
 
       console.log("Sending signup request with metadata:", metadata);
