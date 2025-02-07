@@ -1,3 +1,4 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,20 +9,27 @@ type JobStatus = "pending" | "in_progress" | "completed" | "cancelled";
 
 interface JobsListProps {
   status: JobStatus[];
+  userId?: string;
 }
 
-const JobsList = ({ status }: JobsListProps) => {
+const JobsList = ({ status, userId }: JobsListProps) => {
   const navigate = useNavigate();
 
   const { data: jobs, isLoading } = useQuery({
-    queryKey: ["jobs", status],
+    queryKey: ["jobs", status, userId],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from("jobs")
         .select("*")
         .in("status", status)
         .order("created_at", { ascending: false });
 
+      // If userId is provided, filter jobs for that user
+      if (userId) {
+        query = query.eq("created_by", userId);
+      }
+
+      const { data, error } = await query;
       if (error) throw error;
       return data;
     },

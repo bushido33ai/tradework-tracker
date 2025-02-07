@@ -25,6 +25,7 @@ import Footer from "@/components/Footer";
 import AppBackground from "@/components/AppBackground";
 import Admin from "@/pages/Admin";
 import UsersList from "@/pages/UsersList";
+import UserJobs from "@/pages/UserJobs";
 import AdminRoute from "@/components/routes/AdminRoute";
 
 const queryClient = new QueryClient();
@@ -118,6 +119,11 @@ const App = () => {
                             <Route path="/admin/users" element={
                               <AdminRoute>
                                 <UsersList />
+                              </AdminRoute>
+                            } />
+                            <Route path="/admin/users/:userId/jobs" element={
+                              <AdminRoute>
+                                <UserJobs />
                               </AdminRoute>
                             } />
                           </Routes>
