@@ -34,14 +34,13 @@ const Admin = () => {
     enabled: !!isAdmin,
   });
 
-  // Fetch jobs count per user
+  // Fetch jobs count per user using the correct Supabase count syntax
   const { data: jobsPerUser, isLoading: isLoadingJobs } = useQuery({
     queryKey: ["admin-jobs-per-user"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("jobs")
-        .select("created_by, count(*)")
-        .group("created_by");
+        .select('created_by, count', { count: 'exact' });
 
       if (error) throw error;
       return data;
