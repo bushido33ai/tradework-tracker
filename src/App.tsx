@@ -1,4 +1,3 @@
-
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SessionContextProvider, useSessionContext } from '@supabase/auth-helpers-react';
@@ -24,6 +23,7 @@ import { toast } from "sonner";
 import Footer from "@/components/Footer";
 import AppBackground from "@/components/AppBackground";
 import Admin from "@/pages/Admin";
+import UsersList from "@/pages/UsersList";
 
 const queryClient = new QueryClient();
 
@@ -109,6 +109,7 @@ const App = () => {
                             <Route path="/customers" element={<Customers />} />
                             <Route path="/profile" element={<Profile />} />
                             <Route path="/admin" element={<Admin />} />
+                            <Route path="/admin/users" element={<UsersList />} />
                           </Routes>
                         </main>
                         <Footer />

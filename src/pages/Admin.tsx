@@ -1,10 +1,14 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Users } from "lucide-react";
 import { Loader2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Admin = () => {
+  const navigate = useNavigate();
+  
   // Fetch all profiles
   const { data: profiles, isLoading } = useQuery({
     queryKey: ["admin-profiles"],
@@ -37,7 +41,10 @@ const Admin = () => {
       <h1 className="text-3xl font-bold mb-8 text-center">User Statistics</h1>
       
       <div className="max-w-md mx-auto">
-        <Card className="p-8 bg-white">
+        <Card 
+          className="p-8 bg-white hover:bg-gray-50 cursor-pointer transition-colors"
+          onClick={() => navigate("/admin/users")}
+        >
           <div className="flex items-center justify-center gap-4">
             <Users className="h-12 w-12 text-blue-500" />
             <div className="text-center">
