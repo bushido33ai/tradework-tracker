@@ -1,4 +1,3 @@
-
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useAdminRole } from "@/hooks/useAdminRole";
 import { Navigate } from "react-router-dom";
@@ -24,71 +23,61 @@ const Admin = () => {
   const { data: profiles, isLoading: isLoadingProfiles } = useQuery({
     queryKey: ["admin-profiles"],
     queryFn: async () => {
-      try {
-        console.log("Fetching profiles for admin view");
-        const { data, error } = await supabase
-          .from("profiles")
-          .select("*")
-          .order("created_at", { ascending: false });
+      console.log("Fetching profiles for admin view");
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-        if (error) {
-          console.error("Error fetching profiles:", error);
-          toast.error("Failed to load user profiles");
-          throw error;
-        }
-        
-        console.log("Fetched profiles:", data);
-        return data || [];
-      } catch (error) {
-        console.error("Error in profile fetch:", error);
+      if (error) {
+        console.error("Error fetching profiles:", error);
         toast.error("Failed to load user profiles");
         throw error;
       }
+      
+      console.log("Fetched profiles:", data);
+      return data || [];
     },
-    enabled: !!isAdmin, // Only fetch if user is admin
+    enabled: !!isAdmin && !!session?.user?.id,
   });
 
   // Fetch jobs per user with status counts
   const { data: jobStats, isLoading: isLoadingJobs } = useQuery({
     queryKey: ["admin-jobs-stats"],
     queryFn: async () => {
-      try {
-        console.log("Fetching job stats for admin view");
-        const { data, error } = await supabase
-          .from("jobs")
-          .select('created_by, status');
+      console.log("Fetching job stats for admin view");
+      const { data, error } = await supabase
+        .from("jobs")
+        .select("created_by, status");
 
-        if (error) {
-          console.error("Error fetching jobs:", error);
-          toast.error("Failed to load job statistics");
-          throw error;
-        }
-
-        console.log("Fetched job stats:", data);
-
-        // Process the data to count jobs by status for each user
-        const stats = (data || []).reduce((acc: Record<string, { total: number, pending: number, in_progress: number, completed: number }>, job) => {
-          if (!acc[job.created_by]) {
-            acc[job.created_by] = { total: 0, pending: 0, in_progress: 0, completed: 0 };
-          }
-          acc[job.created_by].total += 1;
-          acc[job.created_by][job.status as keyof typeof acc[string]] += 1;
-          return acc;
-        }, {});
-
-        console.log("Processed job stats:", stats);
-        return stats;
-      } catch (error) {
-        console.error("Error in jobs fetch:", error);
+      if (error) {
+        console.error("Error fetching jobs:", error);
         toast.error("Failed to load job statistics");
         throw error;
       }
+
+      console.log("Fetched job stats:", data);
+
+      // Process the data to count jobs by status for each user
+      const stats = (data || []).reduce((acc: Record<string, { total: number, pending: number, in_progress: number, completed: number }>, job) => {
+        if (!acc[job.created_by]) {
+          acc[job.created_by] = { total: 0, pending: 0, in_progress: 0, completed: 0 };
+        }
+        acc[job.created_by].total += 1;
+        if (job.status) {
+          acc[job.created_by][job.status as keyof typeof acc[string]] = (acc[job.created_by][job.status as keyof typeof acc[string]] || 0) + 1;
+        }
+        return acc;
+      }, {});
+
+      console.log("Processed job stats:", stats);
+      return stats;
     },
-    enabled: !!isAdmin, // Only fetch if user is admin
+    enabled: !!isAdmin && !!session?.user?.id,
   });
 
   if (isLoadingAdmin) {
-    return <div>Loading...</div>;
+    return <div className="flex items-center justify-center p-8">Loading admin status...</div>;
   }
 
   if (!isAdmin) {
@@ -102,9 +91,9 @@ const Admin = () => {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 p-8">
       <div>
-        <h1 className="text-3xl font-bold mb-6">Admin Settings</h1>
+        <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
         
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
@@ -138,7 +127,7 @@ const Admin = () => {
         <Card className="p-4">
           <h2 className="text-xl font-semibold mb-4">User Details</h2>
           {isLoading ? (
-            <div>Loading user data...</div>
+            <div className="text-center py-4">Loading user data...</div>
           ) : (
             <Table>
               <TableHeader>
