@@ -1,7 +1,10 @@
+
 import { Link } from "react-router-dom";
-import { Home, ClipboardList, MessageSquare, Users, Building2, UserCircle, LogOut } from "lucide-react";
+import { Home, ClipboardList, MessageSquare, Users, Building2, UserCircle, LogOut, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "react-router-dom";
+import { useSessionContext } from "@supabase/auth-helpers-react";
+import { useAdminRole } from "@/hooks/useAdminRole";
 
 interface NavContentProps {
   onNavigate?: () => void;
@@ -10,6 +13,8 @@ interface NavContentProps {
 
 export const NavContent = ({ onNavigate, onSignOut }: NavContentProps) => {
   const location = useLocation();
+  const { session } = useSessionContext();
+  const { data: isAdmin } = useAdminRole(session?.user?.id);
   
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -23,6 +28,11 @@ export const NavContent = ({ onNavigate, onSignOut }: NavContentProps) => {
     { icon: Building2, label: "Customers", path: "/customers" },
     { icon: UserCircle, label: "Profile", path: "/profile" },
   ];
+
+  // Add admin settings if user is admin
+  if (isAdmin) {
+    navItems.push({ icon: Settings, label: "Admin", path: "/admin" });
+  }
 
   return (
     <div className="flex flex-col justify-between h-full">

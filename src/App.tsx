@@ -58,6 +58,14 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+const Admin = () => {
+  return (
+    <div>
+      <h1>Admin Dashboard</h1>
+    </div>
+  );
+};
+
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
@@ -106,6 +114,7 @@ const App = () => {
                             <Route path="/suppliers" element={<Suppliers />} />
                             <Route path="/customers" element={<Customers />} />
                             <Route path="/profile" element={<Profile />} />
+                            <Route path="/admin" element={<Admin />} />
                           </Routes>
                         </main>
                         <Footer />
