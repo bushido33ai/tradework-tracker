@@ -88,7 +88,11 @@ const UsersList = () => {
           </TableHeader>
           <TableBody>
             {users?.map((user) => (
-              <TableRow key={user.id}>
+              <TableRow 
+                key={user.id}
+                className="cursor-pointer hover:bg-gray-50"
+                onClick={() => navigate(`/admin/users/${user.id}/jobs`)}
+              >
                 <TableCell>{user.full_name || "N/A"}</TableCell>
                 <TableCell>{user.email || "N/A"}</TableCell>
                 <TableCell className="capitalize">{user.user_type}</TableCell>
@@ -103,3 +107,4 @@ const UsersList = () => {
 };
 
 export default UsersList;
+
