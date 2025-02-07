@@ -1,3 +1,4 @@
+
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SessionContextProvider, useSessionContext } from '@supabase/auth-helpers-react';
@@ -22,6 +23,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import Footer from "@/components/Footer";
 import AppBackground from "@/components/AppBackground";
+import Admin from "@/pages/Admin";
 
 const queryClient = new QueryClient();
 
@@ -56,14 +58,6 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   }
 
   return <>{children}</>;
-};
-
-const Admin = () => {
-  return (
-    <div>
-      <h1>Admin Dashboard</h1>
-    </div>
-  );
 };
 
 const App = () => {
