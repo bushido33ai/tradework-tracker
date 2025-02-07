@@ -20,6 +20,28 @@ const Admin = () => {
   const { session } = useSessionContext();
   const { data: isAdmin, isLoading: isLoadingAdmin } = useAdminRole(session?.user?.id);
 
+  // If still loading admin status, show loading spinner
+  if (isLoadingAdmin) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+  // If not admin, redirect to dashboard
+  if (!isAdmin) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  // Only render the admin content if user is confirmed as admin
+  return <AdminDashboard />;
+};
+
+// Separate component for the dashboard content
+const AdminDashboard = () => {
+  const { session } = useSessionContext();
+
   // Fetch all profiles with their user type
   const { data: profiles, isLoading: isLoadingProfiles } = useQuery({
     queryKey: ["admin-profiles"],
@@ -39,7 +61,7 @@ const Admin = () => {
       console.log("Fetched profiles:", data);
       return data || [];
     },
-    enabled: !!isAdmin && !!session?.user?.id,
+    enabled: !!session?.user?.id,
   });
 
   // Fetch jobs per user with status counts
@@ -61,20 +83,8 @@ const Admin = () => {
       console.log("Fetched jobs:", data);
       return data || [];
     },
-    enabled: !!isAdmin && !!session?.user?.id,
+    enabled: !!session?.user?.id,
   });
-
-  if (isLoadingAdmin) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
-  }
-
-  if (!isAdmin) {
-    return <Navigate to="/dashboard" replace />;
-  }
 
   const isLoading = isLoadingProfiles || isLoadingJobs;
 
