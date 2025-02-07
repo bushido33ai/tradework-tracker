@@ -14,6 +14,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 
 const Admin = () => {
   const { session } = useSessionContext();
@@ -23,13 +24,24 @@ const Admin = () => {
   const { data: profiles, isLoading: isLoadingProfiles } = useQuery({
     queryKey: ["admin-profiles"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .order("created_at", { ascending: false });
+      try {
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("*")
+          .order("created_at", { ascending: false });
 
-      if (error) throw error;
-      return data;
+        if (error) {
+          console.error("Error fetching profiles:", error);
+          toast.error("Failed to load user profiles");
+          throw error;
+        }
+        
+        return data || [];
+      } catch (error) {
+        console.error("Error in profile fetch:", error);
+        toast.error("Failed to load user profiles");
+        throw error;
+      }
     },
     enabled: !!isAdmin,
   });
@@ -38,23 +50,33 @@ const Admin = () => {
   const { data: jobStats, isLoading: isLoadingJobs } = useQuery({
     queryKey: ["admin-jobs-stats"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("jobs")
-        .select('created_by, status');
+      try {
+        const { data, error } = await supabase
+          .from("jobs")
+          .select('created_by, status');
 
-      if (error) throw error;
-
-      // Process the data to count jobs by status for each user
-      const stats = data.reduce((acc: Record<string, { total: number, pending: number, in_progress: number, completed: number }>, job) => {
-        if (!acc[job.created_by]) {
-          acc[job.created_by] = { total: 0, pending: 0, in_progress: 0, completed: 0 };
+        if (error) {
+          console.error("Error fetching jobs:", error);
+          toast.error("Failed to load job statistics");
+          throw error;
         }
-        acc[job.created_by].total += 1;
-        acc[job.created_by][job.status as keyof typeof acc[string]] += 1;
-        return acc;
-      }, {});
 
-      return stats;
+        // Process the data to count jobs by status for each user
+        const stats = (data || []).reduce((acc: Record<string, { total: number, pending: number, in_progress: number, completed: number }>, job) => {
+          if (!acc[job.created_by]) {
+            acc[job.created_by] = { total: 0, pending: 0, in_progress: 0, completed: 0 };
+          }
+          acc[job.created_by].total += 1;
+          acc[job.created_by][job.status as keyof typeof acc[string]] += 1;
+          return acc;
+        }, {});
+
+        return stats;
+      } catch (error) {
+        console.error("Error in jobs fetch:", error);
+        toast.error("Failed to load job statistics");
+        throw error;
+      }
     },
     enabled: !!isAdmin,
   });
