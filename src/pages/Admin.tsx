@@ -25,6 +25,7 @@ const Admin = () => {
     queryKey: ["admin-profiles"],
     queryFn: async () => {
       try {
+        console.log("Fetching profiles for admin view");
         const { data, error } = await supabase
           .from("profiles")
           .select("*")
@@ -36,6 +37,7 @@ const Admin = () => {
           throw error;
         }
         
+        console.log("Fetched profiles:", data);
         return data || [];
       } catch (error) {
         console.error("Error in profile fetch:", error);
@@ -43,7 +45,7 @@ const Admin = () => {
         throw error;
       }
     },
-    enabled: !!isAdmin,
+    enabled: !!isAdmin, // Only fetch if user is admin
   });
 
   // Fetch jobs per user with status counts
@@ -51,6 +53,7 @@ const Admin = () => {
     queryKey: ["admin-jobs-stats"],
     queryFn: async () => {
       try {
+        console.log("Fetching job stats for admin view");
         const { data, error } = await supabase
           .from("jobs")
           .select('created_by, status');
@@ -60,6 +63,8 @@ const Admin = () => {
           toast.error("Failed to load job statistics");
           throw error;
         }
+
+        console.log("Fetched job stats:", data);
 
         // Process the data to count jobs by status for each user
         const stats = (data || []).reduce((acc: Record<string, { total: number, pending: number, in_progress: number, completed: number }>, job) => {
@@ -71,6 +76,7 @@ const Admin = () => {
           return acc;
         }, {});
 
+        console.log("Processed job stats:", stats);
         return stats;
       } catch (error) {
         console.error("Error in jobs fetch:", error);
@@ -78,7 +84,7 @@ const Admin = () => {
         throw error;
       }
     },
-    enabled: !!isAdmin,
+    enabled: !!isAdmin, // Only fetch if user is admin
   });
 
   if (isLoadingAdmin) {
