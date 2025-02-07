@@ -31,6 +31,7 @@ const Admin = () => {
 
   // If not admin, redirect to dashboard
   if (!isAdmin) {
+    toast.error("You don't have permission to access this page");
     return <Navigate to="/dashboard" replace />;
   }
 
@@ -42,51 +43,47 @@ const Admin = () => {
 const AdminDashboard = () => {
   const { session } = useSessionContext();
 
-  // Fetch all profiles with their user type
+  // Fetch all profiles
   const { data: profiles, isLoading: isLoadingProfiles } = useQuery({
     queryKey: ["admin-profiles"],
     queryFn: async () => {
-      console.log("Fetching profiles for admin view");
-      const { data, error } = await supabase
+      const { data: profilesData, error: profilesError } = await supabase
         .from("profiles")
         .select("*")
         .order("created_at", { ascending: false });
 
-      if (error) {
-        console.error("Error fetching profiles:", error);
-        toast.error("Failed to load user profiles");
-        throw error;
+      if (profilesError) {
+        console.error("Error fetching profiles:", profilesError);
+        toast.error("Failed to load profiles");
+        throw profilesError;
       }
-      
-      return data || [];
+
+      return profilesData || [];
     },
     enabled: !!session?.user?.id,
   });
 
-  // Fetch jobs per user with status counts
+  // Fetch all jobs
   const { data: jobs, isLoading: isLoadingJobs } = useQuery({
     queryKey: ["admin-jobs"],
     queryFn: async () => {
-      console.log("Fetching jobs for admin view");
-      const { data, error } = await supabase
+      const { data: jobsData, error: jobsError } = await supabase
         .from("jobs")
         .select("*")
         .order("created_at", { ascending: false });
 
-      if (error) {
-        console.error("Error fetching jobs:", error);
+      if (jobsError) {
+        console.error("Error fetching jobs:", jobsError);
         toast.error("Failed to load jobs");
-        throw error;
+        throw jobsError;
       }
 
-      return data || [];
+      return jobsData || [];
     },
     enabled: !!session?.user?.id,
   });
 
-  const isLoading = isLoadingProfiles || isLoadingJobs;
-
-  if (isLoading) {
+  if (isLoadingProfiles || isLoadingJobs) {
     return (
       <div className="flex items-center justify-center p-8">
         <Loader2 className="h-8 w-8 animate-spin" />
@@ -94,47 +91,57 @@ const AdminDashboard = () => {
     );
   }
 
-  // Calculate job statistics per user
-  const jobStats = jobs?.reduce((acc: Record<string, { total: number, pending: number, in_progress: number, completed: number }>, job) => {
+  if (!profiles || !jobs) {
+    return (
+      <div className="container mx-auto p-8">
+        <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
+        <p className="text-gray-500">No data available</p>
+      </div>
+    );
+  }
+
+  // Calculate job statistics
+  const jobStats = jobs.reduce((acc: Record<string, { total: number, pending: number, in_progress: number, completed: number }>, job) => {
     if (!acc[job.created_by]) {
       acc[job.created_by] = { total: 0, pending: 0, in_progress: 0, completed: 0 };
     }
     acc[job.created_by].total += 1;
     if (job.status) {
-      acc[job.created_by][job.status] = (acc[job.created_by][job.status] || 0) + 1;
+      acc[job.created_by][job.status as keyof typeof acc[string]] = 
+        (acc[job.created_by][job.status as keyof typeof acc[string]] || 0) + 1;
     }
     return acc;
   }, {});
 
   return (
-    <div className="container mx-auto space-y-8 p-8">
-      <div>
-        <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
+    <div className="container mx-auto p-8">
+      <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
+      
+      {/* Stats Overview */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <Card className="p-6">
+          <h3 className="text-lg font-medium mb-2">Total Users</h3>
+          <p className="text-3xl font-bold">{profiles.length}</p>
+        </Card>
         
-        {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="p-6">
-            <h3 className="text-lg font-medium text-muted-foreground mb-2">Total Users</h3>
-            <p className="text-3xl font-bold">{profiles?.length || 0}</p>
-          </Card>
-          
-          <Card className="p-6">
-            <h3 className="text-lg font-medium text-muted-foreground mb-2">Total Jobs</h3>
-            <p className="text-3xl font-bold">{jobs?.length || 0}</p>
-          </Card>
+        <Card className="p-6">
+          <h3 className="text-lg font-medium mb-2">Total Jobs</h3>
+          <p className="text-3xl font-bold">{jobs.length}</p>
+        </Card>
 
-          <Card className="p-6">
-            <h3 className="text-lg font-medium text-muted-foreground mb-2">Active Users</h3>
-            <p className="text-3xl font-bold">
-              {profiles?.filter(p => p.user_type === 'tradesman').length || 0}
-            </p>
-          </Card>
-        </div>
+        <Card className="p-6">
+          <h3 className="text-lg font-medium mb-2">Active Users</h3>
+          <p className="text-3xl font-bold">
+            {profiles.filter(p => p.user_type === 'tradesman').length}
+          </p>
+        </Card>
+      </div>
 
-        {/* Users Table */}
-        <Card className="bg-white">
-          <div className="p-6">
-            <h2 className="text-xl font-semibold mb-4">User Details & Job Statistics</h2>
+      {/* Users Table */}
+      <Card className="overflow-hidden">
+        <div className="p-6">
+          <h2 className="text-xl font-semibold mb-4">User Details & Job Statistics</h2>
+          <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -148,12 +155,12 @@ const AdminDashboard = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {profiles?.map((profile) => {
-                  const stats = jobStats?.[profile.id] || { 
-                    total: 0, 
-                    pending: 0, 
-                    in_progress: 0, 
-                    completed: 0 
+                {profiles.map((profile) => {
+                  const stats = jobStats[profile.id] || {
+                    total: 0,
+                    pending: 0,
+                    in_progress: 0,
+                    completed: 0
                   };
                   
                   return (
@@ -177,8 +184,8 @@ const AdminDashboard = () => {
               </TableBody>
             </Table>
           </div>
-        </Card>
-      </div>
+        </div>
+      </Card>
     </div>
   );
 };
