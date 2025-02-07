@@ -1,19 +1,32 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { useSessionContext } from "@supabase/auth-helpers-react";
+import { useAdminRole } from "@/hooks/useAdminRole";
 
 export const CompletedJobsChart = () => {
+  const { session } = useSessionContext();
+  const { data: isAdmin } = useAdminRole(session?.user?.id);
+  const userId = !isAdmin ? session?.user?.id : undefined;
+
   const { data: completedJobs } = useQuery({
-    queryKey: ['completedJobsByMonth'],
+    queryKey: ['completedJobsByMonth', userId],
     queryFn: async () => {
       const startOfYear = new Date(new Date().getFullYear(), 0, 1).toISOString();
-      const { data } = await supabase
+      let query = supabase
         .from('jobs')
         .select('created_at')
         .eq('status', 'completed')
         .gte('created_at', startOfYear);
+
+      if (userId) {
+        query = query.eq('created_by', userId);
+      }
+
+      const { data } = await query;
 
       const jobsByMonth = Array(12).fill(0);
       data?.forEach(job => {

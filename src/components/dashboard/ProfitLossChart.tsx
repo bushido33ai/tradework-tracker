@@ -1,24 +1,41 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { format, startOfYear, getYear } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { useSessionContext } from "@supabase/auth-helpers-react";
+import { useAdminRole } from "@/hooks/useAdminRole";
 
 export const ProfitLossChart = () => {
+  const { session } = useSessionContext();
+  const { data: isAdmin } = useAdminRole(session?.user?.id);
+  const userId = !isAdmin ? session?.user?.id : undefined;
+
   const { data: profitLossData, isLoading } = useQuery({
-    queryKey: ['profitLoss'],
+    queryKey: ['profitLoss', userId],
     queryFn: async () => {
       const startDate = startOfYear(new Date()).toISOString();
       
-      const { data: jobs } = await supabase
+      let jobsQuery = supabase
         .from('jobs')
         .select('budget, created_at')
         .gte('created_at', startDate);
 
-      const { data: invoices } = await supabase
+      let invoicesJoinQuery = supabase
         .from('job_invoices')
-        .select('amount, uploaded_at')
+        .select('amount, uploaded_at, jobs!inner(created_by)')
         .gte('uploaded_at', startDate);
+
+      if (userId) {
+        jobsQuery = jobsQuery.eq('created_by', userId);
+        invoicesJoinQuery = invoicesJoinQuery.eq('jobs.created_by', userId);
+      }
+
+      const [{ data: jobs }, { data: invoices }] = await Promise.all([
+        jobsQuery,
+        invoicesJoinQuery
+      ]);
 
       const totalBudget = jobs?.reduce((sum, job) => sum + (Number(job.budget) || 0), 0) || 0;
       const totalInvoiced = invoices?.reduce((sum, invoice) => sum + (Number(invoice.amount) || 0), 0) || 0;

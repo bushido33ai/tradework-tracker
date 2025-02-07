@@ -1,30 +1,49 @@
+
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Briefcase, CheckCircle, PoundSterling, Receipt } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useSessionContext } from "@supabase/auth-helpers-react";
+import { useAdminRole } from "@/hooks/useAdminRole";
 
 export const DashboardStats = () => {
+  const { session } = useSessionContext();
+  const { data: isAdmin } = useAdminRole(session?.user?.id);
+  const userId = !isAdmin ? session?.user?.id : undefined;
+
   const { data: currentJobs } = useQuery({
-    queryKey: ['currentJobs'],
+    queryKey: ['currentJobs', userId],
     queryFn: async () => {
-      const { count } = await supabase
+      let query = supabase
         .from('jobs')
         .select('*', { count: 'exact', head: true })
         .in('status', ['pending', 'in_progress']);
+
+      if (userId) {
+        query = query.eq('created_by', userId);
+      }
+
+      const { count } = await query;
       return count || 0;
     },
   });
 
   const { data: completedJobs } = useQuery({
-    queryKey: ['completedJobs'],
+    queryKey: ['completedJobs', userId],
     queryFn: async () => {
       const startOfYear = new Date(new Date().getFullYear(), 0, 1).toISOString();
-      const { data } = await supabase
+      let query = supabase
         .from('jobs')
         .select('created_at')
         .eq('status', 'completed')
         .gte('created_at', startOfYear);
+
+      if (userId) {
+        query = query.eq('created_by', userId);
+      }
+
+      const { data } = await query;
 
       const jobsByMonth = Array(12).fill(0);
       data?.forEach(job => {
@@ -37,27 +56,38 @@ export const DashboardStats = () => {
   });
 
   const { data: totalSpend } = useQuery({
-    queryKey: ['totalSpend'],
+    queryKey: ['totalSpend', userId],
     queryFn: async () => {
       const startOfYear = new Date(new Date().getFullYear(), 0, 1).toISOString();
-      const { data } = await supabase
+      let query = supabase
         .from('jobs')
         .select('budget')
         .gte('created_at', startOfYear);
 
+      if (userId) {
+        query = query.eq('created_by', userId);
+      }
+
+      const { data } = await query;
       return data?.reduce((sum, job) => sum + (job.budget || 0), 0) || 0;
     },
   });
 
   const { data: totalInvoices } = useQuery({
-    queryKey: ['totalInvoices'],
+    queryKey: ['totalInvoices', userId],
     queryFn: async () => {
       const startOfYear = new Date(new Date().getFullYear(), 0, 1).toISOString();
-      const { data } = await supabase
+      let query = supabase
         .from('job_invoices')
-        .select('amount')
-        .gte('uploaded_at', startOfYear);
+        .select('job_invoices.amount, jobs.created_by')
+        .join('jobs', 'job_invoices.job_id', 'jobs.id')
+        .gte('job_invoices.uploaded_at', startOfYear);
 
+      if (userId) {
+        query = query.eq('jobs.created_by', userId);
+      }
+
+      const { data } = await query;
       return data?.reduce((sum, invoice) => sum + (invoice.amount || 0), 0) || 0;
     },
   });
