@@ -1,7 +1,7 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, ArrowLeft, Trash2 } from "lucide-react";
+import { Loader2, ArrowLeft, Trash2, ShieldCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -29,11 +29,11 @@ const UsersList = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  // Fetch all profiles with their job counts
+  // Fetch all profiles with their job counts and admin status
   const { data: users, isLoading } = useQuery({
     queryKey: ["users-list"],
     queryFn: async () => {
-      console.log("Fetching users with job counts...");
+      console.log("Fetching users with job counts and admin status...");
       
       // First get all profiles
       const { data: profiles, error: profilesError } = await supabase
@@ -45,25 +45,42 @@ const UsersList = () => {
         throw profilesError;
       }
 
-      // Then get job counts for each user
-      const usersWithJobCounts = await Promise.all(
+      // Then get job counts and admin status for each user
+      const usersWithDetails = await Promise.all(
         profiles.map(async (profile) => {
-          const { count, error: jobsError } = await supabase
+          // Get job count
+          const { count: jobCount, error: jobsError } = await supabase
             .from("jobs")
             .select("*", { count: 'exact', head: true })
             .eq("created_by", profile.id);
 
           if (jobsError) {
             console.error("Error fetching job count:", jobsError);
-            return { ...profile, jobCount: 0 };
+            return { ...profile, jobCount: 0, isAdmin: false };
           }
 
-          return { ...profile, jobCount: count || 0 };
+          // Check if user is admin
+          const { data: isAdmin, error: adminError } = await supabase
+            .rpc('has_role', { 
+              user_id: profile.id,
+              role: 'admin'
+            });
+
+          if (adminError) {
+            console.error("Error checking admin status:", adminError);
+            return { ...profile, jobCount: count || 0, isAdmin: false };
+          }
+
+          return { 
+            ...profile, 
+            jobCount: jobCount || 0,
+            isAdmin: isAdmin || false
+          };
         })
       );
 
-      console.log("Fetched users with job counts:", usersWithJobCounts);
-      return usersWithJobCounts;
+      console.log("Fetched users with details:", usersWithDetails);
+      return usersWithDetails;
     },
   });
 
@@ -125,6 +142,7 @@ const UsersList = () => {
               <TableHead>Full Name</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>User Type</TableHead>
+              <TableHead>Role</TableHead>
               <TableHead className="text-right">Total Jobs</TableHead>
               <TableHead></TableHead>
             </TableRow>
@@ -140,6 +158,14 @@ const UsersList = () => {
                 </TableCell>
                 <TableCell>{user.email || "N/A"}</TableCell>
                 <TableCell className="capitalize">{user.user_type}</TableCell>
+                <TableCell>
+                  {user.isAdmin && (
+                    <div className="flex items-center text-primary gap-1">
+                      <ShieldCheck className="h-4 w-4" />
+                      <span>Admin</span>
+                    </div>
+                  )}
+                </TableCell>
                 <TableCell className="text-right">{user.jobCount}</TableCell>
                 <TableCell className="text-right">
                   <AlertDialog>
