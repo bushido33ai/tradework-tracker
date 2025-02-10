@@ -161,6 +161,52 @@ export type Database = {
           },
         ]
       }
+      job_access_permissions: {
+        Row: {
+          granted_at: string
+          granted_by: string
+          id: string
+          job_id: string
+          merchant_id: string
+        }
+        Insert: {
+          granted_at?: string
+          granted_by: string
+          id?: string
+          job_id: string
+          merchant_id: string
+        }
+        Update: {
+          granted_at?: string
+          granted_by?: string
+          id?: string
+          job_id?: string
+          merchant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_access_permissions_granted_by_fkey"
+            columns: ["granted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "job_access_permissions_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "job_access_permissions_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       job_designs: {
         Row: {
           file_path: string

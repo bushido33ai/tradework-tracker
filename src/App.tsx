@@ -1,4 +1,3 @@
-
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SessionContextProvider, useSessionContext } from '@supabase/auth-helpers-react';
@@ -27,6 +26,8 @@ import Admin from "@/pages/Admin";
 import UsersList from "@/pages/UsersList";
 import UserJobs from "@/pages/UserJobs";
 import AdminRoute from "@/components/routes/AdminRoute";
+import MerchantTraders from "@/pages/MerchantTraders";
+import MerchantTraderJobs from "@/pages/MerchantTraderJobs";
 
 const queryClient = new QueryClient();
 
@@ -111,6 +112,8 @@ const App = () => {
                             <Route path="/suppliers" element={<Suppliers />} />
                             <Route path="/customers" element={<Customers />} />
                             <Route path="/profile" element={<Profile />} />
+                            <Route path="/merchant/traders" element={<MerchantTraders />} />
+                            <Route path="/merchant/traders/:traderId/jobs" element={<MerchantTraderJobs />} />
                             <Route path="/admin" element={
                               <AdminRoute>
                                 <Admin />

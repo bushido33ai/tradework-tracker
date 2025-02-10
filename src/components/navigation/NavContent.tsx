@@ -1,10 +1,11 @@
 
 import { Link } from "react-router-dom";
-import { Home, ClipboardList, MessageSquare, Users, Building2, UserCircle, LogOut, Settings } from "lucide-react";
+import { Home, ClipboardList, MessageSquare, Users, Building2, UserCircle, LogOut, Settings, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "react-router-dom";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useAdminRole } from "@/hooks/useAdminRole";
+import { useProfile } from "@/hooks/useProfile";
 
 interface NavContentProps {
   onNavigate?: () => void;
@@ -15,6 +16,7 @@ export const NavContent = ({ onNavigate, onSignOut }: NavContentProps) => {
   const location = useLocation();
   const { session } = useSessionContext();
   const { data: isAdmin } = useAdminRole(session?.user?.id);
+  const { data: profile } = useProfile(session?.user?.id);
   
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -22,12 +24,23 @@ export const NavContent = ({ onNavigate, onSignOut }: NavContentProps) => {
 
   const navItems = [
     { icon: Home, label: "Dashboard", path: "/dashboard" },
-    { icon: ClipboardList, label: "Jobs", path: "/jobs" },
-    { icon: MessageSquare, label: "Enquiries", path: "/enquiries" },
-    { icon: Users, label: "Suppliers", path: "/suppliers" },
-    { icon: Building2, label: "Customers", path: "/customers" },
-    { icon: UserCircle, label: "Profile", path: "/profile" },
   ];
+
+  // Add merchant-specific items
+  if (profile?.user_type === "merchant") {
+    navItems.push({ icon: Briefcase, label: "Traders Directory", path: "/merchant/traders" });
+  } else {
+    // Add regular items for non-merchants
+    navItems.push(
+      { icon: ClipboardList, label: "Jobs", path: "/jobs" },
+      { icon: MessageSquare, label: "Enquiries", path: "/enquiries" },
+      { icon: Users, label: "Suppliers", path: "/suppliers" },
+      { icon: Building2, label: "Customers", path: "/customers" }
+    );
+  }
+
+  // Add common items
+  navItems.push({ icon: UserCircle, label: "Profile", path: "/profile" });
 
   // Add admin settings if user is admin
   if (isAdmin) {
