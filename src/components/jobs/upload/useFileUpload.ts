@@ -1,6 +1,8 @@
+
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useSessionContext } from "@supabase/auth-helpers-react";
 
 interface UseFileUploadProps {
   jobId: string;
@@ -11,6 +13,7 @@ interface UseFileUploadProps {
 export const useFileUpload = ({ jobId, type, onUploadComplete }: UseFileUploadProps) => {
   const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
+  const { session } = useSessionContext();
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -49,6 +52,7 @@ export const useFileUpload = ({ jobId, type, onUploadComplete }: UseFileUploadPr
           job_id: jobId,
           filename: file.name,
           file_path: filePath,
+          uploaded_by: session?.user?.id,
           ...(amount && { amount }),
         });
 
