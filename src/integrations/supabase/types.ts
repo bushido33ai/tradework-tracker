@@ -199,28 +199,37 @@ export type Database = {
       job_invoices: {
         Row: {
           amount: number
+          external_reference: string | null
           file_path: string
           filename: string
           id: string
           job_id: string | null
+          received_at: string | null
+          source: string | null
           uploaded_at: string | null
           uploaded_by: string | null
         }
         Insert: {
           amount: number
+          external_reference?: string | null
           file_path: string
           filename: string
           id?: string
           job_id?: string | null
+          received_at?: string | null
+          source?: string | null
           uploaded_at?: string | null
           uploaded_by?: string | null
         }
         Update: {
           amount?: number
+          external_reference?: string | null
           file_path?: string
           filename?: string
           id?: string
           job_id?: string | null
+          received_at?: string | null
+          source?: string | null
           uploaded_at?: string | null
           uploaded_by?: string | null
         }
