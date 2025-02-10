@@ -2,7 +2,7 @@
 import { Link } from "react-router-dom";
 import { Home, ClipboardList, MessageSquare, Users, Building2, UserCircle, LogOut, Settings, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useLocation } from "react-router-dom";
+import { useLocation, Navigate } from "react-router-dom";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useAdminRole } from "@/hooks/useAdminRole";
 import { useProfile } from "@/hooks/useProfile";
@@ -22,16 +22,20 @@ export const NavContent = ({ onNavigate, onSignOut }: NavContentProps) => {
     return location.pathname === path;
   };
 
-  const navItems = [
-    { icon: Home, label: "Dashboard", path: "/dashboard" },
-  ];
+  const navItems = [];
 
-  // Add merchant-specific items
+  // Add merchant-specific or regular items based on user type
   if (profile?.user_type === "merchant") {
     navItems.push({ icon: Briefcase, label: "Traders Directory", path: "/merchant/traders" });
+
+    // Redirect from dashboard to traders directory for merchants
+    if (location.pathname === "/dashboard") {
+      return <Navigate to="/merchant/traders" replace />;
+    }
   } else {
-    // Add regular items for non-merchants
+    // Add dashboard and regular items for non-merchants
     navItems.push(
+      { icon: Home, label: "Dashboard", path: "/dashboard" },
       { icon: ClipboardList, label: "Jobs", path: "/jobs" },
       { icon: MessageSquare, label: "Enquiries", path: "/enquiries" },
       { icon: Users, label: "Suppliers", path: "/suppliers" },
@@ -81,3 +85,4 @@ export const NavContent = ({ onNavigate, onSignOut }: NavContentProps) => {
     </div>
   );
 };
+

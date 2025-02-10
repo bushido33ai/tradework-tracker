@@ -1,4 +1,3 @@
-
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, ArrowLeft, Trash2, ShieldCheck } from "lucide-react";
@@ -68,7 +67,7 @@ const UsersList = () => {
 
           if (adminError) {
             console.error("Error checking admin status:", adminError);
-            return { ...profile, jobCount: count || 0, isAdmin: false };
+            return { ...profile, jobCount: jobCount || 0, isAdmin: false };
           }
 
           return { 
@@ -208,4 +207,3 @@ const UsersList = () => {
 };
 
 export default UsersList;
-
