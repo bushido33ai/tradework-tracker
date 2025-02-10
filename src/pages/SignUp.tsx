@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { SignUpFormFields } from "@/components/signup/SignUpFormFields";
 import { signUpSchema } from "@/components/signup/validation";
 import type { SignUpFormData } from "@/components/signup/types";
+import { sendEmail } from "@/utils/email";
 
 const SignUp = () => {
   const { userType } = useParams<{ userType: string }>();
@@ -80,6 +81,23 @@ const SignUp = () => {
       }
 
       if (signUpData.user) {
+        // Send welcome email
+        try {
+          await sendEmail({
+            to: cleanedEmail,
+            subject: "Welcome to TradeMate!",
+            html: `
+              <h1>Welcome to TradeMate, ${cleanedFirstName}!</h1>
+              <p>Thank you for signing up as a ${userType}. We're excited to have you on board!</p>
+              <p>Your account has been created successfully. Please verify your email address to get started.</p>
+              <p>Best regards,<br>The TradeMate Team</p>
+            `
+          });
+        } catch (emailError) {
+          console.error('Failed to send welcome email:', emailError);
+          // Don't throw here - we still want to show success message even if email fails
+        }
+
         toast.success("Account created successfully! Please check your email to verify your account.");
         navigate("/signin");
       } else {
