@@ -24,12 +24,35 @@ serve(async (req) => {
   }
 
   try {
-    // Validate API key
+    // Enhanced API key validation logging
     const apiKey = req.headers.get('x-api-key')
-    if (!apiKey || apiKey !== Deno.env.get('INVOICE_INGESTION_API_KEY')) {
-      console.error('Invalid API key provided');
+    const expectedApiKey = Deno.env.get('INVOICE_INGESTION_API_KEY')
+    
+    console.log('API Key validation:')
+    console.log('- Received API key:', apiKey ? '****' + apiKey.slice(-4) : 'null')
+    console.log('- Expected API key:', expectedApiKey ? '****' + expectedApiKey.slice(-4) : 'null')
+    console.log('- Headers received:', JSON.stringify(Object.fromEntries(req.headers.entries()), null, 2))
+
+    if (!apiKey) {
+      console.error('No API key provided in request')
       return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
+        JSON.stringify({ error: 'Unauthorized - No API key provided' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 }
+      )
+    }
+
+    if (!expectedApiKey) {
+      console.error('INVOICE_INGESTION_API_KEY not set in environment')
+      return new Response(
+        JSON.stringify({ error: 'Server configuration error - API key not set' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
+      )
+    }
+
+    if (apiKey !== expectedApiKey) {
+      console.error('Invalid API key provided')
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized - Invalid API key' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 }
       )
     }
