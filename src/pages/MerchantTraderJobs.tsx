@@ -4,13 +4,13 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Loader2, ArrowLeft } from "lucide-react";
-import JobsList from "@/components/jobs/JobsList";
+import MerchantJobCard from "@/components/jobs/merchant/MerchantJobCard";
 
 const MerchantTraderJobs = () => {
   const { traderId } = useParams();
   const navigate = useNavigate();
 
-  const { data: trader, isLoading } = useQuery({
+  const { data: trader, isLoading: traderLoading } = useQuery({
     queryKey: ["trader", traderId],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -24,7 +24,21 @@ const MerchantTraderJobs = () => {
     },
   });
 
-  if (isLoading) {
+  const { data: jobs, isLoading: jobsLoading } = useQuery({
+    queryKey: ["trader-jobs", traderId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("jobs")
+        .select("id, job_number, title")
+        .eq("created_by", traderId)
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  if (traderLoading || jobsLoading) {
     return (
       <div className="flex items-center justify-center h-[50vh]">
         <Loader2 className="h-8 w-8 animate-spin" />
@@ -48,7 +62,14 @@ const MerchantTraderJobs = () => {
         </h1>
       </div>
 
-      <JobsList status={["pending", "in_progress", "completed", "cancelled"]} userId={traderId} />
+      <div className="space-y-4">
+        {jobs?.map((job) => (
+          <MerchantJobCard key={job.id} job={job} />
+        ))}
+        {jobs?.length === 0 && (
+          <p className="text-center text-muted-foreground">No jobs found for this trader.</p>
+        )}
+      </div>
     </div>
   );
 };
