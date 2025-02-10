@@ -40,7 +40,9 @@ const MerchantTraders = () => {
             onClick={() => navigate(`/merchant/traders/${trader.id}/jobs`)}
           >
             <h3 className="text-xl font-semibold">
-              {trader.full_name || trader.email}
+              {trader.first_name && trader.surname 
+                ? `${trader.first_name} ${trader.surname}`
+                : trader.full_name || trader.email}
             </h3>
             {trader.telephone && (
               <p className="text-muted-foreground mt-2">📞 {trader.telephone}</p>
