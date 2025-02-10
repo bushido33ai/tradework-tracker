@@ -72,8 +72,11 @@ const UsersList = () => {
     mutationFn: async (userId: string) => {
       console.log("Deleting user:", userId);
       
-      // Delete from auth.users (this will cascade to profiles and user_roles)
-      const { error } = await supabase.auth.admin.deleteUser(userId);
+      // Delete the profile first (this will cascade through our RLS policies)
+      const { error } = await supabase
+        .from('profiles')
+        .delete()
+        .eq('id', userId);
       
       if (error) {
         console.error("Error deleting user:", error);
