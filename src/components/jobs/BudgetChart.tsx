@@ -1,3 +1,4 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ChartContainer } from "@/components/ui/chart";
@@ -11,7 +12,7 @@ interface BudgetChartProps {
 }
 
 const BudgetChart = ({ jobId, budget }: BudgetChartProps) => {
-  const { data: invoices } = useQuery({
+  const { data: invoicesData } = useQuery({
     queryKey: ["invoices", jobId],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -24,11 +25,26 @@ const BudgetChart = ({ jobId, budget }: BudgetChartProps) => {
     },
   });
 
-  const spent = invoices?.reduce((sum, invoice) => sum + Number(invoice.amount), 0) || 0;
-  const remaining = Math.max(0, budget - spent);
+  const { data: miscCostsData } = useQuery({
+    queryKey: ["miscCosts", jobId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("job_misc_costs")
+        .select("amount")
+        .eq("job_id", jobId);
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const invoicesTotal = invoicesData?.reduce((sum, invoice) => sum + Number(invoice.amount), 0) || 0;
+  const miscCostsTotal = miscCostsData?.reduce((sum, cost) => sum + Number(cost.amount), 0) || 0;
+  const totalSpent = invoicesTotal + miscCostsTotal;
+  const remaining = Math.max(0, budget - totalSpent);
 
   const data = [
-    { name: "Budget Overview", spent, remaining },
+    { name: "Budget Overview", spent: totalSpent, remaining },
   ];
 
   const COLORS = {
@@ -44,9 +60,11 @@ const BudgetChart = ({ jobId, budget }: BudgetChartProps) => {
           <p className="text-sm text-muted-foreground">
             Total Budget: £{budget.toFixed(2)}
           </p>
-          <p className="text-sm text-red-500">
-            Total Spent: £{spent.toFixed(2)}
-          </p>
+          <div className="text-sm text-red-500 space-y-1">
+            <p>Invoices Total: £{invoicesTotal.toFixed(2)}</p>
+            <p>Misc Costs Total: £{miscCostsTotal.toFixed(2)}</p>
+            <p className="font-medium">Total Spent: £{totalSpent.toFixed(2)}</p>
+          </div>
           <p className="text-sm text-green-500">
             Remaining: £{remaining.toFixed(2)}
           </p>
