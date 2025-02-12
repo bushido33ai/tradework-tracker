@@ -8,6 +8,8 @@ import JobNotes from "./JobNotes";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { GradientButton } from "@/components/ui/gradient-button";
+import { RainbowButton } from "@/components/ui/rainbow-button";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -128,14 +130,12 @@ const JobTabs = ({ jobId, budget }: JobTabsProps) => {
             <div className="flex justify-between items-center mb-4">
               <div>
                 <h4 className="font-medium">Miscellaneous Costs</h4>
-                <Button 
-                  variant="outline" 
-                  size="sm"
+                <RainbowButton
                   onClick={() => setShowMiscCostForm(!showMiscCostForm)}
                   className="mt-2"
                 >
                   {showMiscCostForm ? "Cancel" : "Add Cost"}
-                </Button>
+                </RainbowButton>
               </div>
               <FileUpload jobId={jobId} type="invoice" />
             </div>
@@ -152,7 +152,7 @@ const JobTabs = ({ jobId, budget }: JobTabsProps) => {
                   placeholder="Amount"
                   {...register("amount", { required: true })}
                 />
-                <Button 
+                <GradientButton 
                   type="submit" 
                   disabled={addMiscCost.isPending}
                   className="w-full"
@@ -165,7 +165,7 @@ const JobTabs = ({ jobId, budget }: JobTabsProps) => {
                   ) : (
                     "Add Cost"
                   )}
-                </Button>
+                </GradientButton>
               </form>
             )}
 
