@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import FileUpload from "@/components/jobs/FileUpload";
@@ -117,7 +116,11 @@ const JobTabs = ({ jobId, budget }: JobTabsProps) => {
         <Card className="bg-white/90 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-200">
           <div className="p-6">
             <div className="flex justify-end mb-4">
-              <FileUpload jobId={jobId} type="design" />
+              <GradientButton asChild>
+                <div>
+                  <FileUpload jobId={jobId} type="design" />
+                </div>
+              </GradientButton>
             </div>
             <FileList jobId={jobId} type="design" />
           </div>
@@ -128,16 +131,19 @@ const JobTabs = ({ jobId, budget }: JobTabsProps) => {
         <Card className="bg-white/90 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-200">
           <div className="p-6">
             <div className="flex justify-between items-center mb-4">
-              <div>
+              <div className="space-y-2">
                 <h4 className="font-medium">Miscellaneous Costs</h4>
                 <RainbowButton
                   onClick={() => setShowMiscCostForm(!showMiscCostForm)}
-                  className="mt-2"
                 >
                   {showMiscCostForm ? "Cancel" : "Add Cost"}
                 </RainbowButton>
               </div>
-              <FileUpload jobId={jobId} type="invoice" />
+              <GradientButton asChild>
+                <div>
+                  <FileUpload jobId={jobId} type="invoice" />
+                </div>
+              </GradientButton>
             </div>
 
             {showMiscCostForm && (
