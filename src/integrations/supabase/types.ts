@@ -289,6 +289,44 @@ export type Database = {
           },
         ]
       }
+      job_misc_costs: {
+        Row: {
+          amount: number
+          created_at: string
+          created_by: string
+          description: string
+          id: string
+          job_id: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          created_by: string
+          description: string
+          id?: string
+          job_id: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          created_by?: string
+          description?: string
+          id?: string
+          job_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_misc_costs_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       job_notes: {
         Row: {
           content: string
