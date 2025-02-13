@@ -92,7 +92,7 @@ const WorkCalendar = () => {
       <div className="h-full w-full flex flex-col">
         <h1 className="text-2xl font-bold mb-4">Work Calendar</h1>
         <Card className="flex-1 p-4 rounded-none md:rounded-md overflow-hidden">
-          <div className="w-full h-full">
+          <div className="w-full h-full [&_.rdp]:h-full [&_.rdp-months]:h-full [&_.rdp-month]:h-full [&_.rdp-table]:h-full [&_.rdp-tbody]:h-full [&_.rdp-cell]:h-[100px] [&_.rdp]:w-full [&_.rdp-months]:w-full [&_.rdp-month]:w-full [&_.rdp-table]:w-full">
             <Calendar
               mode="single"
               selected={date}
