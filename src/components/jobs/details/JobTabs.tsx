@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import FileUpload from "@/components/jobs/FileUpload";
@@ -6,7 +5,6 @@ import FileList from "@/components/jobs/FileList";
 import BudgetChart from "@/components/jobs/BudgetChart";
 import JobNotes from "./JobNotes";
 import { useState } from "react";
-import { GradientButton } from "@/components/ui/gradient-button";
 import { RainbowButton } from "@/components/ui/rainbow-button";
 import { MiscCostForm } from "./MiscCostForm";
 import { MiscCostsList } from "./MiscCostsList";
@@ -54,11 +52,11 @@ const JobTabs = ({ jobId, budget }: JobTabsProps) => {
         <Card className="bg-white/90 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-200">
           <div className="p-6">
             <div className="flex justify-end mb-4">
-              <GradientButton asChild>
+              <RainbowButton asChild>
                 <div>
                   <FileUpload jobId={jobId} type="design" />
                 </div>
-              </GradientButton>
+              </RainbowButton>
             </div>
             <FileList jobId={jobId} type="design" />
           </div>
@@ -77,11 +75,11 @@ const JobTabs = ({ jobId, budget }: JobTabsProps) => {
                   {showMiscCostForm ? "Cancel" : "Add Cost"}
                 </RainbowButton>
               </div>
-              <GradientButton asChild>
+              <RainbowButton asChild>
                 <div>
                   <FileUpload jobId={jobId} type="invoice" />
                 </div>
-              </GradientButton>
+              </RainbowButton>
             </div>
 
             {showMiscCostForm && (
