@@ -1,12 +1,16 @@
+
 import { CardContent } from "@/components/ui/card";
+import { format } from "date-fns";
 
 interface JobContentProps {
   description: string;
   location: string;
   budget?: number | null;
+  start_date: string;
+  job_type: string;
 }
 
-const JobContent = ({ description, location, budget }: JobContentProps) => {
+const JobContent = ({ description, location, budget, start_date, job_type }: JobContentProps) => {
   return (
     <CardContent>
       <div className="grid gap-4">
@@ -16,7 +20,9 @@ const JobContent = ({ description, location, budget }: JobContentProps) => {
         </div>
         <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
           <span>📍 {location}</span>
-          {budget && <span>💰 £{budget}</span>}
+          {budget && <span>💰 £{budget.toFixed(2)}</span>}
+          <span>📅 Start Date: {format(new Date(start_date), "PPP")}</span>
+          <span>📋 Type: {job_type}</span>
         </div>
       </div>
     </CardContent>

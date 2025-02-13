@@ -1,3 +1,4 @@
+
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -151,6 +152,8 @@ const JobDetails = () => {
           description={job.description}
           location={job.location}
           budget={job.budget}
+          start_date={job.start_date}
+          job_type={job.job_type}
         />
       </Card>
 
