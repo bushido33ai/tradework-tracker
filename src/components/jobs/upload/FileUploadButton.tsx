@@ -9,18 +9,24 @@ interface FileUploadButtonProps {
 }
 
 const FileUploadButton = ({ type, isUploading, id }: FileUploadButtonProps) => {
+  const handleClick = () => {
+    const input = document.getElementById(id) as HTMLInputElement;
+    if (input) {
+      input.click();
+    }
+  };
+
   return (
-    <label htmlFor={id}>
-      <Button 
-        variant="outline"
-        className="cursor-pointer"
-        disabled={isUploading}
-        type="button"
-      >
-        <Upload className="w-4 h-4 mr-2" />
-        Upload {type === "design" ? "Design" : "Invoice"}
-      </Button>
-    </label>
+    <Button 
+      variant="outline"
+      className="cursor-pointer"
+      disabled={isUploading}
+      type="button"
+      onClick={handleClick}
+    >
+      <Upload className="w-4 h-4 mr-2" />
+      Upload {type === "design" ? "Design" : "Invoice"}
+    </Button>
   );
 };
 
