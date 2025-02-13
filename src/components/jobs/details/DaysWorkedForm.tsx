@@ -43,7 +43,7 @@ export const DaysWorkedForm = ({ jobId, onSuccess }: DaysWorkedFormProps) => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       date_worked: new Date().toISOString().split("T")[0],
-      hours_worked: "",
+      hours_worked: "8",
       day_rate_type: "labourer",
       notes: "",
     },
