@@ -133,7 +133,7 @@ const Calendar = () => {
           <Button variant={view === 'week' ? 'secondary' : 'ghost'} onClick={e => {
           e.stopPropagation();
           setView('week');
-        }} className="transition-colors w-full md:w-auto">
+        }} className="transition-colors w-full md:w-auto text-slate-50">
             Week
           </Button>
           <Button variant={view === 'day' ? 'secondary' : 'ghost'} onClick={e => {
