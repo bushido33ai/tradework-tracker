@@ -80,9 +80,9 @@ const WorkCalendar = () => {
   }
 
   return (
-    <main className="flex flex-col h-screen pt-16 md:pt-4 md:pl-64">
-      <div className="flex-1 p-1 md:p-2 flex flex-col min-h-0">
-        <div className="flex items-center justify-between mb-4 px-2">
+    <main className="flex flex-col h-screen md:pl-64">
+      <div className="flex-1 flex flex-col min-h-0">
+        <div className="flex items-center justify-between p-2 md:p-4">
           <div className="flex items-center gap-2">
             <Button 
               variant="outline" 
@@ -115,8 +115,8 @@ const WorkCalendar = () => {
             <Button variant="outline" size="sm">List</Button>
           </div>
         </div>
-        <Card className="flex-1 p-1 md:p-2 shadow-sm">
-          <div className="h-[calc(100vh-120px)] md:h-[calc(100vh-100px)]">
+        <Card className="flex-1 shadow-sm rounded-none border-0">
+          <div className="h-[calc(100vh-80px)]">
             <Calendar
               localizer={localizer}
               events={events}
@@ -134,7 +134,7 @@ const WorkCalendar = () => {
                 className: 'bg-primary hover:bg-primary/90 rounded-md border-none',
               })}
               components={{
-                toolbar: () => null, // Hide default toolbar since we have our custom one
+                toolbar: () => null,
               }}
             />
           </div>
