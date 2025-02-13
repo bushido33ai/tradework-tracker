@@ -1,5 +1,5 @@
 
-import { RainbowButton } from "@/components/ui/rainbow-button";
+import { Button } from "@/components/ui/button";
 import { Upload } from "lucide-react";
 
 interface FileUploadButtonProps {
@@ -11,10 +11,15 @@ interface FileUploadButtonProps {
 const FileUploadButton = ({ type, isUploading, id }: FileUploadButtonProps) => {
   return (
     <label htmlFor={id}>
-      <RainbowButton className="cursor-pointer" disabled={isUploading} type="button">
+      <Button 
+        variant="outline"
+        className="cursor-pointer"
+        disabled={isUploading}
+        type="button"
+      >
         <Upload className="w-4 h-4 mr-2" />
         Upload {type === "design" ? "Design" : "Invoice"}
-      </RainbowButton>
+      </Button>
     </label>
   );
 };
