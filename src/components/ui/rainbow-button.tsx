@@ -1,16 +1,23 @@
+
 import React from "react";
 import { cn } from "@/lib/utils";
+import { Slot } from "@radix-ui/react-slot";
 
 interface RainbowButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  asChild?: boolean;
+}
 
 export function RainbowButton({
   children,
   className,
+  asChild = false,
   ...props
 }: RainbowButtonProps) {
+  const Comp = asChild ? Slot : "button";
+  
   return (
-    <button
+    <Comp
       className={cn(
         "group relative inline-flex h-11 items-center justify-center rounded-xl px-8 py-2 font-medium text-white transition-all",
         
@@ -36,6 +43,6 @@ export function RainbowButton({
       {...props}
     >
       {children}
-    </button>
+    </Comp>
   );
 }
