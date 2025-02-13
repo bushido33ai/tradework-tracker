@@ -1,6 +1,7 @@
 
 import FileUploadButton from "./upload/FileUploadButton";
 import { useFileUpload } from "./upload/useFileUpload";
+import { useRef } from "react";
 
 interface FileUploadProps {
   jobId: string;
@@ -14,10 +15,13 @@ const FileUpload = ({ jobId, type, onUploadComplete }: FileUploadProps) => {
     type,
     onUploadComplete,
   });
+  
+  const inputRef = useRef<HTMLInputElement>(null);
 
   return (
     <div className="flex gap-2">
       <input
+        ref={inputRef}
         type="file"
         id={`file-upload-${type}`}
         className="hidden"
@@ -28,7 +32,8 @@ const FileUpload = ({ jobId, type, onUploadComplete }: FileUploadProps) => {
       <FileUploadButton 
         type={type} 
         isUploading={isUploading} 
-        id={`file-upload-${type}`} 
+        id={`file-upload-${type}`}
+        inputRef={inputRef}
       />
     </div>
   );

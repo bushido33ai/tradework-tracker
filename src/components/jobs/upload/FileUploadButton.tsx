@@ -1,21 +1,16 @@
 
 import { Button } from "@/components/ui/button";
 import { Upload } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { RefObject } from "react";
 
 interface FileUploadButtonProps {
   type: "design" | "invoice";
   isUploading: boolean;
   id: string;
+  inputRef: RefObject<HTMLInputElement>;
 }
 
-const FileUploadButton = ({ type, isUploading, id }: FileUploadButtonProps) => {
-  const inputRef = useRef<HTMLInputElement | null>(null);
-
-  useEffect(() => {
-    inputRef.current = document.getElementById(id) as HTMLInputElement;
-  }, [id]);
-
+const FileUploadButton = ({ type, isUploading, inputRef }: FileUploadButtonProps) => {
   const handleClick = () => {
     if (inputRef.current) {
       inputRef.current.click();
