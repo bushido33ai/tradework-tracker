@@ -6,100 +6,18 @@ import FileList from "@/components/jobs/FileList";
 import BudgetChart from "@/components/jobs/BudgetChart";
 import JobNotes from "./JobNotes";
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { GradientButton } from "@/components/ui/gradient-button";
 import { RainbowButton } from "@/components/ui/rainbow-button";
-import { useForm } from "react-hook-form";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
-import { Loader2, Trash2 } from "lucide-react";
-import type { JobMiscCost } from "./types";
+import { MiscCostForm } from "./MiscCostForm";
+import { MiscCostsList } from "./MiscCostsList";
 
 interface JobTabsProps {
   jobId: string;
   budget: number | null;
 }
 
-interface MiscCostFormValues {
-  description: string;
-  amount: string;
-}
-
 const JobTabs = ({ jobId, budget }: JobTabsProps) => {
-  const queryClient = useQueryClient();
   const [showMiscCostForm, setShowMiscCostForm] = useState(false);
-  const { register, handleSubmit, reset } = useForm<MiscCostFormValues>();
-
-  const { data: miscCosts, isLoading: isLoadingMiscCosts } = useQuery({
-    queryKey: ["miscCosts", jobId],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("job_misc_costs")
-        .select("*")
-        .eq("job_id", jobId)
-        .order("created_at", { ascending: false });
-
-      if (error) throw error;
-      return data as JobMiscCost[];
-    },
-  });
-
-  const addMiscCost = useMutation({
-    mutationFn: async (values: MiscCostFormValues) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
-
-      const { error } = await supabase
-        .from("job_misc_costs")
-        .insert({
-          job_id: jobId,
-          description: values.description,
-          amount: parseFloat(values.amount),
-          created_by: user.id,
-        });
-
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["miscCosts", jobId] });
-      toast.success("Cost added successfully");
-      reset();
-      setShowMiscCostForm(false);
-    },
-    onError: (error) => {
-      console.error("Error adding misc cost:", error);
-      toast.error("Failed to add cost");
-    },
-  });
-
-  const deleteMiscCost = useMutation({
-    mutationFn: async (costId: string) => {
-      const { error } = await supabase
-        .from("job_misc_costs")
-        .delete()
-        .eq("id", costId);
-
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["miscCosts", jobId] });
-      toast.success("Cost deleted successfully");
-    },
-    onError: (error) => {
-      console.error("Error deleting misc cost:", error);
-      toast.error("Failed to delete cost");
-    },
-  });
-
-  const onSubmit = (values: MiscCostFormValues) => {
-    if (!values.amount || isNaN(parseFloat(values.amount))) {
-      toast.error("Please enter a valid amount");
-      return;
-    }
-    addMiscCost.mutate(values);
-  };
 
   return (
     <Tabs defaultValue="designs" className="w-full">
@@ -167,69 +85,17 @@ const JobTabs = ({ jobId, budget }: JobTabsProps) => {
             </div>
 
             {showMiscCostForm && (
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mb-4">
-                <Input
-                  placeholder="Description"
-                  {...register("description", { required: true })}
+              <div className="mb-4">
+                <MiscCostForm 
+                  jobId={jobId} 
+                  onSuccess={() => setShowMiscCostForm(false)} 
                 />
-                <Input
-                  type="number"
-                  step="0.01"
-                  placeholder="Amount"
-                  {...register("amount", { required: true })}
-                />
-                <GradientButton 
-                  type="submit" 
-                  disabled={addMiscCost.isPending}
-                  className="w-full"
-                >
-                  {addMiscCost.isPending ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Adding...
-                    </>
-                  ) : (
-                    "Add Cost"
-                  )}
-                </GradientButton>
-              </form>
+              </div>
             )}
 
-            {isLoadingMiscCosts ? (
-              <div className="flex justify-center py-4">
-                <Loader2 className="h-6 w-6 animate-spin" />
-              </div>
-            ) : miscCosts && miscCosts.length > 0 ? (
-              <div className="space-y-2 mb-4">
-                {miscCosts.map((cost) => (
-                  <div 
-                    key={cost.id} 
-                    className="flex justify-between items-center p-3 bg-accent/50 rounded-lg group"
-                  >
-                    <span>{cost.description}</span>
-                    <div className="flex items-center gap-3">
-                      <span className="font-medium">£{cost.amount.toFixed(2)}</span>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="opacity-0 group-hover:opacity-100 transition-opacity"
-                        onClick={() => {
-                          if (window.confirm('Are you sure you want to delete this cost?')) {
-                            deleteMiscCost.mutate(cost.id);
-                          }
-                        }}
-                      >
-                        <Trash2 className="h-4 w-4 text-destructive" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-muted-foreground text-center py-4 mb-4">
-                No miscellaneous costs recorded
-              </p>
-            )}
+            <div className="mb-4">
+              <MiscCostsList jobId={jobId} />
+            </div>
 
             <FileList jobId={jobId} type="invoice" />
           </div>
