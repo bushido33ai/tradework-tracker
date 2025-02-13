@@ -78,7 +78,7 @@ const Calendar = () => {
           </Button>
         </div>
 
-        <h2 className="text-2xl font-semibold text-slate-900">
+        <h2 className="text-2xl font-semibold text-slate-50">
           {format(currentDate, 'MMMM yyyy')}
         </h2>
 
