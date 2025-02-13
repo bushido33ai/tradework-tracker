@@ -373,8 +373,11 @@ export type Database = {
           created_by: string
           description: string
           id: string
+          job_manager: string
           job_number: string
+          job_type: string | null
           location: string
+          start_date: string | null
           status: Database["public"]["Enums"]["job_status"] | null
           title: string
           updated_at: string
@@ -386,8 +389,11 @@ export type Database = {
           created_by: string
           description: string
           id?: string
+          job_manager: string
           job_number?: string
+          job_type?: string | null
           location: string
+          start_date?: string | null
           status?: Database["public"]["Enums"]["job_status"] | null
           title: string
           updated_at?: string
@@ -399,13 +405,24 @@ export type Database = {
           created_by?: string
           description?: string
           id?: string
+          job_manager?: string
           job_number?: string
+          job_type?: string | null
           location?: string
+          start_date?: string | null
           status?: Database["public"]["Enums"]["job_status"] | null
           title?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "jobs_job_manager_fkey"
+            columns: ["job_manager"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {

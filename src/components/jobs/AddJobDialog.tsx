@@ -1,3 +1,4 @@
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -28,6 +29,9 @@ const AddJobDialog = ({ open, onOpenChange }: AddJobDialogProps) => {
       description: "",
       location: "",
       budget: "",
+      start_date: new Date().toISOString(),
+      job_type: "Full Quoted",
+      job_manager: "", // This will be set to current user in mutation
     },
   });
 
@@ -43,6 +47,9 @@ const AddJobDialog = ({ open, onOpenChange }: AddJobDialogProps) => {
         budget: values.budget ? parseFloat(values.budget) : null,
         created_by: user.id,
         job_number: undefined, // This explicitly tells Supabase to use the default value
+        start_date: new Date(values.start_date),
+        job_manager: user.id, // Set job manager to current user
+        job_type: values.job_type,
       };
 
       const { error, data } = await supabase
