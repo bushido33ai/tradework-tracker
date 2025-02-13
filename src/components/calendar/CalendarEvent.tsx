@@ -1,21 +1,26 @@
 
-interface Event {
-  id: string;
-  title: string;
-  date: Date;
-  color?: string;
-}
+import { cn } from '@/lib/utils';
 
 interface CalendarEventProps {
-  event: Event;
+  event: {
+    id: string;
+    title: string;
+    color?: string;
+  };
 }
 
 const CalendarEvent = ({ event }: CalendarEventProps) => {
   return (
     <div
-      className="mb-1 truncate rounded px-2 py-1 text-sm font-medium text-white cursor-pointer hover:opacity-90 transition-opacity"
-      style={{ backgroundColor: event.color || '#3B82F6' }}
-      title={event.title}
+      className={cn(
+        "px-2 py-1 text-xs rounded-md mb-1 truncate",
+        "transition-all duration-200 hover:scale-[1.02] cursor-pointer",
+        "animate-scale-in select-none"
+      )}
+      style={{
+        backgroundColor: event.color || '#10B981',
+        color: 'white'
+      }}
     >
       {event.title}
     </div>
