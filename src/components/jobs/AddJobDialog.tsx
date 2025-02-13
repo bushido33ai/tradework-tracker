@@ -40,13 +40,15 @@ const AddJobDialog = ({ open, onOpenChange }: AddJobDialogProps) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
+      // For debugging
+      console.log("Submitting job with values:", values);
+
       const jobData = {
         title: values.title,
         description: values.description,
         location: values.location,
         budget: values.budget ? parseFloat(values.budget) : null,
         created_by: user.id,
-        job_number: undefined,
         start_date: values.start_date,
         job_manager: user.id,
         job_type: values.job_type,
@@ -77,8 +79,13 @@ const AddJobDialog = ({ open, onOpenChange }: AddJobDialogProps) => {
     },
   });
 
-  const onSubmit = (values: JobFormValues) => {
-    addJob.mutate(values);
+  const onSubmit = async (values: JobFormValues) => {
+    console.log("Form submitted with values:", values);
+    try {
+      await addJob.mutateAsync(values);
+    } catch (error) {
+      console.error("Error in submit:", error);
+    }
   };
 
   return (
@@ -89,7 +96,10 @@ const AddJobDialog = ({ open, onOpenChange }: AddJobDialogProps) => {
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form 
+            onSubmit={form.handleSubmit(onSubmit)} 
+            className="space-y-4"
+          >
             <JobFormFields form={form} />
 
             <div className="flex justify-end gap-4 pt-4">
@@ -100,7 +110,10 @@ const AddJobDialog = ({ open, onOpenChange }: AddJobDialogProps) => {
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={addJob.isPending}>
+              <Button 
+                type="submit" 
+                disabled={addJob.isPending}
+              >
                 {addJob.isPending ? "Creating..." : "Create Job"}
               </Button>
             </div>
