@@ -114,16 +114,12 @@ const JobFormFields = ({ form }: JobFormFieldsProps) => {
                   mode="single"
                   selected={field.value ? new Date(field.value) : undefined}
                   onSelect={(date) => {
-                    if (date) {
-                      // Create a date at noon UTC
-                      const selectedDate = new Date(Date.UTC(
-                        date.getFullYear(),
-                        date.getMonth(),
-                        date.getDate(),
-                        12, 0, 0, 0
-                      ));
-                      field.onChange(selectedDate.toISOString());
-                    }
+                    if (!date) return;
+                    const year = date.getFullYear();
+                    const month = date.getMonth();
+                    const day = date.getDate();
+                    const newDate = new Date(year, month, day, 12, 0, 0, 0);
+                    field.onChange(newDate.toISOString());
                   }}
                   disabled={(date) =>
                     date < new Date(new Date().setHours(0, 0, 0, 0))

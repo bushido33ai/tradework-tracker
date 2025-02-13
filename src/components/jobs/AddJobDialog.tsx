@@ -29,9 +29,9 @@ const AddJobDialog = ({ open, onOpenChange }: AddJobDialogProps) => {
       description: "",
       location: "",
       budget: "",
-      start_date: new Date().toISOString(),
+      start_date: new Date().toISOString(), // Initialize with current date
       job_type: "Full Quoted",
-      job_manager: "", // This will be set to current user in mutation
+      job_manager: "",
     },
   });
 
@@ -46,9 +46,9 @@ const AddJobDialog = ({ open, onOpenChange }: AddJobDialogProps) => {
         location: values.location,
         budget: values.budget ? parseFloat(values.budget) : null,
         created_by: user.id,
-        job_number: undefined, // This explicitly tells Supabase to use the default value
-        start_date: values.start_date, // Now passing the ISO string directly
-        job_manager: user.id, // Set job manager to current user
+        job_number: undefined,
+        start_date: values.start_date,
+        job_manager: user.id,
         job_type: values.job_type,
       };
 
