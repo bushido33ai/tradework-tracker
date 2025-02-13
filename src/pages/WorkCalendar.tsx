@@ -51,11 +51,8 @@ const WorkCalendar = () => {
     const dateStr = format(date, 'yyyy-MM-dd');
     const dayJobs = jobsByDate?.[dateStr] || [];
     if (dayJobs.length === 1) {
-      // If there's only one job, navigate directly to it
       navigate(`/jobs/${dayJobs[0].id}`);
     } else if (dayJobs.length > 1) {
-      // If there are multiple jobs, you might want to show them in a list
-      // For now, we'll navigate to the first one
       navigate(`/jobs/${dayJobs[0].id}`);
     }
   };
@@ -68,10 +65,32 @@ const WorkCalendar = () => {
     );
   }
 
+  const renderDayContents = (day: Date) => {
+    const dateStr = format(day, 'yyyy-MM-dd');
+    const dayJobs = jobsByDate?.[dateStr] || [];
+    
+    if (dayJobs.length === 0) return null;
+    
+    return (
+      <div className="absolute bottom-0 left-0 right-0 p-1 text-xs bg-primary/10 rounded-b">
+        {dayJobs.map((job, index) => (
+          <div key={job.id} className={`truncate ${index > 0 ? 'hidden sm:block' : ''}`}>
+            {job.title}
+          </div>
+        ))}
+        {dayJobs.length > 1 && (
+          <div className="text-primary text-[10px]">
+            +{dayJobs.length - 1} more
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-6">Work Calendar</h1>
-      <Card className="p-4">
+    <div className="h-[calc(100vh-6rem)] flex flex-col">
+      <h1 className="text-2xl font-bold mb-4">Work Calendar</h1>
+      <Card className="flex-1 p-4 overflow-hidden">
         <Calendar
           mode="single"
           selected={date}
@@ -89,12 +108,24 @@ const WorkCalendar = () => {
           }}
           modifiersStyles={{
             booked: {
-              backgroundColor: '#cbd5e1',
+              backgroundColor: '#e2e8f0',
               color: '#1e293b',
-              fontWeight: 'bold'
+              fontWeight: 'bold',
+              position: 'relative',
+              minHeight: '80px'
             }
           }}
-          className="rounded-md border"
+          components={{
+            Day: ({ date, ...props }) => (
+              <div className="relative h-full min-h-[80px]" {...props}>
+                <div className="absolute top-1 left-2">
+                  {date.getDate()}
+                </div>
+                {renderDayContents(date)}
+              </div>
+            )
+          }}
+          className="rounded-md border h-full"
         />
       </Card>
     </div>
