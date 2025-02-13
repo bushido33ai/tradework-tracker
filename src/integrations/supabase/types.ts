@@ -416,6 +416,7 @@ export type Database = {
           created_at: string
           created_by: string
           description: string
+          end_date: string | null
           id: string
           job_manager: string
           job_number: string
@@ -432,6 +433,7 @@ export type Database = {
           created_at?: string
           created_by: string
           description: string
+          end_date?: string | null
           id?: string
           job_manager: string
           job_number?: string
@@ -448,6 +450,7 @@ export type Database = {
           created_at?: string
           created_by?: string
           description?: string
+          end_date?: string | null
           id?: string
           job_manager?: string
           job_number?: string
