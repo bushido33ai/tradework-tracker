@@ -30,6 +30,14 @@ const JobTabs = ({ jobId, budget, job_type }: JobTabsProps) => {
         >
           Designs
         </TabsTrigger>
+        {isDayRate && (
+          <TabsTrigger 
+            value="days-worked" 
+            className="flex-1 font-medium data-[state=active]:bg-primary-50 data-[state=active]:text-primary-800 data-[state=active]:shadow-inner data-[state=active]:border-b-2 data-[state=active]:border-primary-600 transition-all duration-200"
+          >
+            Days Worked
+          </TabsTrigger>
+        )}
         <TabsTrigger 
           value="invoices" 
           className="flex-1 font-medium data-[state=active]:bg-primary-50 data-[state=active]:text-primary-800 data-[state=active]:shadow-inner data-[state=active]:border-b-2 data-[state=active]:border-primary-600 transition-all duration-200"
@@ -42,14 +50,6 @@ const JobTabs = ({ jobId, budget, job_type }: JobTabsProps) => {
         >
           Notes
         </TabsTrigger>
-        {isDayRate && (
-          <TabsTrigger 
-            value="days-worked" 
-            className="flex-1 font-medium data-[state=active]:bg-primary-50 data-[state=active]:text-primary-800 data-[state=active]:shadow-inner data-[state=active]:border-b-2 data-[state=active]:border-primary-600 transition-all duration-200"
-          >
-            Days Worked
-          </TabsTrigger>
-        )}
         {budget && budget > 0 && (
           <TabsTrigger 
             value="budget" 
@@ -70,6 +70,12 @@ const JobTabs = ({ jobId, budget, job_type }: JobTabsProps) => {
           </div>
         </Card>
       </TabsContent>
+
+      {isDayRate && (
+        <TabsContent value="days-worked">
+          <DaysWorkedTab jobId={jobId} />
+        </TabsContent>
+      )}
 
       <TabsContent value="invoices">
         <Card className="bg-white/90 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-200">
@@ -113,12 +119,6 @@ const JobTabs = ({ jobId, budget, job_type }: JobTabsProps) => {
           </div>
         </Card>
       </TabsContent>
-
-      {isDayRate && (
-        <TabsContent value="days-worked">
-          <DaysWorkedTab jobId={jobId} />
-        </TabsContent>
-      )}
 
       {budget && budget > 0 && (
         <TabsContent value="budget">
