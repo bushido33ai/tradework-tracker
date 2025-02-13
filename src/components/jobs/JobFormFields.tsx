@@ -4,12 +4,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { UseFormReturn } from "react-hook-form";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
 import type { JobFormValues } from "./types";
 
 interface JobFormFieldsProps {
@@ -90,44 +84,21 @@ const JobFormFields = ({ form }: JobFormFieldsProps) => {
         render={({ field }) => (
           <FormItem className="flex flex-col">
             <FormLabel>Start Date</FormLabel>
-            <Popover>
-              <PopoverTrigger asChild>
-                <FormControl>
-                  <Button
-                    variant={"outline"}
-                    className={cn(
-                      "w-full pl-3 text-left font-normal",
-                      !field.value && "text-muted-foreground"
-                    )}
-                  >
-                    {field.value ? (
-                      format(new Date(field.value), "PPP")
-                    ) : (
-                      <span>Pick a date</span>
-                    )}
-                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                  </Button>
-                </FormControl>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={field.value ? new Date(field.value) : undefined}
-                  onSelect={(date) => {
-                    if (!date) return;
-                    const year = date.getFullYear();
-                    const month = date.getMonth();
-                    const day = date.getDate();
-                    const newDate = new Date(year, month, day, 12, 0, 0, 0);
-                    field.onChange(newDate.toISOString());
-                  }}
-                  disabled={(date) =>
-                    date < new Date(new Date().setHours(0, 0, 0, 0))
+            <FormControl>
+              <Input
+                type="date"
+                {...field}
+                value={field.value ? new Date(field.value).toISOString().split('T')[0] : ''}
+                onChange={(e) => {
+                  if (e.target.value) {
+                    const date = new Date(e.target.value);
+                    date.setHours(12, 0, 0, 0);
+                    field.onChange(date.toISOString());
                   }
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
+                }}
+                min={new Date().toISOString().split('T')[0]}
+              />
+            </FormControl>
             <FormMessage />
           </FormItem>
         )}
