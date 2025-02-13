@@ -113,7 +113,14 @@ const JobFormFields = ({ form }: JobFormFieldsProps) => {
                 <Calendar
                   mode="single"
                   selected={field.value ? new Date(field.value) : undefined}
-                  onSelect={(date) => field.onChange(date?.toISOString())}
+                  onSelect={(date) => {
+                    if (date) {
+                      // Set to noon UTC to avoid timezone issues
+                      const utcDate = new Date(date);
+                      utcDate.setUTCHours(12, 0, 0, 0);
+                      field.onChange(utcDate.toISOString());
+                    }
+                  }}
                   disabled={(date) =>
                     date < new Date(new Date().setHours(0, 0, 0, 0))
                   }
