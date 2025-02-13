@@ -1,3 +1,4 @@
+
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, ArrowLeft, Trash2, ShieldCheck } from "lucide-react";
@@ -88,15 +89,26 @@ const UsersList = () => {
     mutationFn: async (userId: string) => {
       console.log("Deleting user:", userId);
       
-      // Delete the profile first (this will cascade through our RLS policies)
-      const { error } = await supabase
+      // First delete any job access permissions granted by this user
+      const { error: permissionsError } = await supabase
+        .from('job_access_permissions')
+        .delete()
+        .eq('granted_by', userId);
+      
+      if (permissionsError) {
+        console.error("Error deleting job access permissions:", permissionsError);
+        throw permissionsError;
+      }
+      
+      // Then delete the profile
+      const { error: profileError } = await supabase
         .from('profiles')
         .delete()
         .eq('id', userId);
       
-      if (error) {
-        console.error("Error deleting user:", error);
-        throw error;
+      if (profileError) {
+        console.error("Error deleting profile:", profileError);
+        throw profileError;
       }
       
       return userId;
