@@ -73,7 +73,7 @@ const Calendar = () => {
           <Button variant="outline" size="icon" onClick={nextMonth} className="hover:bg-gray-100 transition-colors">
             <ChevronRight className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" onClick={today} className="hover:bg-gray-100 transition-colors">
+          <Button variant="ghost" onClick={today} className="hover:bg-gray-100 transition-colors text-zinc-950">
             Today
           </Button>
         </div>
