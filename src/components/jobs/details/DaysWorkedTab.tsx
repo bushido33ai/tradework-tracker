@@ -100,6 +100,7 @@ export const DaysWorkedTab = ({ jobId }: DaysWorkedTabProps) => {
                 <TableRow>
                   <TableHead>Date</TableHead>
                   <TableHead>Hours</TableHead>
+                  <TableHead>Type</TableHead>
                   <TableHead>Notes</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
@@ -109,6 +110,7 @@ export const DaysWorkedTab = ({ jobId }: DaysWorkedTabProps) => {
                   <TableRow key={day.id}>
                     <TableCell>{format(new Date(day.date_worked), "PPP")}</TableCell>
                     <TableCell>{day.hours_worked}</TableCell>
+                    <TableCell className="capitalize">{day.day_rate_type || "N/A"}</TableCell>
                     <TableCell>{day.notes}</TableCell>
                     <TableCell className="text-right">
                       <Button

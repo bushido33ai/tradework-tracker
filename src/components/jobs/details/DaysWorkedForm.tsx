@@ -16,10 +16,20 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const formSchema = z.object({
   date_worked: z.string().min(1, "Date is required"),
   hours_worked: z.string().min(1, "Hours worked is required"),
+  day_rate_type: z.enum(["labourer", "skilled"], {
+    required_error: "Day rate type is required",
+  }),
   notes: z.string().optional(),
 });
 
@@ -34,6 +44,7 @@ export const DaysWorkedForm = ({ jobId, onSuccess }: DaysWorkedFormProps) => {
     defaultValues: {
       date_worked: new Date().toISOString().split("T")[0],
       hours_worked: "",
+      day_rate_type: "labourer",
       notes: "",
     },
   });
@@ -47,6 +58,7 @@ export const DaysWorkedForm = ({ jobId, onSuccess }: DaysWorkedFormProps) => {
         job_id: jobId,
         date_worked: values.date_worked,
         hours_worked: parseFloat(values.hours_worked),
+        day_rate_type: values.day_rate_type,
         notes: values.notes,
         created_by: user.id,
       });
@@ -93,6 +105,28 @@ export const DaysWorkedForm = ({ jobId, onSuccess }: DaysWorkedFormProps) => {
               <FormControl>
                 <Input type="number" step="0.5" {...field} />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="day_rate_type"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Day Rate Type</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select day rate type" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="labourer">Labourer</SelectItem>
+                  <SelectItem value="skilled">Skilled</SelectItem>
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
