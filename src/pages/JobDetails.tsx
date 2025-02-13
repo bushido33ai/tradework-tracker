@@ -51,6 +51,9 @@ const JobDetails = () => {
   // Set form values when job data is loaded
   useEffect(() => {
     if (job) {
+      // Ensure job_type is one of the valid values
+      const validJobType = job.job_type === "Day Rate" ? "Day Rate" : "Fully Quoted";
+      
       form.reset({
         title: job.title,
         description: job.description,
@@ -58,7 +61,7 @@ const JobDetails = () => {
         budget: job.budget?.toString() || "",
         start_date: job.start_date,
         end_date: job.end_date || "",
-        job_type: job.job_type,
+        job_type: validJobType,
         job_manager: job.job_manager,
       });
     }
