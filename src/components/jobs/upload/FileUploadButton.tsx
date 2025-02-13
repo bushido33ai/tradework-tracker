@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Upload } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 interface FileUploadButtonProps {
   type: "design" | "invoice";
@@ -9,10 +10,17 @@ interface FileUploadButtonProps {
 }
 
 const FileUploadButton = ({ type, isUploading, id }: FileUploadButtonProps) => {
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    inputRef.current = document.getElementById(id) as HTMLInputElement;
+  }, [id]);
+
   const handleClick = () => {
-    const input = document.getElementById(id) as HTMLInputElement;
-    if (input) {
-      input.click();
+    if (inputRef.current) {
+      inputRef.current.click();
+    } else {
+      console.error('File input element not found');
     }
   };
 
