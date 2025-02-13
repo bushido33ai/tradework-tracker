@@ -23,26 +23,26 @@ const JobTabs = ({ jobId, budget }: JobTabsProps) => {
       <TabsList className="w-full flex bg-white/90 backdrop-blur-sm border-b">
         <TabsTrigger 
           value="designs" 
-          className="flex-1 data-[state=active]:bg-primary-50 data-[state=active]:text-primary-800"
+          className="flex-1 font-medium data-[state=active]:bg-primary-50 data-[state=active]:text-primary-800 data-[state=active]:shadow-inner data-[state=active]:border-b-2 data-[state=active]:border-primary-600 transition-all duration-200"
         >
           Designs
         </TabsTrigger>
         <TabsTrigger 
           value="invoices" 
-          className="flex-1 data-[state=active]:bg-primary-50 data-[state=active]:text-primary-800"
+          className="flex-1 font-medium data-[state=active]:bg-primary-50 data-[state=active]:text-primary-800 data-[state=active]:shadow-inner data-[state=active]:border-b-2 data-[state=active]:border-primary-600 transition-all duration-200"
         >
           Invoices
         </TabsTrigger>
         <TabsTrigger 
           value="notes" 
-          className="flex-1 data-[state=active]:bg-primary-50 data-[state=active]:text-primary-800"
+          className="flex-1 font-medium data-[state=active]:bg-primary-50 data-[state=active]:text-primary-800 data-[state=active]:shadow-inner data-[state=active]:border-b-2 data-[state=active]:border-primary-600 transition-all duration-200"
         >
           Notes
         </TabsTrigger>
         {budget && budget > 0 && (
           <TabsTrigger 
             value="budget" 
-            className="flex-1 data-[state=active]:bg-primary-50 data-[state=active]:text-primary-800"
+            className="flex-1 font-medium data-[state=active]:bg-primary-50 data-[state=active]:text-primary-800 data-[state=active]:shadow-inner data-[state=active]:border-b-2 data-[state=active]:border-primary-600 transition-all duration-200"
           >
             Budget
           </TabsTrigger>
