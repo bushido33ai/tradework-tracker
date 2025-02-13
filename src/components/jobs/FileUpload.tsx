@@ -26,7 +26,8 @@ const FileUpload = ({ jobId, type, onUploadComplete }: FileUploadProps) => {
         id={`file-upload-${type}`}
         className="hidden"
         onChange={handleFileUpload}
-        accept={type === "design" ? "image/*,.pdf" : ".pdf,image/*"}
+        accept="image/*,.pdf"
+        capture="environment"
         disabled={isUploading}
       />
       <FileUploadButton 
