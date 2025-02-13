@@ -53,11 +53,7 @@ const JobTabs = ({ jobId, budget }: JobTabsProps) => {
         <Card className="bg-white/90 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-200">
           <div className="p-6">
             <div className="flex justify-end mb-4">
-              <RainbowButton asChild>
-                <div>
-                  <FileUpload jobId={jobId} type="design" />
-                </div>
-              </RainbowButton>
+              <FileUpload jobId={jobId} type="design" />
             </div>
             <FileList jobId={jobId} type="design" />
           </div>
@@ -76,11 +72,7 @@ const JobTabs = ({ jobId, budget }: JobTabsProps) => {
                   {showMiscCostForm ? "Cancel" : "Add Cost"}
                 </RainbowButton>
               </div>
-              <RainbowButton asChild>
-                <div>
-                  <FileUpload jobId={jobId} type="invoice" />
-                </div>
-              </RainbowButton>
+              <FileUpload jobId={jobId} type="invoice" />
             </div>
 
             {showMiscCostForm && (
