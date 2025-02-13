@@ -115,46 +115,52 @@ const Calendar = () => {
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto p-6 space-y-6 rounded-lg shadow-lg border border-slate-200 animate-fade-in bg-[#1f1f31]">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <Button 
-            variant="outline" 
-            size="icon" 
-            onClick={previousPeriod} 
-            className="hover:bg-gray-100 transition-colors"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-          <Button 
-            variant="outline" 
-            size="icon" 
-            onClick={nextPeriod} 
-            className="hover:bg-gray-100 transition-colors"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-          <Button 
-            variant="ghost" 
-            onClick={today} 
-            className="hover:bg-gray-100 transition-colors text-zinc-950"
-          >
-            Today
-          </Button>
+    <div className="w-full max-w-6xl mx-auto p-4 md:p-6 space-y-4 md:space-y-6 rounded-lg shadow-lg border border-slate-200 animate-fade-in bg-[#1f1f31]">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex items-center justify-between md:justify-start w-full md:w-auto">
+          <div className="flex items-center space-x-2">
+            <Button 
+              variant="outline" 
+              size="icon" 
+              onClick={previousPeriod} 
+              className="hover:bg-gray-100 transition-colors"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <Button 
+              variant="outline" 
+              size="icon" 
+              onClick={nextPeriod} 
+              className="hover:bg-gray-100 transition-colors"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+            <Button 
+              variant="ghost" 
+              onClick={today} 
+              className="hover:bg-gray-100 transition-colors text-zinc-950"
+            >
+              Today
+            </Button>
+          </div>
+
+          <h2 className="text-lg md:text-2xl font-semibold text-slate-50 md:hidden">
+            {getHeaderText()}
+          </h2>
         </div>
 
-        <h2 className="text-2xl font-semibold text-slate-50">
+        <h2 className="hidden md:block text-2xl font-semibold text-slate-50">
           {getHeaderText()}
         </h2>
 
-        <div className="flex items-center space-x-2">
+        <div className="grid grid-cols-2 md:flex items-center gap-2 md:space-x-2">
           <Button 
             variant={view === 'month' ? 'secondary' : 'ghost'} 
             onClick={(e) => {
               e.stopPropagation();
               setView('month');
             }} 
-            className="transition-colors"
+            className="transition-colors w-full md:w-auto"
           >
             Month
           </Button>
@@ -164,7 +170,7 @@ const Calendar = () => {
               e.stopPropagation();
               setView('week');
             }} 
-            className="transition-colors"
+            className="transition-colors w-full md:w-auto"
           >
             Week
           </Button>
@@ -174,7 +180,7 @@ const Calendar = () => {
               e.stopPropagation();
               setView('day');
             }} 
-            className="transition-colors"
+            className="transition-colors w-full md:w-auto"
           >
             Day
           </Button>
@@ -184,7 +190,7 @@ const Calendar = () => {
               e.stopPropagation();
               setView('list');
             }} 
-            className="transition-colors"
+            className="transition-colors w-full md:w-auto"
           >
             List
           </Button>
