@@ -17,8 +17,8 @@ const FileUploadButton = ({ type, isUploading, inputRef }: FileUploadButtonProps
   return (
     <>
       <Button 
-        variant="outline"
-        className="cursor-pointer"
+        variant="default"
+        className="cursor-pointer bg-primary-600 hover:bg-primary-700 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5"
         disabled={isUploading}
         type="button"
         onClick={() => setOpen(true)}
