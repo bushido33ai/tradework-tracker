@@ -63,7 +63,7 @@ const JobTabs = ({ jobId, budget }: JobTabsProps) => {
       <TabsContent value="invoices">
         <Card className="bg-white/90 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-200">
           <div className="p-6">
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex justify-between items-end mb-4">
               <div className="space-y-2">
                 <h4 className="font-medium">Miscellaneous Costs</h4>
                 <RainbowButton
@@ -72,7 +72,9 @@ const JobTabs = ({ jobId, budget }: JobTabsProps) => {
                   {showMiscCostForm ? "Cancel" : "Add Cost"}
                 </RainbowButton>
               </div>
-              <FileUpload jobId={jobId} type="invoice" />
+              <div className="flex items-end">
+                <FileUpload jobId={jobId} type="invoice" />
+              </div>
             </div>
 
             {showMiscCostForm && (
