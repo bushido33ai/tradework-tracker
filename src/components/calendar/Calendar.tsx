@@ -54,7 +54,7 @@ const Calendar = () => {
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto p-6 space-y-6 bg-white rounded-lg shadow-sm animate-fade-in">
+    <div className="w-full max-w-6xl mx-auto p-6 space-y-6 bg-slate-50 rounded-lg shadow-lg border border-slate-200 animate-fade-in">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <Button
@@ -82,7 +82,7 @@ const Calendar = () => {
           </Button>
         </div>
 
-        <h2 className="text-2xl font-semibold text-gray-900">
+        <h2 className="text-2xl font-semibold text-slate-900">
           {format(currentDate, 'MMMM yyyy')}
         </h2>
 
@@ -118,11 +118,11 @@ const Calendar = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-7 gap-px bg-gray-200">
+      <div className="grid grid-cols-7 gap-px bg-slate-200">
         {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map((day) => (
           <div
             key={day}
-            className="bg-white p-4 text-sm font-medium text-gray-900 text-center"
+            className="bg-slate-50 p-4 text-sm font-medium text-slate-900 text-center border-b border-slate-200"
           >
             {day}
           </div>
@@ -135,9 +135,9 @@ const Calendar = () => {
             <div
               key={day.toString()}
               className={cn(
-                "min-h-[120px] bg-white p-2 text-sm hover:bg-gray-50 transition-colors",
-                !isSameMonth(day, currentDate) && "text-gray-400",
-                "border-t border-gray-200"
+                "min-h-[120px] bg-slate-50 p-2 text-sm hover:bg-slate-100 transition-colors",
+                !isSameMonth(day, currentDate) && "text-slate-400",
+                "border-t border-slate-200"
               )}
             >
               <time
