@@ -66,6 +66,7 @@ export const DaysWorkedTab = ({ jobId }: DaysWorkedTabProps) => {
   }
 
   const totalHours = daysWorked?.reduce((sum, day) => sum + Number(day.hours_worked), 0) || 0;
+  const totalDays = daysWorked?.length || 0;
 
   return (
     <Card className="p-6">
@@ -93,34 +94,39 @@ export const DaysWorkedTab = ({ jobId }: DaysWorkedTabProps) => {
         )}
 
         {daysWorked && daysWorked.length > 0 ? (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Hours</TableHead>
-                <TableHead>Notes</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {daysWorked.map((day) => (
-                <TableRow key={day.id}>
-                  <TableCell>{format(new Date(day.date_worked), "PPP")}</TableCell>
-                  <TableCell>{day.hours_worked}</TableCell>
-                  <TableCell>{day.notes}</TableCell>
-                  <TableCell className="text-right">
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => deleteDayWorked.mutate(day.id)}
-                    >
-                      Delete
-                    </Button>
-                  </TableCell>
+          <>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Hours</TableHead>
+                  <TableHead>Notes</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {daysWorked.map((day) => (
+                  <TableRow key={day.id}>
+                    <TableCell>{format(new Date(day.date_worked), "PPP")}</TableCell>
+                    <TableCell>{day.hours_worked}</TableCell>
+                    <TableCell>{day.notes}</TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => deleteDayWorked.mutate(day.id)}
+                      >
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            <div className="text-sm text-muted-foreground text-right pt-4">
+              Total Days Worked: {totalDays}
+            </div>
+          </>
         ) : (
           <p className="text-center text-muted-foreground py-8">
             No days worked recorded yet
