@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -40,10 +41,15 @@ export const EditJobDialog = ({
                 type="button"
                 variant="outline"
                 onClick={() => onOpenChange(false)}
+                className="border-2 hover:bg-gray-100 transition-all duration-200"
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={updateJobMutation.isPending}>
+              <Button 
+                type="submit" 
+                disabled={updateJobMutation.isPending}
+                className="bg-primary-600 hover:bg-primary-700 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5"
+              >
                 {updateJobMutation.isPending ? "Saving..." : "Save Changes"}
               </Button>
             </div>
