@@ -115,10 +115,14 @@ const JobFormFields = ({ form }: JobFormFieldsProps) => {
                   selected={field.value ? new Date(field.value) : undefined}
                   onSelect={(date) => {
                     if (date) {
-                      // Set to noon UTC to avoid timezone issues
-                      const utcDate = new Date(date);
-                      utcDate.setUTCHours(12, 0, 0, 0);
-                      field.onChange(utcDate.toISOString());
+                      // Create a date at noon UTC
+                      const selectedDate = new Date(Date.UTC(
+                        date.getFullYear(),
+                        date.getMonth(),
+                        date.getDate(),
+                        12, 0, 0, 0
+                      ));
+                      field.onChange(selectedDate.toISOString());
                     }
                   }}
                   disabled={(date) =>
