@@ -8,7 +8,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { useSessionContext } from "@supabase/auth-helpers-react";
-import { Loader2 } from "lucide-react";
+import { Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
 interface Job {
@@ -34,6 +35,7 @@ const localizer = dateFnsLocalizer({
 const WorkCalendar = () => {
   const navigate = useNavigate();
   const { session } = useSessionContext();
+  const [date, setDate] = useState(new Date());
 
   const { data: jobs, isLoading } = useQuery({
     queryKey: ["calendar-jobs", session?.user?.id],
@@ -57,6 +59,18 @@ const WorkCalendar = () => {
     resource: job
   })) || [];
 
+  const handleNavigate = (action: 'PREV' | 'NEXT' | 'TODAY') => {
+    const newDate = new Date(date);
+    if (action === 'PREV') {
+      newDate.setMonth(date.getMonth() - 1);
+    } else if (action === 'NEXT') {
+      newDate.setMonth(date.getMonth() + 1);
+    } else {
+      newDate.setTime(new Date().getTime());
+    }
+    setDate(newDate);
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -68,8 +82,40 @@ const WorkCalendar = () => {
   return (
     <main className="flex flex-col h-screen pt-16 md:pt-4 md:pl-64">
       <div className="flex-1 p-1 md:p-2 flex flex-col min-h-0">
-        <h1 className="text-2xl font-bold mb-1 md:mb-2">Work Calendar</h1>
-        <Card className="flex-1 p-1 md:p-2">
+        <div className="flex items-center justify-between mb-4 px-2">
+          <div className="flex items-center gap-2">
+            <Button 
+              variant="outline" 
+              size="icon"
+              onClick={() => handleNavigate('PREV')}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <Button 
+              variant="outline" 
+              size="icon"
+              onClick={() => handleNavigate('NEXT')}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+            <Button 
+              variant="outline"
+              onClick={() => handleNavigate('TODAY')}
+            >
+              Today
+            </Button>
+            <h2 className="text-xl font-semibold ml-4">
+              {format(date, 'MMMM yyyy')}
+            </h2>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm">Month</Button>
+            <Button variant="outline" size="sm">Week</Button>
+            <Button variant="outline" size="sm">Day</Button>
+            <Button variant="outline" size="sm">List</Button>
+          </div>
+        </div>
+        <Card className="flex-1 p-1 md:p-2 shadow-sm">
           <div className="h-[calc(100vh-120px)] md:h-[calc(100vh-100px)]">
             <Calendar
               localizer={localizer}
@@ -77,14 +123,19 @@ const WorkCalendar = () => {
               startAccessor="start"
               endAccessor="end"
               style={{ height: '100%' }}
-              views={['month', 'week', 'day']}
+              views={['month', 'week', 'day', 'agenda']}
               defaultView="month"
+              date={date}
+              onNavigate={(newDate) => setDate(newDate)}
               onSelectEvent={(event) => {
                 navigate(`/jobs/${event.id}`);
               }}
               eventPropGetter={(event) => ({
                 className: 'bg-primary hover:bg-primary/90 rounded-md border-none',
               })}
+              components={{
+                toolbar: () => null, // Hide default toolbar since we have our custom one
+              }}
             />
           </div>
         </Card>
