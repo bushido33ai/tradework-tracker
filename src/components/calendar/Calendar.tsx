@@ -1,10 +1,13 @@
 
 import { useState } from 'react';
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths } from 'date-fns';
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, parseISO } from 'date-fns';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import CalendarEvent from './CalendarEvent';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { useNavigate } from 'react-router-dom';
 
 type CalendarView = 'month' | 'week' | 'day' | 'list';
 
@@ -15,31 +18,27 @@ interface Event {
   color?: string;
 }
 
-const mockEvents: Event[] = [
-  {
-    id: '1',
-    title: 'Team Meeting',
-    date: new Date(2024, 3, 5),
-    color: '#10B981'
-  },
-  {
-    id: '2',
-    title: 'Project Review',
-    date: new Date(2024, 3, 7),
-    color: '#10B981'
-  },
-  {
-    id: '3',
-    title: 'Presentation APEX5 Hidden Features',
-    date: new Date(2024, 3, 22),
-    color: '#8B5CF6'
-  }
-];
-
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [view, setView] = useState<CalendarView>('month');
-  const [events] = useState<Event[]>(mockEvents);
+  const navigate = useNavigate();
+
+  const { data: jobs = [] } = useQuery({
+    queryKey: ['calendar-jobs'],
+    queryFn: async () => {
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) throw new Error('No user found');
+
+      const { data, error } = await supabase
+        .from('jobs')
+        .select('*')
+        .eq('created_by', userData.user.id)
+        .not('start_date', 'is', null);
+
+      if (error) throw error;
+      return data;
+    },
+  });
 
   const startDate = startOfMonth(currentDate);
   const endDate = endOfMonth(currentDate);
@@ -50,7 +49,21 @@ const Calendar = () => {
   const today = () => setCurrentDate(new Date());
 
   const getDayEvents = (date: Date) => {
-    return events.filter(event => isSameDay(event.date, date));
+    return jobs
+      .filter(job => {
+        const jobStartDate = parseISO(job.start_date);
+        return isSameDay(jobStartDate, date);
+      })
+      .map(job => ({
+        id: job.id,
+        title: job.title,
+        date: parseISO(job.start_date),
+        color: job.status === 'completed' ? '#10B981' : '#3B82F6'
+      }));
+  };
+
+  const handleEventClick = (eventId: string) => {
+    navigate(`/jobs/${eventId}`);
   };
 
   return (
@@ -151,7 +164,9 @@ const Calendar = () => {
               </time>
               <div className="mt-2">
                 {dayEvents.map((event) => (
-                  <CalendarEvent key={event.id} event={event} />
+                  <div key={event.id} onClick={() => handleEventClick(event.id)}>
+                    <CalendarEvent event={event} />
+                  </div>
                 ))}
               </div>
             </div>
