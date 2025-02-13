@@ -117,7 +117,7 @@ const JobFormFields = ({ form }: JobFormFieldsProps) => {
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="Full Quoted">Full Quoted</SelectItem>
+                <SelectItem value="Fully Quoted">Fully Quoted</SelectItem>
                 <SelectItem value="Day Rate">Day Rate</SelectItem>
               </SelectContent>
             </Select>

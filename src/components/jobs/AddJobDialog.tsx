@@ -29,8 +29,8 @@ const AddJobDialog = ({ open, onOpenChange }: AddJobDialogProps) => {
       description: "",
       location: "",
       budget: "",
-      start_date: new Date().toISOString(), // Initialize with current date
-      job_type: "Full Quoted",
+      start_date: new Date().toISOString(),
+      job_type: "Fully Quoted",
       job_manager: "",
     },
   });
