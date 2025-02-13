@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { CheckCircle, Pencil, Trash2 } from "lucide-react";
-
 interface JobHeaderProps {
   jobNumber: string;
   title: string;
@@ -13,7 +12,6 @@ interface JobHeaderProps {
   isCompletePending: boolean;
   isDeletePending: boolean;
 }
-
 const JobHeader = ({
   jobNumber,
   title,
@@ -22,35 +20,24 @@ const JobHeader = ({
   onDelete,
   onEdit,
   isCompletePending,
-  isDeletePending,
+  isDeletePending
 }: JobHeaderProps) => {
-  return (
-    <CardHeader className="space-y-4 md:space-y-0 md:flex md:flex-row md:items-center md:justify-between">
+  return <CardHeader className="space-y-4 md:space-y-0 md:flex md:flex-row md:items-center md:justify-between">
       <div>
         <div className="text-base font-semibold text-[#ea384c] mb-1">{jobNumber}</div>
         <CardTitle className="text-xl md:text-2xl">{title}</CardTitle>
       </div>
       <div className="flex flex-col md:flex-row gap-2">
-        {status !== "completed" && status !== "cancelled" && (
-          <>
-            <Button
-              onClick={onEdit}
-              variant="outline"
-              className="w-full md:w-auto"
-            >
+        {status !== "completed" && status !== "cancelled" && <>
+            <Button onClick={onEdit} variant="outline" className="w-full md:w-auto bg-slate-400 hover:bg-slate-300 rounded-xl py-0">
               <Pencil className="mr-2 h-4 w-4" />
               Edit Job
             </Button>
-            <Button
-              onClick={onComplete}
-              className="bg-green-500 hover:bg-green-600 w-full md:w-auto"
-              disabled={isCompletePending}
-            >
+            <Button onClick={onComplete} className="bg-green-500 hover:bg-green-600 w-full md:w-auto" disabled={isCompletePending}>
               <CheckCircle className="mr-2 h-4 w-4" />
               {isCompletePending ? "Completing..." : "Mark as Complete"}
             </Button>
-          </>
-        )}
+          </>}
         <Dialog>
           <DialogTrigger asChild>
             <Button variant="destructive" className="w-full md:w-auto">
@@ -66,19 +53,13 @@ const JobHeader = ({
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
-              <Button
-                variant="destructive"
-                onClick={onDelete}
-                disabled={isDeletePending}
-              >
+              <Button variant="destructive" onClick={onDelete} disabled={isDeletePending}>
                 {isDeletePending ? "Deleting..." : "Delete"}
               </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
-    </CardHeader>
-  );
+    </CardHeader>;
 };
-
 export default JobHeader;
