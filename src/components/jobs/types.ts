@@ -7,6 +7,7 @@ export const jobSchema = z.object({
   location: z.string().min(1, "Location is required"),
   budget: z.string().optional(),
   start_date: z.string().min(1, "Start date is required"),
+  end_date: z.string().min(1, "End date is required"),
   job_manager: z.string(),
   job_type: z.enum(["Fully Quoted", "Day Rate"]),
 });

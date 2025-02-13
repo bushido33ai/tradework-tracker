@@ -78,31 +78,59 @@ const JobFormFields = ({ form }: JobFormFieldsProps) => {
         )}
       />
 
-      <FormField
-        control={form.control}
-        name="start_date"
-        render={({ field }) => (
-          <FormItem className="flex flex-col">
-            <FormLabel>Start Date</FormLabel>
-            <FormControl>
-              <Input
-                type="date"
-                {...field}
-                value={field.value ? new Date(field.value).toISOString().split('T')[0] : ''}
-                onChange={(e) => {
-                  if (e.target.value) {
-                    const date = new Date(e.target.value);
-                    date.setHours(12, 0, 0, 0);
-                    field.onChange(date.toISOString());
-                  }
-                }}
-                min={new Date().toISOString().split('T')[0]}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <FormField
+          control={form.control}
+          name="start_date"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>Start Date</FormLabel>
+              <FormControl>
+                <Input
+                  type="date"
+                  {...field}
+                  value={field.value ? new Date(field.value).toISOString().split('T')[0] : ''}
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      const date = new Date(e.target.value);
+                      date.setHours(12, 0, 0, 0);
+                      field.onChange(date.toISOString());
+                    }
+                  }}
+                  min={new Date().toISOString().split('T')[0]}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="end_date"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>End Date</FormLabel>
+              <FormControl>
+                <Input
+                  type="date"
+                  {...field}
+                  value={field.value ? new Date(field.value).toISOString().split('T')[0] : ''}
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      const date = new Date(e.target.value);
+                      date.setHours(12, 0, 0, 0);
+                      field.onChange(date.toISOString());
+                    }
+                  }}
+                  min={form.watch('start_date') ? new Date(form.watch('start_date')).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
 
       <FormField
         control={form.control}

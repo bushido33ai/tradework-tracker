@@ -7,10 +7,11 @@ interface JobContentProps {
   location: string;
   budget?: number | null;
   start_date: string;
+  end_date?: string;
   job_type: string;
 }
 
-const JobContent = ({ description, location, budget, start_date, job_type }: JobContentProps) => {
+const JobContent = ({ description, location, budget, start_date, end_date, job_type }: JobContentProps) => {
   return (
     <CardContent>
       <div className="grid gap-4">
@@ -22,6 +23,7 @@ const JobContent = ({ description, location, budget, start_date, job_type }: Job
           <span>📍 {location}</span>
           {budget && <span>💰 £{budget.toFixed(2)}</span>}
           <span>📅 Start Date: {format(new Date(start_date), "PPP")}</span>
+          {end_date && <span>🏁 End Date: {format(new Date(end_date), "PPP")}</span>}
           <span>📋 Type: {job_type}</span>
         </div>
       </div>
