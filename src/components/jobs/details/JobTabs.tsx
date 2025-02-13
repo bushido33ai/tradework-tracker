@@ -23,37 +23,37 @@ const JobTabs = ({ jobId, budget, job_type }: JobTabsProps) => {
 
   return (
     <Tabs defaultValue="designs" className="w-full">
-      <TabsList className="w-full flex bg-white/90 backdrop-blur-sm border-b">
+      <TabsList className="w-full flex bg-white/90 backdrop-blur-sm border-b overflow-x-auto scrollbar-none">
         <TabsTrigger 
           value="designs" 
-          className="flex-1 font-medium data-[state=active]:bg-primary-50 data-[state=active]:text-primary-800 data-[state=active]:shadow-inner data-[state=active]:border-b-2 data-[state=active]:border-primary-600 transition-all duration-200"
+          className="flex-1 min-w-[100px] font-medium data-[state=active]:bg-primary-50 data-[state=active]:text-primary-800 data-[state=active]:shadow-inner data-[state=active]:border-b-2 data-[state=active]:border-primary-600 transition-all duration-200"
         >
           Designs
         </TabsTrigger>
         {isDayRate && (
           <TabsTrigger 
             value="days-worked" 
-            className="flex-1 font-medium data-[state=active]:bg-primary-50 data-[state=active]:text-primary-800 data-[state=active]:shadow-inner data-[state=active]:border-b-2 data-[state=active]:border-primary-600 transition-all duration-200"
+            className="flex-1 min-w-[100px] font-medium data-[state=active]:bg-primary-50 data-[state=active]:text-primary-800 data-[state=active]:shadow-inner data-[state=active]:border-b-2 data-[state=active]:border-primary-600 transition-all duration-200"
           >
-            Days Worked
+            Days
           </TabsTrigger>
         )}
         <TabsTrigger 
           value="invoices" 
-          className="flex-1 font-medium data-[state=active]:bg-primary-50 data-[state=active]:text-primary-800 data-[state=active]:shadow-inner data-[state=active]:border-b-2 data-[state=active]:border-primary-600 transition-all duration-200"
+          className="flex-1 min-w-[100px] font-medium data-[state=active]:bg-primary-50 data-[state=active]:text-primary-800 data-[state=active]:shadow-inner data-[state=active]:border-b-2 data-[state=active]:border-primary-600 transition-all duration-200"
         >
           Invoices
         </TabsTrigger>
         <TabsTrigger 
           value="notes" 
-          className="flex-1 font-medium data-[state=active]:bg-primary-50 data-[state=active]:text-primary-800 data-[state=active]:shadow-inner data-[state=active]:border-b-2 data-[state=active]:border-primary-600 transition-all duration-200"
+          className="flex-1 min-w-[100px] font-medium data-[state=active]:bg-primary-50 data-[state=active]:text-primary-800 data-[state=active]:shadow-inner data-[state=active]:border-b-2 data-[state=active]:border-primary-600 transition-all duration-200"
         >
           Notes
         </TabsTrigger>
         {budget && budget > 0 && (
           <TabsTrigger 
             value="budget" 
-            className="flex-1 font-medium data-[state=active]:bg-primary-50 data-[state=active]:text-primary-800 data-[state=active]:shadow-inner data-[state=active]:border-b-2 data-[state=active]:border-primary-600 transition-all duration-200"
+            className="flex-1 min-w-[100px] font-medium data-[state=active]:bg-primary-50 data-[state=active]:text-primary-800 data-[state=active]:shadow-inner data-[state=active]:border-b-2 data-[state=active]:border-primary-600 transition-all duration-200"
           >
             Budget
           </TabsTrigger>
