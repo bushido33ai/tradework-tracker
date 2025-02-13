@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
 import { format, parse, startOfWeek, getDay } from 'date-fns';
+import enUS from 'date-fns/locale/en-US';
 import { Card } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,7 +20,7 @@ interface Job {
 }
 
 const locales = {
-  'en-US': require('date-fns/locale/en-US')
+  'en-US': enUS
 }
 
 const localizer = dateFnsLocalizer({
