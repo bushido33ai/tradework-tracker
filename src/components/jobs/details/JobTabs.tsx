@@ -9,14 +9,17 @@ import { useState } from "react";
 import { RainbowButton } from "@/components/ui/rainbow-button";
 import { MiscCostForm } from "./MiscCostForm";
 import { MiscCostsList } from "./MiscCostsList";
+import { DaysWorkedTab } from "./DaysWorkedTab";
 
 interface JobTabsProps {
   jobId: string;
   budget: number | null;
+  job_type: string;
 }
 
-const JobTabs = ({ jobId, budget }: JobTabsProps) => {
+const JobTabs = ({ jobId, budget, job_type }: JobTabsProps) => {
   const [showMiscCostForm, setShowMiscCostForm] = useState(false);
+  const isDayRate = job_type === "Day Rate";
 
   return (
     <Tabs defaultValue="designs" className="w-full">
@@ -39,6 +42,14 @@ const JobTabs = ({ jobId, budget }: JobTabsProps) => {
         >
           Notes
         </TabsTrigger>
+        {isDayRate && (
+          <TabsTrigger 
+            value="days-worked" 
+            className="flex-1 font-medium data-[state=active]:bg-primary-50 data-[state=active]:text-primary-800 data-[state=active]:shadow-inner data-[state=active]:border-b-2 data-[state=active]:border-primary-600 transition-all duration-200"
+          >
+            Days Worked
+          </TabsTrigger>
+        )}
         {budget && budget > 0 && (
           <TabsTrigger 
             value="budget" 
@@ -102,6 +113,12 @@ const JobTabs = ({ jobId, budget }: JobTabsProps) => {
           </div>
         </Card>
       </TabsContent>
+
+      {isDayRate && (
+        <TabsContent value="days-worked">
+          <DaysWorkedTab jobId={jobId} />
+        </TabsContent>
+      )}
 
       {budget && budget > 0 && (
         <TabsContent value="budget">

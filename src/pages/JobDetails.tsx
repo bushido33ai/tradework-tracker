@@ -158,7 +158,7 @@ const JobDetails = () => {
       </Card>
 
       <div className="bg-blue-50/80 rounded-lg shadow-lg border-l-4 border-l-primary-600">
-        <JobTabs jobId={job.id} budget={job.budget} />
+        <JobTabs jobId={job.id} budget={job.budget} job_type={job.job_type} />
       </div>
 
       <EditJobDialog

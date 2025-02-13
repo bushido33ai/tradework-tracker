@@ -207,6 +207,47 @@ export type Database = {
           },
         ]
       }
+      job_days_worked: {
+        Row: {
+          created_at: string | null
+          created_by: string
+          date_worked: string
+          hours_worked: number
+          id: string
+          job_id: string
+          notes: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by: string
+          date_worked: string
+          hours_worked: number
+          id?: string
+          job_id: string
+          notes?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string
+          date_worked?: string
+          hours_worked?: number
+          id?: string
+          job_id?: string
+          notes?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_days_worked_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       job_designs: {
         Row: {
           file_path: string
