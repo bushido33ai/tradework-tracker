@@ -67,10 +67,10 @@ const WorkCalendar = () => {
 
   return (
     <main className="flex flex-col h-screen pt-16 md:pt-4 md:pl-64">
-      <div className="flex-1 p-2 md:p-4 flex flex-col min-h-0">
-        <h1 className="text-2xl font-bold mb-2 md:mb-4">Work Calendar</h1>
-        <Card className="flex-1 p-2 md:p-4">
-          <div className="h-[calc(100vh-160px)] md:h-[calc(100vh-140px)]">
+      <div className="flex-1 p-1 md:p-2 flex flex-col min-h-0">
+        <h1 className="text-2xl font-bold mb-1 md:mb-2">Work Calendar</h1>
+        <Card className="flex-1 p-1 md:p-2">
+          <div className="h-[calc(100vh-120px)] md:h-[calc(100vh-100px)]">
             <Calendar
               localizer={localizer}
               events={events}
