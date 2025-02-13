@@ -88,9 +88,9 @@ const WorkCalendar = () => {
   };
 
   return (
-    <div className="h-[calc(100vh-6rem)] flex flex-col">
-      <h1 className="text-2xl font-bold mb-4">Work Calendar</h1>
-      <Card className="flex-1 p-4 overflow-hidden">
+    <div className="h-[calc(100vh-6rem)] w-full -mx-2 md:-mx-8 flex flex-col">
+      <h1 className="text-2xl font-bold mb-4 px-4">Work Calendar</h1>
+      <Card className="flex-1 p-4 rounded-none md:rounded-md overflow-hidden">
         <Calendar
           mode="single"
           selected={date}
@@ -125,7 +125,7 @@ const WorkCalendar = () => {
               </div>
             )
           }}
-          className="rounded-md border h-full"
+          className="rounded-md border h-full w-full"
         />
       </Card>
     </div>
