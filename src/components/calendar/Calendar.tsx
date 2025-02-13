@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, parseISO, isWithinInterval, startOfWeek, endOfWeek } from 'date-fns';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -59,7 +58,8 @@ const Calendar = () => {
 
   const days = getDaysForView();
 
-  const previousPeriod = () => {
+  const previousPeriod = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent event from bubbling up
     if (view === 'week') {
       setCurrentDate(prev => subMonths(prev, 1));
     } else {
@@ -67,7 +67,8 @@ const Calendar = () => {
     }
   };
 
-  const nextPeriod = () => {
+  const nextPeriod = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent event from bubbling up
     if (view === 'week') {
       setCurrentDate(prev => addMonths(prev, 1));
     } else {
@@ -75,7 +76,10 @@ const Calendar = () => {
     }
   };
 
-  const today = () => setCurrentDate(new Date());
+  const today = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent event from bubbling up
+    setCurrentDate(new Date());
+  };
 
   const getDayEvents = (date: Date) => {
     return jobs
@@ -114,13 +118,27 @@ const Calendar = () => {
     <div className="w-full max-w-6xl mx-auto p-6 space-y-6 rounded-lg shadow-lg border border-slate-200 animate-fade-in bg-[#1f1f31]">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <Button variant="outline" size="icon" onClick={previousPeriod} className="hover:bg-gray-100 transition-colors">
+          <Button 
+            variant="outline" 
+            size="icon" 
+            onClick={previousPeriod} 
+            className="hover:bg-gray-100 transition-colors"
+          >
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <Button variant="outline" size="icon" onClick={nextPeriod} className="hover:bg-gray-100 transition-colors">
+          <Button 
+            variant="outline" 
+            size="icon" 
+            onClick={nextPeriod} 
+            className="hover:bg-gray-100 transition-colors"
+          >
             <ChevronRight className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" onClick={today} className="hover:bg-gray-100 transition-colors text-zinc-950">
+          <Button 
+            variant="ghost" 
+            onClick={today} 
+            className="hover:bg-gray-100 transition-colors text-zinc-950"
+          >
             Today
           </Button>
         </div>
@@ -130,16 +148,44 @@ const Calendar = () => {
         </h2>
 
         <div className="flex items-center space-x-2">
-          <Button variant={view === 'month' ? 'secondary' : 'ghost'} onClick={() => setView('month')} className="transition-colors">
+          <Button 
+            variant={view === 'month' ? 'secondary' : 'ghost'} 
+            onClick={(e) => {
+              e.stopPropagation();
+              setView('month');
+            }} 
+            className="transition-colors"
+          >
             Month
           </Button>
-          <Button variant={view === 'week' ? 'secondary' : 'ghost'} onClick={() => setView('week')} className="transition-colors">
+          <Button 
+            variant={view === 'week' ? 'secondary' : 'ghost'} 
+            onClick={(e) => {
+              e.stopPropagation();
+              setView('week');
+            }} 
+            className="transition-colors"
+          >
             Week
           </Button>
-          <Button variant={view === 'day' ? 'secondary' : 'ghost'} onClick={() => setView('day')} className="transition-colors">
+          <Button 
+            variant={view === 'day' ? 'secondary' : 'ghost'} 
+            onClick={(e) => {
+              e.stopPropagation();
+              setView('day');
+            }} 
+            className="transition-colors"
+          >
             Day
           </Button>
-          <Button variant={view === 'list' ? 'secondary' : 'ghost'} onClick={() => setView('list')} className="transition-colors">
+          <Button 
+            variant={view === 'list' ? 'secondary' : 'ghost'} 
+            onClick={(e) => {
+              e.stopPropagation();
+              setView('list');
+            }} 
+            className="transition-colors"
+          >
             List
           </Button>
         </div>
