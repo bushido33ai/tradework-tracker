@@ -17,8 +17,25 @@ interface UploadDialogProps {
 }
 
 const UploadDialog = ({ open, onOpenChange, type, inputRef }: UploadDialogProps) => {
-  const handleFileUpload = () => {
+  const handleFileUpload = (mode: 'file' | 'gallery' | 'camera') => {
     if (inputRef.current) {
+      // Remove any existing capture attribute
+      inputRef.current.removeAttribute('capture');
+      
+      // Set appropriate accept and capture attributes based on mode
+      switch (mode) {
+        case 'file':
+          inputRef.current.accept = ".pdf";
+          break;
+        case 'gallery':
+          inputRef.current.accept = "image/*";
+          break;
+        case 'camera':
+          inputRef.current.accept = "image/*";
+          inputRef.current.setAttribute('capture', 'environment');
+          break;
+      }
+      
       inputRef.current.click();
       onOpenChange(false);
     }
@@ -33,7 +50,7 @@ const UploadDialog = ({ open, onOpenChange, type, inputRef }: UploadDialogProps)
         <div className="grid grid-cols-1 gap-4 py-4">
           <Button
             variant="outline"
-            onClick={handleFileUpload}
+            onClick={() => handleFileUpload('file')}
             className="justify-start"
           >
             <File className="mr-2 h-4 w-4" />
@@ -41,7 +58,7 @@ const UploadDialog = ({ open, onOpenChange, type, inputRef }: UploadDialogProps)
           </Button>
           <Button
             variant="outline"
-            onClick={handleFileUpload}
+            onClick={() => handleFileUpload('gallery')}
             className="justify-start"
           >
             <Image className="mr-2 h-4 w-4" />
@@ -49,7 +66,7 @@ const UploadDialog = ({ open, onOpenChange, type, inputRef }: UploadDialogProps)
           </Button>
           <Button
             variant="outline"
-            onClick={handleFileUpload}
+            onClick={() => handleFileUpload('camera')}
             className="justify-start"
           >
             <Camera className="mr-2 h-4 w-4" />
