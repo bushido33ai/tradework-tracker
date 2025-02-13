@@ -10,12 +10,23 @@ interface FileUploadButtonProps {
 
 const FileUploadButton = ({ type, isUploading, id }: FileUploadButtonProps) => {
   return (
-    <label htmlFor={id}>
-      <RainbowButton className="cursor-pointer" disabled={isUploading}>
-        <Upload className="w-4 h-4 mr-2" />
-        Upload {type === "design" ? "Design" : "Invoice"}
-      </RainbowButton>
-    </label>
+    <div className="inline-block">
+      <input
+        type="file"
+        id={id}
+        className="hidden"
+        accept={type === "design" ? "image/*,.pdf" : ".pdf,image/*"}
+        disabled={isUploading}
+      />
+      <label htmlFor={id}>
+        <div className="cursor-pointer inline-block">
+          <RainbowButton disabled={isUploading} type="button">
+            <Upload className="w-4 h-4 mr-2" />
+            Upload {type === "design" ? "Design" : "Invoice"}
+          </RainbowButton>
+        </div>
+      </label>
+    </div>
   );
 };
 
