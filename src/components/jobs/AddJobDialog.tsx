@@ -47,7 +47,7 @@ const AddJobDialog = ({ open, onOpenChange }: AddJobDialogProps) => {
         budget: values.budget ? parseFloat(values.budget) : null,
         created_by: user.id,
         job_number: undefined, // This explicitly tells Supabase to use the default value
-        start_date: new Date(values.start_date),
+        start_date: values.start_date, // Now passing the ISO string directly
         job_manager: user.id, // Set job manager to current user
         job_type: values.job_type,
       };
