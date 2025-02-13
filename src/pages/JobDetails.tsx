@@ -27,6 +27,10 @@ const JobDetails = () => {
       description: "",
       location: "",
       budget: "",
+      start_date: "",
+      end_date: "",
+      job_type: "Fully Quoted",
+      job_manager: "",
     },
   });
 
@@ -52,6 +56,10 @@ const JobDetails = () => {
         description: job.description,
         location: job.location,
         budget: job.budget?.toString() || "",
+        start_date: job.start_date,
+        end_date: job.end_date || "",
+        job_type: job.job_type,
+        job_manager: job.job_manager,
       });
     }
   }, [job, form]);
@@ -65,6 +73,9 @@ const JobDetails = () => {
           description: values.description,
           location: values.location,
           budget: values.budget ? parseFloat(values.budget) : null,
+          start_date: values.start_date,
+          end_date: values.end_date,
+          job_type: values.job_type,
         })
         .eq("id", id);
 
@@ -153,6 +164,7 @@ const JobDetails = () => {
           location={job.location}
           budget={job.budget}
           start_date={job.start_date}
+          end_date={job.end_date}
           job_type={job.job_type}
         />
       </Card>
