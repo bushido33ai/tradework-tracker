@@ -28,7 +28,6 @@ import UserJobs from "@/pages/UserJobs";
 import AdminRoute from "@/components/routes/AdminRoute";
 import MerchantTraders from "@/pages/MerchantTraders";
 import MerchantTraderJobs from "@/pages/MerchantTraderJobs";
-import WorkCalendar from "@/pages/WorkCalendar";
 
 const queryClient = new QueryClient();
 
@@ -108,7 +107,6 @@ const App = () => {
                             <Route path="/dashboard" element={<Dashboard />} />
                             <Route path="/jobs" element={<Jobs />} />
                             <Route path="/jobs/:id" element={<JobDetails />} />
-                            <Route path="/calendar" element={<WorkCalendar />} />
                             <Route path="/enquiries" element={<Enquiries />} />
                             <Route path="/enquiries/:id" element={<EnquiryDetails />} />
                             <Route path="/suppliers" element={<Suppliers />} />
