@@ -88,46 +88,50 @@ const WorkCalendar = () => {
   };
 
   return (
-    <div className="h-[calc(100vh-6rem)] w-full -mx-2 md:-mx-8 flex flex-col">
-      <h1 className="text-2xl font-bold mb-4 px-4">Work Calendar</h1>
-      <Card className="flex-1 p-4 rounded-none md:rounded-md overflow-hidden">
-        <Calendar
-          mode="single"
-          selected={date}
-          onSelect={(newDate) => {
-            if (newDate) {
-              setDate(newDate);
-              handleDayClick(newDate);
-            }
-          }}
-          modifiers={{
-            booked: (date) => {
-              const dateStr = format(date, 'yyyy-MM-dd');
-              return Boolean(jobsByDate?.[dateStr]?.length);
-            }
-          }}
-          modifiersStyles={{
-            booked: {
-              backgroundColor: '#e2e8f0',
-              color: '#1e293b',
-              fontWeight: 'bold',
-              position: 'relative',
-              minHeight: '80px'
-            }
-          }}
-          components={{
-            Day: ({ date, ...props }) => (
-              <div className="relative h-full min-h-[80px]" {...props}>
-                <div className="absolute top-1 left-2">
-                  {date.getDate()}
-                </div>
-                {renderDayContents(date)}
-              </div>
-            )
-          }}
-          className="rounded-md border h-full w-full"
-        />
-      </Card>
+    <div className="fixed inset-0 pt-16 pb-4 px-4 md:pl-64 md:pr-4">
+      <div className="h-full w-full flex flex-col">
+        <h1 className="text-2xl font-bold mb-4">Work Calendar</h1>
+        <Card className="flex-1 p-4 rounded-none md:rounded-md overflow-hidden">
+          <div className="w-full h-full">
+            <Calendar
+              mode="single"
+              selected={date}
+              onSelect={(newDate) => {
+                if (newDate) {
+                  setDate(newDate);
+                  handleDayClick(newDate);
+                }
+              }}
+              modifiers={{
+                booked: (date) => {
+                  const dateStr = format(date, 'yyyy-MM-dd');
+                  return Boolean(jobsByDate?.[dateStr]?.length);
+                }
+              }}
+              modifiersStyles={{
+                booked: {
+                  backgroundColor: '#e2e8f0',
+                  color: '#1e293b',
+                  fontWeight: 'bold',
+                  position: 'relative',
+                  minHeight: '80px'
+                }
+              }}
+              components={{
+                Day: ({ date, ...props }) => (
+                  <div className="relative h-full min-h-[80px]" {...props}>
+                    <div className="absolute top-1 left-2">
+                      {date.getDate()}
+                    </div>
+                    {renderDayContents(date)}
+                  </div>
+                )
+              }}
+              className="w-full h-full"
+            />
+          </div>
+        </Card>
+      </div>
     </div>
   );
 };
