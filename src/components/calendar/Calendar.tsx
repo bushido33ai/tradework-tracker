@@ -7,6 +7,7 @@ import CalendarEvent from './CalendarEvent';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 type CalendarView = 'month' | 'week' | 'day' | 'list';
 interface Event {
@@ -21,6 +22,7 @@ const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [view, setView] = useState<CalendarView>('month');
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const {
     data: jobs = []
   } = useQuery({
@@ -224,8 +226,8 @@ const Calendar = () => {
       ) : (
         <div className="grid grid-cols-7 gap-px bg-slate-200">
           {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map(day => (
-            <div key={day} className="bg-slate-50 p-4 text-sm font-medium text-slate-900 text-center border-b border-slate-200">
-              {day}
+            <div key={day} className="bg-slate-50 px-1 md:px-4 py-2 md:py-4 text-xs md:text-sm font-medium text-slate-900 text-center border-b border-slate-200">
+              {isMobile ? day.slice(0, 3) : day}
             </div>
           ))}
           
