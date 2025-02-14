@@ -59,12 +59,18 @@ const Calendar = () => {
 
   const days = getDaysForView();
   
-  const handlePreviousMonth = () => {
+  const handlePreviousMonth = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     setCurrentDate(prev => subMonths(prev, 1));
+    return false;
   };
 
-  const handleNextMonth = () => {
+  const handleNextMonth = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     setCurrentDate(prev => addMonths(prev, 1));
+    return false;
   };
 
   const getDayEvents = (date: Date) => {
@@ -148,6 +154,8 @@ const Calendar = () => {
               variant="outline" 
               size="icon" 
               onClick={handlePreviousMonth}
+              onMouseDown={e => e.preventDefault()}
+              onTouchStart={e => e.preventDefault()}
               className="hover:bg-gray-100 transition-colors"
             >
               <ChevronLeft className="h-4 w-4" />
@@ -157,6 +165,8 @@ const Calendar = () => {
               variant="outline" 
               size="icon" 
               onClick={handleNextMonth}
+              onMouseDown={e => e.preventDefault()}
+              onTouchStart={e => e.preventDefault()}
               className="hover:bg-gray-100 transition-colors"
             >
               <ChevronRight className="h-4 w-4" />
