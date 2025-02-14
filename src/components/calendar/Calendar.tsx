@@ -143,7 +143,10 @@ const Calendar = () => {
               e.stopPropagation();
               setView('week');
             }} 
-            className="transition-colors w-full md:w-auto text-slate-50"
+            className={cn(
+              "transition-colors w-full md:w-auto",
+              view !== 'week' && "text-slate-50"
+            )}
           >
             Week
           </Button>
@@ -153,7 +156,10 @@ const Calendar = () => {
               e.stopPropagation();
               setView('day');
             }} 
-            className="transition-colors w-full md:w-auto text-slate-50"
+            className={cn(
+              "transition-colors w-full md:w-auto",
+              view !== 'day' && "text-slate-50"
+            )}
           >
             Day
           </Button>
@@ -163,7 +169,10 @@ const Calendar = () => {
               e.stopPropagation();
               setView('list');
             }} 
-            className="transition-colors w-full md:w-auto text-slate-50"
+            className={cn(
+              "transition-colors w-full md:w-auto",
+              view !== 'list' && "text-slate-50"
+            )}
           >
             List
           </Button>
