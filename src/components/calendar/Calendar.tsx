@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, parseISO, isWithinInterval, startOfWeek, endOfWeek } from 'date-fns';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -60,6 +61,7 @@ const Calendar = () => {
   const days = getDaysForView();
   const previousPeriod = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent event from bubbling up
+    e.preventDefault(); // Add this to prevent default behavior
     if (view === 'week') {
       setCurrentDate(prev => subMonths(prev, 1));
     } else {
@@ -68,6 +70,7 @@ const Calendar = () => {
   };
   const nextPeriod = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent event from bubbling up
+    e.preventDefault(); // Add this to prevent default behavior
     if (view === 'week') {
       setCurrentDate(prev => addMonths(prev, 1));
     } else {
@@ -148,10 +151,20 @@ const Calendar = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center justify-between md:justify-start w-full md:w-auto">
           <div className="flex items-center space-x-2">
-            <Button variant="outline" size="icon" onClick={previousPeriod} className="hover:bg-gray-100 transition-colors">
+            <Button 
+              variant="outline" 
+              size="icon" 
+              onClick={previousPeriod}
+              className="hover:bg-gray-100 transition-colors"
+            >
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <Button variant="outline" size="icon" onClick={nextPeriod} className="hover:bg-gray-100 transition-colors">
+            <Button 
+              variant="outline" 
+              size="icon" 
+              onClick={nextPeriod}
+              className="hover:bg-gray-100 transition-colors"
+            >
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
