@@ -109,7 +109,7 @@ const Calendar = () => {
             <Button variant="outline" size="icon" onClick={nextPeriod} className="hover:bg-gray-100 transition-colors">
               <ChevronRight className="h-4 w-4" />
             </Button>
-            <Button variant="ghost" onClick={today} className="hover:bg-gray-100 transition-colors text-zinc-950">
+            <Button variant="ghost" onClick={today} className="hover:bg-gray-100 transition-colors text-slate-50">
               Today
             </Button>
           </div>
