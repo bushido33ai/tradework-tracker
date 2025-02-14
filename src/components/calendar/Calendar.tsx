@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, parseISO, isWithinInterval, startOfWeek, endOfWeek } from 'date-fns';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -58,6 +59,17 @@ const Calendar = () => {
   };
 
   const days = getDaysForView();
+
+  const handleChangeMonth = (direction: 'previous' | 'next') => (e: React.MouseEvent) => {
+    // Prevent any default behavior
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    // Update the date
+    setCurrentDate(prev => direction === 'previous' ? subMonths(prev, 1) : addMonths(prev, 1));
+  };
   
   const handlePreviousMonth = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -145,32 +157,33 @@ const Calendar = () => {
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto p-4 md:p-6 space-y-4 md:space-y-6 rounded-lg shadow-lg border border-slate-200 animate-fade-in bg-[#1f1f31]">
+    <div className="w-full max-w-6xl mx-auto p-4 md:p-6 space-y-4 md:space-y-6 rounded-lg shadow-lg border border-slate-200 animate-fade-in bg-[#1f1f31]"
+         onClick={e => e.stopPropagation()}>
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center justify-between md:justify-start w-full md:w-auto">
           <div className="flex items-center space-x-2">
-            <Button 
-              type="button"
-              variant="outline" 
-              size="icon" 
-              onClick={handlePreviousMonth}
-              onMouseDown={e => e.preventDefault()}
-              onTouchStart={e => e.preventDefault()}
-              className="hover:bg-gray-100 transition-colors"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <Button 
-              type="button"
-              variant="outline" 
-              size="icon" 
-              onClick={handleNextMonth}
-              onMouseDown={e => e.preventDefault()}
-              onTouchStart={e => e.preventDefault()}
-              className="hover:bg-gray-100 transition-colors"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
+            <div onClick={e => e.stopPropagation()}>
+              <Button 
+                type="button"
+                variant="outline" 
+                size="icon" 
+                onClick={handleChangeMonth('previous')}
+                className="hover:bg-gray-100 transition-colors"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+            </div>
+            <div onClick={e => e.stopPropagation()}>
+              <Button 
+                type="button"
+                variant="outline" 
+                size="icon" 
+                onClick={handleChangeMonth('next')}
+                className="hover:bg-gray-100 transition-colors"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
 
           <h2 className="text-lg md:text-2xl font-semibold text-slate-50 md:hidden">
