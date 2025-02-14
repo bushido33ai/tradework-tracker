@@ -61,21 +61,27 @@ const Calendar = () => {
   const days = getDaysForView();
 
   const handleChangeMonth = (direction: 'previous' | 'next') => (e: React.MouseEvent) => {
-    // Prevent any default behavior
     if (e) {
       e.preventDefault();
       e.stopPropagation();
     }
     
-    // Update the date
     setCurrentDate(prev => direction === 'previous' ? subMonths(prev, 1) : addMonths(prev, 1));
   };
   
-  const handlePreviousMonth = () => {
+  const handlePreviousMonth = (e: React.MouseEvent | React.TouchEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     setCurrentDate(prev => subMonths(prev, 1));
   };
 
-  const handleNextMonth = () => {
+  const handleNextMonth = (e: React.MouseEvent | React.TouchEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     setCurrentDate(prev => addMonths(prev, 1));
   };
 
