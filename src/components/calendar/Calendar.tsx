@@ -1,10 +1,9 @@
-
 import { useState } from 'react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, parseISO, isWithinInterval, startOfWeek, endOfWeek } from 'date-fns';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import CalendarEvent from './CalendarEvent';
+import CalendarNavigation from './CalendarNavigation';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
@@ -24,6 +23,7 @@ const Calendar = () => {
   const [view, setView] = useState<CalendarView>('month');
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  
   const {
     data: jobs = []
   } = useQuery({
@@ -71,18 +71,12 @@ const Calendar = () => {
     setCurrentDate(prev => direction === 'previous' ? subMonths(prev, 1) : addMonths(prev, 1));
   };
   
-  const handlePreviousMonth = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handlePreviousMonth = () => {
     setCurrentDate(prev => subMonths(prev, 1));
-    return false;
   };
 
-  const handleNextMonth = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleNextMonth = () => {
     setCurrentDate(prev => addMonths(prev, 1));
-    return false;
   };
 
   const getDayEvents = (date: Date) => {
@@ -161,30 +155,10 @@ const Calendar = () => {
          onClick={e => e.stopPropagation()}>
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center justify-between md:justify-start w-full md:w-auto">
-          <div className="flex items-center space-x-2">
-            <div onClick={e => e.stopPropagation()}>
-              <Button 
-                type="button"
-                variant="outline" 
-                size="icon" 
-                onClick={handleChangeMonth('previous')}
-                className="hover:bg-gray-100 transition-colors"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-            </div>
-            <div onClick={e => e.stopPropagation()}>
-              <Button 
-                type="button"
-                variant="outline" 
-                size="icon" 
-                onClick={handleChangeMonth('next')}
-                className="hover:bg-gray-100 transition-colors"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
+          <CalendarNavigation 
+            onPreviousMonth={handlePreviousMonth}
+            onNextMonth={handleNextMonth}
+          />
 
           <h2 className="text-lg md:text-2xl font-semibold text-slate-50 md:hidden">
             {getHeaderText()}
