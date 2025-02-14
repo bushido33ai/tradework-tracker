@@ -420,7 +420,7 @@ export type Database = {
           id: string
           job_manager: string
           job_number: string
-          job_type: string | null
+          job_type: string
           location: string
           start_date: string | null
           status: Database["public"]["Enums"]["job_status"] | null
@@ -437,7 +437,7 @@ export type Database = {
           id?: string
           job_manager: string
           job_number?: string
-          job_type?: string | null
+          job_type?: string
           location: string
           start_date?: string | null
           status?: Database["public"]["Enums"]["job_status"] | null
@@ -454,7 +454,7 @@ export type Database = {
           id?: string
           job_manager?: string
           job_number?: string
-          job_type?: string | null
+          job_type?: string
           location?: string
           start_date?: string | null
           status?: Database["public"]["Enums"]["job_status"] | null
