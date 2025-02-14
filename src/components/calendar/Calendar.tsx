@@ -69,19 +69,11 @@ const Calendar = () => {
     setCurrentDate(prev => direction === 'previous' ? subMonths(prev, 1) : addMonths(prev, 1));
   };
   
-  const handlePreviousMonth = (e: React.MouseEvent | React.TouchEvent) => {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
+  const handlePreviousMonth = () => {
     setCurrentDate(prev => subMonths(prev, 1));
   };
 
-  const handleNextMonth = (e: React.MouseEvent | React.TouchEvent) => {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
+  const handleNextMonth = () => {
     setCurrentDate(prev => addMonths(prev, 1));
   };
 
