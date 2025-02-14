@@ -7,6 +7,7 @@ import CalendarEvent from './CalendarEvent';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
+
 type CalendarView = 'month' | 'week' | 'day' | 'list';
 interface Event {
   id: string;
@@ -15,6 +16,7 @@ interface Event {
   endDate: Date;
   color?: string;
 }
+
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [view, setView] = useState<CalendarView>('month');
@@ -36,6 +38,7 @@ const Calendar = () => {
       return data;
     }
   });
+
   const getDaysForView = () => {
     switch (view) {
       case 'week':
@@ -51,6 +54,7 @@ const Calendar = () => {
         });
     }
   };
+
   const days = getDaysForView();
   const previousPeriod = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent event from bubbling up
@@ -99,7 +103,9 @@ const Calendar = () => {
     }
     return format(currentDate, 'MMMM yyyy');
   };
-  return <div className="w-full max-w-6xl mx-auto p-4 md:p-6 space-y-4 md:space-y-6 rounded-lg shadow-lg border border-slate-200 animate-fade-in bg-[#1f1f31]">
+
+  return (
+    <div className="w-full max-w-6xl mx-auto p-4 md:p-6 space-y-4 md:space-y-6 rounded-lg shadow-lg border border-slate-200 animate-fade-in bg-[#1f1f31]">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center justify-between md:justify-start w-full md:w-auto">
           <div className="flex items-center space-x-2">
@@ -109,7 +115,7 @@ const Calendar = () => {
             <Button variant="outline" size="icon" onClick={nextPeriod} className="hover:bg-gray-100 transition-colors">
               <ChevronRight className="h-4 w-4" />
             </Button>
-            <Button variant="ghost" onClick={today} className="hover:bg-gray-100 transition-colors text-slate-50">
+            <Button variant="ghost" onClick={today} className="hover:bg-gray-100 transition-colors text-white">
               Today
             </Button>
           </div>
@@ -170,6 +176,8 @@ const Calendar = () => {
             </div>;
       })}
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default Calendar;
