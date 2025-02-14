@@ -3,23 +3,25 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface CalendarNavigationProps {
-  onPreviousMonth: (e: React.MouseEvent | React.TouchEvent) => void;
-  onNextMonth: (e: React.MouseEvent | React.TouchEvent) => void;
+  onPreviousMonth: () => void;
+  onNextMonth: () => void;
 }
 
 const CalendarNavigation = ({ onPreviousMonth, onNextMonth }: CalendarNavigationProps) => {
+  const handleClick = (handler: () => void) => (e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    handler();
+  };
+
   return (
-    <div 
-      className="flex items-center space-x-2" 
-      onClick={e => e.stopPropagation()}
-    >
+    <div className="flex items-center space-x-2">
       <Button 
         type="button"
         variant="outline" 
         size="icon" 
-        onClick={onPreviousMonth}
-        onTouchStart={onPreviousMonth}
-        className="hover:bg-gray-100 transition-colors touch-none select-none"
+        onClick={handleClick(onPreviousMonth)}
+        className="hover:bg-gray-100 transition-colors"
       >
         <ChevronLeft className="h-4 w-4" />
       </Button>
@@ -27,9 +29,8 @@ const CalendarNavigation = ({ onPreviousMonth, onNextMonth }: CalendarNavigation
         type="button"
         variant="outline" 
         size="icon" 
-        onClick={onNextMonth}
-        onTouchStart={onNextMonth}
-        className="hover:bg-gray-100 transition-colors touch-none select-none"
+        onClick={handleClick(onNextMonth)}
+        className="hover:bg-gray-100 transition-colors"
       >
         <ChevronRight className="h-4 w-4" />
       </Button>
