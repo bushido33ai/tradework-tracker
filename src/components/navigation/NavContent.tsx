@@ -1,6 +1,6 @@
 
 import { Link } from "react-router-dom";
-import { Home, ClipboardList, MessageSquare, Users, Building2, UserCircle, LogOut, Settings, Briefcase, Calendar } from "lucide-react";
+import { Home, ClipboardList, MessageSquare, Users, Building2, UserCircle, LogOut, Settings, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLocation, Navigate } from "react-router-dom";
 import { useSessionContext } from "@supabase/auth-helpers-react";
@@ -37,7 +37,6 @@ export const NavContent = ({ onNavigate, onSignOut }: NavContentProps) => {
     navItems.push(
       { icon: Home, label: "Dashboard", path: "/dashboard" },
       { icon: ClipboardList, label: "Jobs", path: "/jobs" },
-      { icon: Calendar, label: "Work Calendar", path: "/calendar" },
       { icon: MessageSquare, label: "Enquiries", path: "/enquiries" },
       { icon: Users, label: "Suppliers", path: "/suppliers" },
       { icon: Building2, label: "Customers", path: "/customers" }
