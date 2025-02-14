@@ -8,19 +8,17 @@ interface CalendarNavigationProps {
 }
 
 const CalendarNavigation = ({ onPreviousMonth, onNextMonth }: CalendarNavigationProps) => {
-  const handleClick = (handler: () => void) => (e: React.MouseEvent | React.TouchEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    handler();
-  };
-
   return (
     <div className="flex items-center space-x-2">
       <Button 
         type="button"
         variant="outline" 
         size="icon" 
-        onClick={handleClick(onPreviousMonth)}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          onPreviousMonth();
+        }}
         className="hover:bg-gray-100 transition-colors"
       >
         <ChevronLeft className="h-4 w-4" />
@@ -29,7 +27,11 @@ const CalendarNavigation = ({ onPreviousMonth, onNextMonth }: CalendarNavigation
         type="button"
         variant="outline" 
         size="icon" 
-        onClick={handleClick(onNextMonth)}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          onNextMonth();
+        }}
         className="hover:bg-gray-100 transition-colors"
       >
         <ChevronRight className="h-4 w-4" />

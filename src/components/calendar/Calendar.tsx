@@ -60,21 +60,8 @@ const Calendar = () => {
 
   const days = getDaysForView();
 
-  const handleChangeMonth = (direction: 'previous' | 'next') => (e: React.MouseEvent) => {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    
+  const handleMonthChange = (direction: 'previous' | 'next') => {
     setCurrentDate(prev => direction === 'previous' ? subMonths(prev, 1) : addMonths(prev, 1));
-  };
-  
-  const handlePreviousMonth = () => {
-    setCurrentDate(prev => subMonths(prev, 1));
-  };
-
-  const handleNextMonth = () => {
-    setCurrentDate(prev => addMonths(prev, 1));
   };
 
   const getDayEvents = (date: Date) => {
@@ -154,8 +141,8 @@ const Calendar = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center justify-between md:justify-start w-full md:w-auto">
           <CalendarNavigation 
-            onPreviousMonth={handlePreviousMonth}
-            onNextMonth={handleNextMonth}
+            onPreviousMonth={() => handleMonthChange('previous')}
+            onNextMonth={() => handleMonthChange('next')}
           />
 
           <h2 className="text-lg md:text-2xl font-semibold text-slate-50 md:hidden">
