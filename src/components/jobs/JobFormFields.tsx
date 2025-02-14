@@ -97,7 +97,6 @@ const JobFormFields = ({ form }: JobFormFieldsProps) => {
                       field.onChange(date.toISOString());
                     }
                   }}
-                  min={new Date().toISOString().split('T')[0]}
                 />
               </FormControl>
               <FormMessage />
@@ -123,7 +122,7 @@ const JobFormFields = ({ form }: JobFormFieldsProps) => {
                       field.onChange(date.toISOString());
                     }
                   }}
-                  min={form.watch('start_date') ? new Date(form.watch('start_date')).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]}
+                  min={form.watch('start_date') ? new Date(form.watch('start_date')).toISOString().split('T')[0] : undefined}
                 />
               </FormControl>
               <FormMessage />
