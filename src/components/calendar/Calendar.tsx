@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, parseISO, isWithinInterval, startOfWeek, endOfWeek } from 'date-fns';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -123,28 +124,47 @@ const Calendar = () => {
         </h2>
 
         <div className="grid grid-cols-2 md:flex items-center gap-2 md:space-x-2">
-          <Button variant={view === 'month' ? 'secondary' : 'ghost'} onClick={e => {
-          e.stopPropagation();
-          setView('month');
-        }} className="transition-colors w-full md:w-auto">
+          <Button 
+            variant={view === 'month' ? 'secondary' : 'ghost'} 
+            onClick={e => {
+              e.stopPropagation();
+              setView('month');
+            }} 
+            className={cn(
+              "transition-colors w-full md:w-auto",
+              view !== 'month' && "text-slate-50"
+            )}
+          >
             Month
           </Button>
-          <Button variant={view === 'week' ? 'secondary' : 'ghost'} onClick={e => {
-          e.stopPropagation();
-          setView('week');
-        }} className="transition-colors w-full md:w-auto text-slate-50">
+          <Button 
+            variant={view === 'week' ? 'secondary' : 'ghost'} 
+            onClick={e => {
+              e.stopPropagation();
+              setView('week');
+            }} 
+            className="transition-colors w-full md:w-auto text-slate-50"
+          >
             Week
           </Button>
-          <Button variant={view === 'day' ? 'secondary' : 'ghost'} onClick={e => {
-          e.stopPropagation();
-          setView('day');
-        }} className="transition-colors w-full md:w-auto text-slate-50">
+          <Button 
+            variant={view === 'day' ? 'secondary' : 'ghost'} 
+            onClick={e => {
+              e.stopPropagation();
+              setView('day');
+            }} 
+            className="transition-colors w-full md:w-auto text-slate-50"
+          >
             Day
           </Button>
-          <Button variant={view === 'list' ? 'secondary' : 'ghost'} onClick={e => {
-          e.stopPropagation();
-          setView('list');
-        }} className="transition-colors w-full md:w-auto">
+          <Button 
+            variant={view === 'list' ? 'secondary' : 'ghost'} 
+            onClick={e => {
+              e.stopPropagation();
+              setView('list');
+            }} 
+            className="transition-colors w-full md:w-auto text-slate-50"
+          >
             List
           </Button>
         </div>
