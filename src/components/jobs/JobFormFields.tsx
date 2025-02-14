@@ -109,7 +109,7 @@ const JobFormFields = ({ form }: JobFormFieldsProps) => {
           name="end_date"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel>End Date</FormLabel>
+              <FormLabel>End Date (optional)</FormLabel>
               <FormControl>
                 <Input
                   type="date"
@@ -120,6 +120,8 @@ const JobFormFields = ({ form }: JobFormFieldsProps) => {
                       const date = new Date(e.target.value);
                       date.setHours(12, 0, 0, 0);
                       field.onChange(date.toISOString());
+                    } else {
+                      field.onChange('');
                     }
                   }}
                   min={form.watch('start_date') ? new Date(form.watch('start_date')).toISOString().split('T')[0] : undefined}
