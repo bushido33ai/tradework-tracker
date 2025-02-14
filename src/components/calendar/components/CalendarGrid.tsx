@@ -8,7 +8,13 @@ interface CalendarGridProps {
   days: Date[];
   currentDate: Date;
   view: 'month' | 'week';
-  events: any[];
+  events: Array<{
+    id: string;
+    title: string;
+    startDate: Date;
+    endDate: Date;
+    color?: string;
+  }>;
   onEventClick: (eventId: string) => void;
 }
 
