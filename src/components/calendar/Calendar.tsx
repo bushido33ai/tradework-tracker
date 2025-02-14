@@ -72,10 +72,6 @@ const Calendar = () => {
       setCurrentDate(prev => addMonths(prev, 1));
     }
   };
-  const today = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent event from bubbling up
-    setCurrentDate(new Date());
-  };
   const getDayEvents = (date: Date) => {
     return jobs.filter(job => {
       const jobStartDate = parseISO(job.start_date);
@@ -114,9 +110,6 @@ const Calendar = () => {
             </Button>
             <Button variant="outline" size="icon" onClick={nextPeriod} className="hover:bg-gray-100 transition-colors">
               <ChevronRight className="h-4 w-4" />
-            </Button>
-            <Button variant="ghost" onClick={today} className="hover:bg-gray-100 transition-colors text-white">
-              Today
             </Button>
           </div>
 
