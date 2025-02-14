@@ -5,12 +5,23 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { UseFormReturn } from "react-hook-form";
 import type { JobFormValues } from "./types";
+import { useEffect } from "react";
 
 interface JobFormFieldsProps {
   form: UseFormReturn<JobFormValues>;
 }
 
 const JobFormFields = ({ form }: JobFormFieldsProps) => {
+  // When job type changes to "Day Rate", set budget to "0"
+  useEffect(() => {
+    const subscription = form.watch((value, { name }) => {
+      if (name === 'job_type' && value.job_type === 'Day Rate') {
+        form.setValue('budget', '0');
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
+
   return (
     <>
       <FormField
@@ -64,15 +75,24 @@ const JobFormFields = ({ form }: JobFormFieldsProps) => {
         name="budget"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Budget (optional)</FormLabel>
+            <FormLabel>
+              {form.watch('job_type') === 'Day Rate' ? 'Initial Budget' : 'Budget'} 
+              {form.watch('job_type') !== 'Day Rate' && ' (optional)'}
+            </FormLabel>
             <FormControl>
               <Input
                 type="number"
                 step="0.01"
                 placeholder="Enter budget amount"
                 {...field}
+                disabled={form.watch('job_type') === 'Day Rate'}
               />
             </FormControl>
+            {form.watch('job_type') === 'Day Rate' && (
+              <p className="text-sm text-muted-foreground">
+                Budget will increase as days are added to the job
+              </p>
+            )}
             <FormMessage />
           </FormItem>
         )}
