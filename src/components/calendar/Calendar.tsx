@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, parseISO, isWithinInterval, startOfWeek, endOfWeek } from 'date-fns';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -59,24 +58,15 @@ const Calendar = () => {
   };
 
   const days = getDaysForView();
-  const previousPeriod = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent event from bubbling up
-    e.preventDefault(); // Add this to prevent default behavior
-    if (view === 'week') {
-      setCurrentDate(prev => subMonths(prev, 1));
-    } else {
-      setCurrentDate(prev => subMonths(prev, 1));
-    }
+  
+  const handlePreviousMonth = () => {
+    setCurrentDate(prev => subMonths(prev, 1));
   };
-  const nextPeriod = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent event from bubbling up
-    e.preventDefault(); // Add this to prevent default behavior
-    if (view === 'week') {
-      setCurrentDate(prev => addMonths(prev, 1));
-    } else {
-      setCurrentDate(prev => addMonths(prev, 1));
-    }
+
+  const handleNextMonth = () => {
+    setCurrentDate(prev => addMonths(prev, 1));
   };
+
   const getDayEvents = (date: Date) => {
     return jobs.filter(job => {
       const jobStartDate = parseISO(job.start_date);
@@ -93,9 +83,11 @@ const Calendar = () => {
       color: job.status === 'completed' ? '#10B981' : '#3B82F6'
     }));
   };
+
   const handleEventClick = (eventId: string) => {
     navigate(`/jobs/${eventId}`);
   };
+
   const getHeaderText = () => {
     if (view === 'week') {
       const weekStart = startOfWeek(currentDate);
@@ -152,17 +144,19 @@ const Calendar = () => {
         <div className="flex items-center justify-between md:justify-start w-full md:w-auto">
           <div className="flex items-center space-x-2">
             <Button 
+              type="button"
               variant="outline" 
               size="icon" 
-              onClick={previousPeriod}
+              onClick={handlePreviousMonth}
               className="hover:bg-gray-100 transition-colors"
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
             <Button 
+              type="button"
               variant="outline" 
               size="icon" 
-              onClick={nextPeriod}
+              onClick={handleNextMonth}
               className="hover:bg-gray-100 transition-colors"
             >
               <ChevronRight className="h-4 w-4" />
