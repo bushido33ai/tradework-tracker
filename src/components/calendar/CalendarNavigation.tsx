@@ -26,7 +26,18 @@ const CalendarNavigation = ({ onPreviousMonth, onNextMonth }: CalendarNavigation
     <div 
       className="flex items-center space-x-2" 
       onClick={e => e.stopPropagation()}
-      onTouchStart={e => e.stopPropagation()}
+      onTouchStart={e => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
+      onTouchMove={e => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
+      onTouchEnd={e => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
     >
       <Button 
         type="button"
@@ -34,7 +45,15 @@ const CalendarNavigation = ({ onPreviousMonth, onNextMonth }: CalendarNavigation
         size="icon" 
         onClick={handleClick(onPreviousMonth)}
         onTouchStart={handleClick(onPreviousMonth)}
-        className="hover:bg-gray-100 transition-colors touch-none"
+        onTouchMove={e => {
+          e.preventDefault();
+          e.stopPropagation();
+        }}
+        onTouchEnd={e => {
+          e.preventDefault();
+          e.stopPropagation();
+        }}
+        className="hover:bg-gray-100 transition-colors touch-none select-none"
       >
         <ChevronLeft className="h-4 w-4" />
       </Button>
@@ -44,7 +63,15 @@ const CalendarNavigation = ({ onPreviousMonth, onNextMonth }: CalendarNavigation
         size="icon" 
         onClick={handleClick(onNextMonth)}
         onTouchStart={handleClick(onNextMonth)}
-        className="hover:bg-gray-100 transition-colors touch-none"
+        onTouchMove={e => {
+          e.preventDefault();
+          e.stopPropagation();
+        }}
+        onTouchEnd={e => {
+          e.preventDefault();
+          e.stopPropagation();
+        }}
+        className="hover:bg-gray-100 transition-colors touch-none select-none"
       >
         <ChevronRight className="h-4 w-4" />
       </Button>
