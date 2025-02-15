@@ -14,6 +14,7 @@ import { Form } from "@/components/ui/form";
 import { toast } from "sonner";
 import JobFormFields from "./JobFormFields";
 import { jobSchema, type JobFormValues } from "./types";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface AddJobDialogProps {
   open: boolean;
@@ -21,6 +22,7 @@ interface AddJobDialogProps {
 }
 
 const AddJobDialog = ({ open, onOpenChange }: AddJobDialogProps) => {
+  const isMobile = useIsMobile();
   const queryClient = useQueryClient();
   const form = useForm<JobFormValues>({
     resolver: zodResolver(jobSchema),
@@ -40,7 +42,6 @@ const AddJobDialog = ({ open, onOpenChange }: AddJobDialogProps) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      // For debugging
       console.log("Submitting job with values:", values);
 
       const jobData = {
@@ -90,7 +91,13 @@ const AddJobDialog = ({ open, onOpenChange }: AddJobDialogProps) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent 
+        className={`sm:max-w-[500px] ${isMobile ? 'h-[90vh] !max-h-[90vh]' : ''}`}
+        style={{
+          overflowY: isMobile ? 'auto' : undefined,
+          paddingBottom: isMobile ? '80px' : undefined // Add padding to ensure the bottom is visible
+        }}
+      >
         <DialogHeader>
           <DialogTitle>Create New Job</DialogTitle>
         </DialogHeader>
@@ -102,7 +109,7 @@ const AddJobDialog = ({ open, onOpenChange }: AddJobDialogProps) => {
           >
             <JobFormFields form={form} />
 
-            <div className="flex justify-end gap-4 pt-4">
+            <div className={`flex justify-end gap-4 pt-4 ${isMobile ? 'sticky bottom-0 bg-background p-4 border-t' : ''}`}>
               <Button
                 type="button"
                 variant="outline"
