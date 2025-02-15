@@ -59,23 +59,20 @@ export const DaysWorkedTab = ({ jobId }: DaysWorkedTabProps) => {
   const deleteDayWorked = useMutation({
     mutationFn: async (id: string) => {
       console.log("Attempting to delete day worked with ID:", id);
-      const { error, data } = await supabase
+      const { error } = await supabase
         .from("job_days_worked")
         .delete()
-        .eq("id", id)
-        .select();
+        .eq("id", id);
 
       if (error) {
         console.error("Error in delete operation:", error);
         throw error;
       }
 
-      console.log("Delete operation response:", data);
-      return data;
+      return id;
     },
     onSuccess: () => {
       console.log("Successfully deleted day worked. Invalidating queries...");
-      // Ensure we're invalidating the correct queries
       queryClient.invalidateQueries({
         queryKey: ["job-days-worked", jobId],
       });
@@ -87,7 +84,7 @@ export const DaysWorkedTab = ({ jobId }: DaysWorkedTabProps) => {
     },
     onError: (error) => {
       console.error("Error deleting day worked:", error);
-      toast.error("Failed to delete entry");
+      toast.error("Failed to delete entry. You can only delete entries you created.");
       setDeletingId(null);
     },
   });

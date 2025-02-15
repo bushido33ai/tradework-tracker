@@ -62,7 +62,10 @@ export const DaysWorkedForm = ({ jobId, onSuccess }: DaysWorkedFormProps) => {
         notes: values.notes,
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase error:", error);
+        throw error;
+      }
     },
     onSuccess: () => {
       toast.success("Days worked added successfully");
