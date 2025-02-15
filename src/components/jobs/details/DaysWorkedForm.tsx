@@ -30,6 +30,7 @@ const formSchema = z.object({
   day_rate_type: z.enum(["labourer", "skilled"], {
     required_error: "Day rate type is required",
   }),
+  day_rate: z.string().min(1, "Day rate is required"),
   notes: z.string().optional(),
 });
 
@@ -45,6 +46,7 @@ export const DaysWorkedForm = ({ jobId, onSuccess }: DaysWorkedFormProps) => {
       date_worked: new Date().toISOString().split("T")[0],
       hours_worked: "8",
       day_rate_type: "labourer",
+      day_rate: "",
       notes: "",
     },
   });
@@ -58,6 +60,7 @@ export const DaysWorkedForm = ({ jobId, onSuccess }: DaysWorkedFormProps) => {
         job_id: jobId,
         date_worked: values.date_worked,
         hours_worked: parseFloat(values.hours_worked),
+        day_rate: parseFloat(values.day_rate),
         day_rate_type: values.day_rate_type,
         notes: values.notes,
         created_by: user.id,
@@ -127,6 +130,25 @@ export const DaysWorkedForm = ({ jobId, onSuccess }: DaysWorkedFormProps) => {
                   <SelectItem value="skilled">Skilled</SelectItem>
                 </SelectContent>
               </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="day_rate"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Day Rate (£)</FormLabel>
+              <FormControl>
+                <Input 
+                  type="number" 
+                  step="0.01" 
+                  placeholder="Enter day rate amount"
+                  {...field}
+                />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
