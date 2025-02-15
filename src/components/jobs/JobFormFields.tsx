@@ -22,6 +22,8 @@ const JobFormFields = ({ form }: JobFormFieldsProps) => {
     return () => subscription.unsubscribe();
   }, [form]);
 
+  const isDayRate = form.watch('job_type') === 'Day Rate';
+
   return (
     <>
       <FormField
@@ -72,12 +74,55 @@ const JobFormFields = ({ form }: JobFormFieldsProps) => {
 
       <FormField
         control={form.control}
+        name="job_type"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Job Type</FormLabel>
+            <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select job type" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectItem value="Fully Quoted">Fully Quoted</SelectItem>
+                <SelectItem value="Day Rate">Day Rate</SelectItem>
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      {isDayRate && (
+        <FormField
+          control={form.control}
+          name="day_rate"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Day Rate (£)</FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  step="0.01"
+                  placeholder="Enter day rate amount"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      )}
+
+      <FormField
+        control={form.control}
         name="budget"
         render={({ field }) => (
           <FormItem>
             <FormLabel>
-              {form.watch('job_type') === 'Day Rate' ? 'Initial Budget' : 'Budget'} 
-              {form.watch('job_type') !== 'Day Rate' && ' (optional)'}
+              {isDayRate ? 'Initial Budget' : 'Budget'} 
+              {!isDayRate && ' (optional)'}
             </FormLabel>
             <FormControl>
               <Input
@@ -85,12 +130,12 @@ const JobFormFields = ({ form }: JobFormFieldsProps) => {
                 step="0.01"
                 placeholder="Enter budget amount"
                 {...field}
-                disabled={form.watch('job_type') === 'Day Rate'}
+                disabled={isDayRate}
               />
             </FormControl>
-            {form.watch('job_type') === 'Day Rate' && (
+            {isDayRate && (
               <p className="text-sm text-muted-foreground">
-                Budget will increase as days are added to the job
+                Budget will increase based on days worked × day rate
               </p>
             )}
             <FormMessage />
@@ -152,28 +197,6 @@ const JobFormFields = ({ form }: JobFormFieldsProps) => {
           )}
         />
       </div>
-
-      <FormField
-        control={form.control}
-        name="job_type"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Job Type</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select job type" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectItem value="Fully Quoted">Fully Quoted</SelectItem>
-                <SelectItem value="Day Rate">Day Rate</SelectItem>
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
     </>
   );
 };

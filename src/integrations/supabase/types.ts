@@ -415,6 +415,7 @@ export type Database = {
           budget: number | null
           created_at: string
           created_by: string
+          day_rate: number | null
           description: string
           end_date: string | null
           id: string
@@ -425,6 +426,7 @@ export type Database = {
           start_date: string | null
           status: Database["public"]["Enums"]["job_status"] | null
           title: string
+          total_days_cost: number | null
           updated_at: string
         }
         Insert: {
@@ -432,6 +434,7 @@ export type Database = {
           budget?: number | null
           created_at?: string
           created_by: string
+          day_rate?: number | null
           description: string
           end_date?: string | null
           id?: string
@@ -442,6 +445,7 @@ export type Database = {
           start_date?: string | null
           status?: Database["public"]["Enums"]["job_status"] | null
           title: string
+          total_days_cost?: number | null
           updated_at?: string
         }
         Update: {
@@ -449,6 +453,7 @@ export type Database = {
           budget?: number | null
           created_at?: string
           created_by?: string
+          day_rate?: number | null
           description?: string
           end_date?: string | null
           id?: string
@@ -459,6 +464,7 @@ export type Database = {
           start_date?: string | null
           status?: Database["public"]["Enums"]["job_status"] | null
           title?: string
+          total_days_cost?: number | null
           updated_at?: string
         }
         Relationships: [
