@@ -212,6 +212,7 @@ export type Database = {
           created_at: string | null
           created_by: string
           date_worked: string
+          day_rate: number | null
           day_rate_type: string | null
           hours_worked: number
           id: string
@@ -223,6 +224,7 @@ export type Database = {
           created_at?: string | null
           created_by: string
           date_worked: string
+          day_rate?: number | null
           day_rate_type?: string | null
           hours_worked: number
           id?: string
@@ -234,6 +236,7 @@ export type Database = {
           created_at?: string | null
           created_by?: string
           date_worked?: string
+          day_rate?: number | null
           day_rate_type?: string | null
           hours_worked?: number
           id?: string
