@@ -12,6 +12,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { format } from "date-fns";
 import { toast } from "sonner";
 import { DaysWorkedForm } from "./DaysWorkedForm";
@@ -23,6 +33,7 @@ interface DaysWorkedTabProps {
 
 export const DaysWorkedTab = ({ jobId }: DaysWorkedTabProps) => {
   const [showForm, setShowForm] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
   const { data: daysWorked, isLoading } = useQuery({
@@ -53,9 +64,12 @@ export const DaysWorkedTab = ({ jobId }: DaysWorkedTabProps) => {
       queryClient.invalidateQueries({ queryKey: ["job-days-worked", jobId] });
       queryClient.invalidateQueries({ queryKey: ["job-total-costs", jobId] });
       toast.success("Entry deleted successfully");
+      setDeletingId(null); // Reset the deleting state
     },
-    onError: () => {
+    onError: (error) => {
+      console.error("Error deleting entry:", error);
       toast.error("Failed to delete entry");
+      setDeletingId(null); // Reset the deleting state on error
     },
   });
 
@@ -129,7 +143,7 @@ export const DaysWorkedTab = ({ jobId }: DaysWorkedTabProps) => {
                       <Button
                         variant="destructive"
                         size="sm"
-                        onClick={() => deleteDayWorked.mutate(day.id)}
+                        onClick={() => setDeletingId(day.id)}
                       >
                         Delete
                       </Button>
@@ -148,6 +162,30 @@ export const DaysWorkedTab = ({ jobId }: DaysWorkedTabProps) => {
           </p>
         )}
       </div>
+
+      <AlertDialog open={Boolean(deletingId)} onOpenChange={() => setDeletingId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the selected day worked entry.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (deletingId) {
+                  deleteDayWorked.mutate(deletingId);
+                }
+              }}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Card>
   );
 };
