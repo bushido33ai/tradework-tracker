@@ -49,7 +49,9 @@ export const DaysWorkedTab = ({ jobId }: DaysWorkedTabProps) => {
       if (error) throw error;
     },
     onSuccess: () => {
+      // Invalidate both queries to update the UI
       queryClient.invalidateQueries({ queryKey: ["job-days-worked", jobId] });
+      queryClient.invalidateQueries({ queryKey: ["job-total-costs", jobId] });
       toast.success("Entry deleted successfully");
     },
     onError: () => {
@@ -95,7 +97,9 @@ export const DaysWorkedTab = ({ jobId }: DaysWorkedTabProps) => {
             jobId={jobId}
             onSuccess={() => {
               setShowForm(false);
+              // Invalidate both queries when a new day is added
               queryClient.invalidateQueries({ queryKey: ["job-days-worked", jobId] });
+              queryClient.invalidateQueries({ queryKey: ["job-total-costs", jobId] });
             }}
           />
         )}
