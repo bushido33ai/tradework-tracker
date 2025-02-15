@@ -10,6 +10,9 @@ import { RainbowButton } from "@/components/ui/rainbow-button";
 import { MiscCostForm } from "./MiscCostForm";
 import { MiscCostsList } from "./MiscCostsList";
 import { DaysWorkedTab } from "./DaysWorkedTab";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Loader2 } from "lucide-react";
 
 interface JobTabsProps {
   jobId: string;
@@ -20,6 +23,47 @@ interface JobTabsProps {
 const JobTabs = ({ jobId, budget, job_type }: JobTabsProps) => {
   const [showMiscCostForm, setShowMiscCostForm] = useState(false);
   const isDayRate = job_type === "Day Rate";
+
+  const { data: totalCosts, isLoading: isLoadingTotals } = useQuery({
+    queryKey: ["job-total-costs", jobId],
+    queryFn: async () => {
+      // Get misc costs
+      const { data: miscCosts, error: miscError } = await supabase
+        .from("job_misc_costs")
+        .select("amount")
+        .eq("job_id", jobId);
+
+      if (miscError) throw miscError;
+
+      // Get invoice costs
+      const { data: invoices, error: invoiceError } = await supabase
+        .from("job_invoices")
+        .select("amount")
+        .eq("job_id", jobId);
+
+      if (invoiceError) throw invoiceError;
+
+      // Get total days cost
+      const { data: jobData, error: jobError } = await supabase
+        .from("jobs")
+        .select("total_days_cost")
+        .eq("id", jobId)
+        .single();
+
+      if (jobError) throw jobError;
+
+      const miscTotal = miscCosts.reduce((sum, cost) => sum + Number(cost.amount), 0);
+      const invoiceTotal = invoices.reduce((sum, invoice) => sum + Number(invoice.amount), 0);
+      const daysTotal = Number(jobData.total_days_cost) || 0;
+
+      return {
+        miscTotal,
+        invoiceTotal,
+        daysTotal,
+        grandTotal: miscTotal + invoiceTotal + daysTotal
+      };
+    }
+  });
 
   return (
     <Tabs defaultValue="designs" className="w-full">
@@ -49,6 +93,12 @@ const JobTabs = ({ jobId, budget, job_type }: JobTabsProps) => {
           className="flex-1 min-w-[100px] font-medium data-[state=active]:bg-primary-50 data-[state=active]:text-primary-800 data-[state=active]:shadow-inner data-[state=active]:border-b-2 data-[state=active]:border-primary-600 transition-all duration-200"
         >
           Notes
+        </TabsTrigger>
+        <TabsTrigger 
+          value="running-total" 
+          className="flex-1 min-w-[100px] font-medium data-[state=active]:bg-primary-50 data-[state=active]:text-primary-800 data-[state=active]:shadow-inner data-[state=active]:border-b-2 data-[state=active]:border-primary-600 transition-all duration-200"
+        >
+          Running Total
         </TabsTrigger>
         {budget && budget > 0 && (
           <TabsTrigger 
@@ -116,6 +166,44 @@ const JobTabs = ({ jobId, budget, job_type }: JobTabsProps) => {
         <Card className="bg-white/90 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-200">
           <div className="p-6">
             <JobNotes jobId={jobId} />
+          </div>
+        </Card>
+      </TabsContent>
+
+      <TabsContent value="running-total">
+        <Card className="bg-white/90 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="p-6">
+            {isLoadingTotals ? (
+              <div className="flex justify-center py-4">
+                <Loader2 className="h-6 w-6 animate-spin" />
+              </div>
+            ) : totalCosts ? (
+              <div className="space-y-4">
+                <h3 className="text-lg font-medium">Running Total Breakdown</h3>
+                <div className="space-y-2">
+                  {isDayRate && (
+                    <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+                      <span>Days Worked Total</span>
+                      <span className="font-medium">£{totalCosts.daysTotal.toFixed(2)}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+                    <span>Miscellaneous Costs</span>
+                    <span className="font-medium">£{totalCosts.miscTotal.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+                    <span>Invoice Costs</span>
+                    <span className="font-medium">£{totalCosts.invoiceTotal.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between items-center p-4 bg-primary-50 rounded-lg border-2 border-primary-200">
+                    <span className="font-medium">Grand Total</span>
+                    <span className="font-bold text-lg">£{totalCosts.grandTotal.toFixed(2)}</span>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <p className="text-center text-muted-foreground">Failed to load totals</p>
+            )}
           </div>
         </Card>
       </TabsContent>
