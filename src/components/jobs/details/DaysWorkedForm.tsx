@@ -53,9 +53,6 @@ export const DaysWorkedForm = ({ jobId, onSuccess }: DaysWorkedFormProps) => {
 
   const addDaysWorked = useMutation({
     mutationFn: async (values: z.infer<typeof formSchema>) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
-
       const { error } = await supabase.from("job_days_worked").insert({
         job_id: jobId,
         date_worked: values.date_worked,
@@ -63,7 +60,6 @@ export const DaysWorkedForm = ({ jobId, onSuccess }: DaysWorkedFormProps) => {
         day_rate: parseFloat(values.day_rate),
         day_rate_type: values.day_rate_type,
         notes: values.notes,
-        created_by: user.id,
       });
 
       if (error) throw error;
@@ -73,7 +69,8 @@ export const DaysWorkedForm = ({ jobId, onSuccess }: DaysWorkedFormProps) => {
       form.reset();
       onSuccess();
     },
-    onError: () => {
+    onError: (error) => {
+      console.error("Error adding days worked:", error);
       toast.error("Failed to add days worked");
     },
   });
