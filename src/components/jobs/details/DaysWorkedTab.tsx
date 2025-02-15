@@ -39,37 +39,56 @@ export const DaysWorkedTab = ({ jobId }: DaysWorkedTabProps) => {
   const { data: daysWorked, isLoading } = useQuery({
     queryKey: ["job-days-worked", jobId],
     queryFn: async () => {
+      console.log("Fetching days worked for job:", jobId);
       const { data, error } = await supabase
         .from("job_days_worked")
         .select("*")
         .eq("job_id", jobId)
         .order("date_worked", { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching days worked:", error);
+        throw error;
+      }
+      
+      console.log("Days worked data:", data);
       return data;
     },
   });
 
   const deleteDayWorked = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase
+      console.log("Attempting to delete day worked with ID:", id);
+      const { error, data } = await supabase
         .from("job_days_worked")
         .delete()
-        .eq("id", id);
+        .eq("id", id)
+        .select();
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error in delete operation:", error);
+        throw error;
+      }
+
+      console.log("Delete operation response:", data);
+      return data;
     },
     onSuccess: () => {
-      // Invalidate both queries to update the UI
-      queryClient.invalidateQueries({ queryKey: ["job-days-worked", jobId] });
-      queryClient.invalidateQueries({ queryKey: ["job-total-costs", jobId] });
+      console.log("Successfully deleted day worked. Invalidating queries...");
+      // Ensure we're invalidating the correct queries
+      queryClient.invalidateQueries({
+        queryKey: ["job-days-worked", jobId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["job-total-costs", jobId],
+      });
       toast.success("Entry deleted successfully");
-      setDeletingId(null); // Reset the deleting state
+      setDeletingId(null);
     },
     onError: (error) => {
-      console.error("Error deleting entry:", error);
+      console.error("Error deleting day worked:", error);
       toast.error("Failed to delete entry");
-      setDeletingId(null); // Reset the deleting state on error
+      setDeletingId(null);
     },
   });
 
@@ -87,6 +106,11 @@ export const DaysWorkedTab = ({ jobId }: DaysWorkedTabProps) => {
     const dayRate = Number(day.day_rate) || 0;
     return sum + dayRate;
   }, 0) || 0;
+
+  const handleDelete = async (id: string) => {
+    console.log("Delete requested for day worked ID:", id);
+    deleteDayWorked.mutate(id);
+  };
 
   return (
     <Card className="p-6">
@@ -111,7 +135,6 @@ export const DaysWorkedTab = ({ jobId }: DaysWorkedTabProps) => {
             jobId={jobId}
             onSuccess={() => {
               setShowForm(false);
-              // Invalidate both queries when a new day is added
               queryClient.invalidateQueries({ queryKey: ["job-days-worked", jobId] });
               queryClient.invalidateQueries({ queryKey: ["job-total-costs", jobId] });
             }}
@@ -176,7 +199,7 @@ export const DaysWorkedTab = ({ jobId }: DaysWorkedTabProps) => {
             <AlertDialogAction
               onClick={() => {
                 if (deletingId) {
-                  deleteDayWorked.mutate(deletingId);
+                  handleDelete(deletingId);
                 }
               }}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
