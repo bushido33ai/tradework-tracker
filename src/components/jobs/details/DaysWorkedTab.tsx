@@ -2,30 +2,14 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { format } from "date-fns";
 import { toast } from "sonner";
-import { DaysWorkedForm } from "./DaysWorkedForm";
 import { Loader2 } from "lucide-react";
+import { DaysWorkedForm } from "./DaysWorkedForm";
+import { DaysWorkedStats } from "./days-worked/DaysWorkedStats";
+import { DaysWorkedTable } from "./days-worked/DaysWorkedTable";
+import { DeleteDayWorkedDialog } from "./days-worked/DeleteDayWorkedDialog";
+import { Button } from "@/components/ui/button";
 
 interface DaysWorkedTabProps {
   jobId: string;
@@ -112,20 +96,12 @@ export const DaysWorkedTab = ({ jobId }: DaysWorkedTabProps) => {
   return (
     <Card className="p-6">
       <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <div className="space-y-1">
-            <h3 className="text-lg font-medium">Days Worked</h3>
-            <p className="text-sm text-muted-foreground">
-              Total Hours: {totalHours}
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Total Cost: £{totalCost.toFixed(2)}
-            </p>
-          </div>
-          <Button onClick={() => setShowForm(!showForm)}>
-            {showForm ? "Cancel" : "Add Days"}
-          </Button>
-        </div>
+        <DaysWorkedStats
+          totalHours={totalHours}
+          totalCost={totalCost}
+          showForm={showForm}
+          onToggleForm={() => setShowForm(!showForm)}
+        />
 
         {showForm && (
           <DaysWorkedForm
@@ -138,74 +114,22 @@ export const DaysWorkedTab = ({ jobId }: DaysWorkedTabProps) => {
           />
         )}
 
-        {daysWorked && daysWorked.length > 0 ? (
-          <>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Hours</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Day Rate</TableHead>
-                  <TableHead>Notes</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {daysWorked.map((day) => (
-                  <TableRow key={day.id}>
-                    <TableCell>{format(new Date(day.date_worked), "PPP")}</TableCell>
-                    <TableCell>{day.hours_worked}</TableCell>
-                    <TableCell className="capitalize">{day.day_rate_type || "N/A"}</TableCell>
-                    <TableCell>£{day.day_rate ? day.day_rate.toFixed(2) : "N/A"}</TableCell>
-                    <TableCell>{day.notes}</TableCell>
-                    <TableCell className="text-right">
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => setDeletingId(day.id)}
-                      >
-                        Delete
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-            <div className="text-sm text-muted-foreground text-right pt-4">
-              Total Days Worked: {totalDays}
-            </div>
-          </>
-        ) : (
-          <p className="text-center text-muted-foreground py-8">
-            No days worked recorded yet
-          </p>
-        )}
-      </div>
+        <DaysWorkedTable
+          daysWorked={daysWorked || []}
+          totalDays={totalDays}
+          onDeleteClick={(id) => setDeletingId(id)}
+        />
 
-      <AlertDialog open={Boolean(deletingId)} onOpenChange={() => setDeletingId(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the selected day worked entry.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => {
-                if (deletingId) {
-                  handleDelete(deletingId);
-                }
-              }}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        <DeleteDayWorkedDialog
+          isOpen={Boolean(deletingId)}
+          onClose={() => setDeletingId(null)}
+          onConfirm={() => {
+            if (deletingId) {
+              handleDelete(deletingId);
+            }
+          }}
+        />
+      </div>
     </Card>
   );
 };
