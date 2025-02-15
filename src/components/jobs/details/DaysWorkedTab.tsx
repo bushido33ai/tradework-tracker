@@ -67,15 +67,22 @@ export const DaysWorkedTab = ({ jobId }: DaysWorkedTabProps) => {
 
   const totalHours = daysWorked?.reduce((sum, day) => sum + Number(day.hours_worked), 0) || 0;
   const totalDays = daysWorked?.length || 0;
+  const totalCost = daysWorked?.reduce((sum, day) => {
+    const dayRate = Number(day.day_rate) || 0;
+    return sum + dayRate;
+  }, 0) || 0;
 
   return (
     <Card className="p-6">
       <div className="space-y-6">
         <div className="flex justify-between items-center">
-          <div>
+          <div className="space-y-1">
             <h3 className="text-lg font-medium">Days Worked</h3>
             <p className="text-sm text-muted-foreground">
               Total Hours: {totalHours}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Total Cost: £{totalCost.toFixed(2)}
             </p>
           </div>
           <Button onClick={() => setShowForm(!showForm)}>
@@ -101,6 +108,7 @@ export const DaysWorkedTab = ({ jobId }: DaysWorkedTabProps) => {
                   <TableHead>Date</TableHead>
                   <TableHead>Hours</TableHead>
                   <TableHead>Type</TableHead>
+                  <TableHead>Day Rate</TableHead>
                   <TableHead>Notes</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
@@ -111,6 +119,7 @@ export const DaysWorkedTab = ({ jobId }: DaysWorkedTabProps) => {
                     <TableCell>{format(new Date(day.date_worked), "PPP")}</TableCell>
                     <TableCell>{day.hours_worked}</TableCell>
                     <TableCell className="capitalize">{day.day_rate_type || "N/A"}</TableCell>
+                    <TableCell>£{day.day_rate ? day.day_rate.toFixed(2) : "N/A"}</TableCell>
                     <TableCell>{day.notes}</TableCell>
                     <TableCell className="text-right">
                       <Button

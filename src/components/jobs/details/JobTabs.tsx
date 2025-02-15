@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import FileUpload from "@/components/jobs/FileUpload";
@@ -43,18 +42,17 @@ const JobTabs = ({ jobId, budget, job_type }: JobTabsProps) => {
 
       if (invoiceError) throw invoiceError;
 
-      // Get total days cost
-      const { data: jobData, error: jobError } = await supabase
-        .from("jobs")
-        .select("total_days_cost")
-        .eq("id", jobId)
-        .single();
+      // Get days worked costs
+      const { data: daysWorked, error: daysError } = await supabase
+        .from("job_days_worked")
+        .select("day_rate")
+        .eq("job_id", jobId);
 
-      if (jobError) throw jobError;
+      if (daysError) throw daysError;
 
       const miscTotal = miscCosts.reduce((sum, cost) => sum + Number(cost.amount), 0);
       const invoiceTotal = invoices.reduce((sum, invoice) => sum + Number(invoice.amount), 0);
-      const daysTotal = Number(jobData.total_days_cost) || 0;
+      const daysTotal = daysWorked.reduce((sum, day) => sum + Number(day.day_rate || 0), 0);
 
       return {
         miscTotal,
