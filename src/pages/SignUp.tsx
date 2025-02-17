@@ -92,12 +92,10 @@ const SignUp = () => {
         try {
           await sendEmail({
             to: cleanedEmail,
-            subject: "Welcome to Hailo Digital!",
+            subject: "Welcome to TradeMate!",
             html: `
-              <h1>Welcome to Hailo Digital, ${cleanedFirstName}!</h1>
-              <p>Thank you for signing up as a ${userType}. We're excited to have you on board!</p>
-              <p>Your account has been created successfully. Please verify your email address to get started.</p>
-              <p>Best regards,<br>The Hailo Digital Team</p>
+              <h1>Welcome to TradeMate, ${cleanedFirstName}!</h1>
+              <p>TradeMate is a web/mobile application designed &amp; developed by Hailo Digital ltd in order to make your life easier.</p>
             `
           });
         } catch (emailError) {
