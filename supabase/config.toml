@@ -6,4 +6,3 @@ verify_jwt = false
 
 [functions.ingest-invoice]
 verify_jwt = false
-
