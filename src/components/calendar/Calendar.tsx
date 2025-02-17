@@ -34,7 +34,11 @@ const Calendar = () => {
   };
 
   const handleMonthChange = (direction: 'previous' | 'next') => {
-    setCurrentDate(prev => direction === 'previous' ? subMonths(prev, 1) : addMonths(prev, 1));
+    if (direction === 'previous') {
+      setCurrentDate(prev => subMonths(prev, 1));
+    } else {
+      setCurrentDate(prev => addMonths(prev, 1));
+    }
   };
 
   const handleEventClick = (eventId: string) => {
@@ -49,12 +53,18 @@ const Calendar = () => {
     color: job.status === 'completed' ? '#10B981' : '#3B82F6'
   }));
 
-  // Only render grid for month and week views
   const shouldRenderGrid = view === 'month' || view === 'week';
 
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
   return (
-    <div className="w-full max-w-6xl mx-auto p-4 md:p-6 space-y-4 md:space-y-6 rounded-lg shadow-lg border border-slate-200 animate-fade-in bg-[#1f1f31]"
-         onClick={e => e.stopPropagation()}>
+    <div 
+      className="w-full max-w-6xl mx-auto p-4 md:p-6 space-y-4 md:space-y-6 rounded-lg shadow-lg border border-slate-200 animate-fade-in bg-[#1f1f31]"
+      onClick={handleClick}
+    >
       <CalendarHeader 
         currentDate={currentDate}
         view={view}
