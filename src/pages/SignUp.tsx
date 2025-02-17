@@ -70,6 +70,7 @@ const SignUp = () => {
         password: data.password,
         options: {
           data: metadata,
+          emailRedirectTo: window.location.origin + '/signin',
         },
       });
 
@@ -88,14 +89,16 @@ const SignUp = () => {
       }
 
       if (signUpData.user) {
-        // Send welcome email
+        // Send welcome email with verification link
         try {
           await sendEmail({
             to: cleanedEmail,
-            subject: "Welcome to TradeMate!",
+            subject: "Welcome to TradeMate - Please Verify Your Email!",
             html: `
               <h1>Welcome to TradeMate, ${cleanedFirstName}!</h1>
               <p>TradeMate is a web/mobile application designed &amp; developed by Hailo Digital ltd in order to make your life easier.</p>
+              <p>Please verify your email address by clicking the link in the verification email we just sent you.</p>
+              <p>You won't be able to access your account until you verify your email address.</p>
             `
           });
         } catch (emailError) {
