@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,19 @@ const UpdatePassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    // Check if we have a valid session for password reset
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error("Invalid or expired password reset link");
+        navigate("/signin");
+      }
+    };
+
+    checkSession();
+  }, [navigate]);
+
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -25,8 +38,13 @@ const UpdatePassword = () => {
         return;
       }
 
+      if (password.length < 6) {
+        toast.error("Password must be at least 6 characters long");
+        return;
+      }
+
       const { error } = await supabase.auth.updateUser({
-        password: password,
+        password: password
       });
 
       if (error) {
@@ -34,7 +52,10 @@ const UpdatePassword = () => {
         return;
       }
 
-      toast.success("Password updated successfully");
+      // Sign out after password update to force re-login with new password
+      await supabase.auth.signOut();
+      
+      toast.success("Password updated successfully. Please sign in with your new password.");
       navigate("/signin");
     } catch (error: any) {
       console.error("Error updating password:", error);

@@ -21,6 +21,7 @@ const ResetPassword = () => {
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/update-password`,
+        shouldCreateUser: false // This prevents automatic user creation
       });
 
       if (error) {
