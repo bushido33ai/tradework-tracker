@@ -15,8 +15,11 @@ const Navigation = () => {
   const isMobile = useIsMobile();
   const [isOpen, setIsOpen] = useState(false);
   
-  const handleSignOut = async () => {
-    // Attempt signout but don't wait for or validate the response
+  const handleSignOut = () => {
+    // First remove session from local storage
+    localStorage.removeItem('supabase.auth.token');
+    
+    // Then attempt server-side signout without waiting
     supabase.auth.signOut().catch(error => {
       console.error("Error during sign out:", error);
     });
