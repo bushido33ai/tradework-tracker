@@ -15,21 +15,17 @@ const Navigation = () => {
   const isMobile = useIsMobile();
   const [isOpen, setIsOpen] = useState(false);
   
-  const handleSignOut = () => {
-    // Get and clear current session synchronously
-    const { data: { session } } = supabase.auth.getSession();
-    if (session) {
-      supabase.auth.setSession(null);
-    }
-    
-    // Then attempt server-side signout without waiting
-    supabase.auth.signOut().catch(error => {
+  const handleSignOut = async () => {
+    try {
+      await supabase.auth.signOut();
+      toast.success("Signed out successfully");
+      navigate("/");
+    } catch (error) {
       console.error("Error during sign out:", error);
-    });
-    
-    // Always show success and redirect
-    toast.success("Signed out successfully");
-    navigate("/");
+      // Still redirect and show success since we want to force signout
+      toast.success("Signed out successfully");
+      navigate("/");
+    }
   };
 
   const handleNavigation = () => {
