@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,13 +17,38 @@ const Navigation = () => {
   
   const handleSignOut = async () => {
     try {
+      // First check if we have a valid session
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError) {
+        console.error("Error checking session:", sessionError);
+        navigate("/");
+        return;
+      }
+
+      if (!session) {
+        // No active session, just redirect
+        navigate("/");
+        return;
+      }
+
+      // Proceed with logout if we have a valid session
       const { error } = await supabase.auth.signOut();
-      if (error) throw error;
+      if (error) {
+        console.error("Error signing out:", error);
+        if (error.message.includes("session_not_found")) {
+          navigate("/");
+          return;
+        }
+        toast.error("Error signing out");
+        return;
+      }
+
       toast.success("Signed out successfully");
       navigate("/");
     } catch (error) {
       console.error("Error signing out:", error);
-      toast.error("Error signing out");
+      navigate("/");
     }
   };
 
