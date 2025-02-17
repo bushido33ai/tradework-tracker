@@ -7,6 +7,7 @@ import CalendarHeader from './components/CalendarHeader';
 import CalendarViewSelector from './components/CalendarViewSelector';
 import CalendarGrid from './components/CalendarGrid';
 import CalendarListView from './components/CalendarListView';
+import { useGesture } from '@use-gesture/react';
 
 type CalendarView = 'month' | 'week' | 'day' | 'list';
 
@@ -34,11 +35,7 @@ const Calendar = () => {
   };
 
   const handleMonthChange = (direction: 'previous' | 'next') => {
-    if (direction === 'previous') {
-      setCurrentDate(prev => subMonths(prev, 1));
-    } else {
-      setCurrentDate(prev => addMonths(prev, 1));
-    }
+    setCurrentDate(prev => direction === 'previous' ? subMonths(prev, 1) : addMonths(prev, 1));
   };
 
   const handleEventClick = (eventId: string) => {
@@ -55,15 +52,28 @@ const Calendar = () => {
 
   const shouldRenderGrid = view === 'month' || view === 'week';
 
-  const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
+  const bind = useGesture(
+    {
+      onDrag: ({ swipe: [swipeX] }) => {
+        if (swipeX > 0) {
+          handleMonthChange('previous');
+        } else if (swipeX < 0) {
+          handleMonthChange('next');
+        }
+      },
+    },
+    {
+      drag: {
+        axis: 'x',
+        threshold: 50,
+      },
+    }
+  );
 
   return (
     <div 
+      {...bind()}
       className="w-full max-w-6xl mx-auto p-4 md:p-6 space-y-4 md:space-y-6 rounded-lg shadow-lg border border-slate-200 animate-fade-in bg-[#1f1f31]"
-      onClick={handleClick}
     >
       <CalendarHeader 
         currentDate={currentDate}
