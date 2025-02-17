@@ -31,72 +31,112 @@ serve(async (req) => {
     }
 
     console.log("Starting deletion process for user:", userId)
-
-    // 0. First, delete the user from auth.users BEFORE cleaning up related data
-    // This ensures the user is truly removed from auth system first
-    const { error: authError } = await supabaseClient.auth.admin.deleteUser(userId)
     
-    if (authError) {
-      console.error('Error deleting auth user:', authError)
-      throw authError
+    try {
+      // 1. First delete all job-related data
+      // Delete job notes
+      const { error: jobNotesError } = await supabaseClient
+        .from('job_notes')
+        .delete()
+        .eq('created_by', userId)
+
+      if (jobNotesError) {
+        console.error('Error deleting job notes:', jobNotesError)
+      }
+
+      // Delete job days worked
+      const { error: daysWorkedError } = await supabaseClient
+        .from('job_days_worked')
+        .delete()
+        .eq('created_by', userId)
+
+      if (daysWorkedError) {
+        console.error('Error deleting days worked:', daysWorkedError)
+      }
+
+      // Delete job misc costs
+      const { error: miscCostsError } = await supabaseClient
+        .from('job_misc_costs')
+        .delete()
+        .eq('created_by', userId)
+
+      if (miscCostsError) {
+        console.error('Error deleting misc costs:', miscCostsError)
+      }
+
+      // Delete the jobs themselves
+      const { error: jobsError } = await supabaseClient
+        .from('jobs')
+        .delete()
+        .eq('created_by', userId)
+
+      if (jobsError) {
+        console.error('Error deleting jobs:', jobsError)
+        throw jobsError
+      }
+
+      // 2. Delete from user_roles
+      const { error: rolesError } = await supabaseClient
+        .from('user_roles')
+        .delete()
+        .eq('user_id', userId)
+      
+      if (rolesError) {
+        console.error('Error deleting user roles:', rolesError)
+      }
+
+      // 3. Delete job permissions
+      const { error: permissionsError } = await supabaseClient
+        .from('job_access_permissions')
+        .delete()
+        .eq('granted_by', userId)
+      
+      if (permissionsError) {
+        console.error('Error deleting job permissions:', permissionsError)
+      }
+
+      // 4. Delete access requests
+      const { error: accessRequestError } = await supabaseClient
+        .from('access_requests')
+        .delete()
+        .eq('user_id', userId)
+      
+      if (accessRequestError) {
+        console.error('Error deleting access requests:', accessRequestError)
+      }
+
+      // 5. Delete profile
+      const { error: profileError } = await supabaseClient
+        .from('profiles')
+        .delete()
+        .eq('id', userId)
+      
+      if (profileError) {
+        console.error('Error deleting profile:', profileError)
+      }
+
+      // 6. Finally delete the auth user
+      const { error: authError } = await supabaseClient.auth.admin.deleteUser(userId)
+      
+      if (authError) {
+        console.error('Error deleting auth user:', authError)
+        throw authError
+      }
+
+      console.log("Successfully deleted user and all related data")
+
+      return new Response(
+        JSON.stringify({ success: true }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200,
+        },
+      )
+
+    } catch (error) {
+      console.error('Database operation failed:', error)
+      throw error
     }
-
-    console.log("Successfully deleted user from auth system")
-
-    // Now clean up all related data
-    // 1. Delete from user_roles
-    const { error: rolesError } = await supabaseClient
-      .from('user_roles')
-      .delete()
-      .eq('user_id', userId)
-    
-    if (rolesError) {
-      console.error('Error deleting user roles:', rolesError)
-      // Log but continue with other deletions
-    }
-
-    // 2. Delete job permissions
-    const { error: permissionsError } = await supabaseClient
-      .from('job_access_permissions')
-      .delete()
-      .eq('granted_by', userId)
-    
-    if (permissionsError) {
-      console.error('Error deleting job permissions:', permissionsError)
-      // Log but continue with other deletions
-    }
-
-    // 3. Delete access requests
-    const { error: accessRequestError } = await supabaseClient
-      .from('access_requests')
-      .delete()
-      .eq('user_id', userId)
-    
-    if (accessRequestError) {
-      console.error('Error deleting access requests:', accessRequestError)
-      // Log but continue with other deletions
-    }
-
-    // 4. Delete profile
-    const { error: profileError } = await supabaseClient
-      .from('profiles')
-      .delete()
-      .eq('id', userId)
-    
-    if (profileError) {
-      console.error('Error deleting profile:', profileError)
-      // Log but continue
-    }
-
-    console.log("Successfully deleted user and all related data")
-
-    return new Response(
-      JSON.stringify({ success: true }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200,
-      },
-    )
 
   } catch (error) {
     console.error('Error:', error.message)
