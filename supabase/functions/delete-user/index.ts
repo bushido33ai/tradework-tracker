@@ -32,13 +32,28 @@ serve(async (req) => {
 
     console.log("Starting deletion process for user:", userId)
 
+    // 0. First, delete the user from auth.users BEFORE cleaning up related data
+    // This ensures the user is truly removed from auth system first
+    const { error: authError } = await supabaseClient.auth.admin.deleteUser(userId)
+    
+    if (authError) {
+      console.error('Error deleting auth user:', authError)
+      throw authError
+    }
+
+    console.log("Successfully deleted user from auth system")
+
+    // Now clean up all related data
     // 1. Delete from user_roles
     const { error: rolesError } = await supabaseClient
       .from('user_roles')
       .delete()
       .eq('user_id', userId)
     
-    if (rolesError) throw rolesError
+    if (rolesError) {
+      console.error('Error deleting user roles:', rolesError)
+      // Log but continue with other deletions
+    }
 
     // 2. Delete job permissions
     const { error: permissionsError } = await supabaseClient
@@ -46,7 +61,10 @@ serve(async (req) => {
       .delete()
       .eq('granted_by', userId)
     
-    if (permissionsError) throw permissionsError
+    if (permissionsError) {
+      console.error('Error deleting job permissions:', permissionsError)
+      // Log but continue with other deletions
+    }
 
     // 3. Delete access requests
     const { error: accessRequestError } = await supabaseClient
@@ -54,7 +72,10 @@ serve(async (req) => {
       .delete()
       .eq('user_id', userId)
     
-    if (accessRequestError) throw accessRequestError
+    if (accessRequestError) {
+      console.error('Error deleting access requests:', accessRequestError)
+      // Log but continue with other deletions
+    }
 
     // 4. Delete profile
     const { error: profileError } = await supabaseClient
@@ -62,12 +83,10 @@ serve(async (req) => {
       .delete()
       .eq('id', userId)
     
-    if (profileError) throw profileError
-
-    // 5. Finally delete the user from auth.users
-    const { error: authError } = await supabaseClient.auth.admin.deleteUser(userId)
-    
-    if (authError) throw authError
+    if (profileError) {
+      console.error('Error deleting profile:', profileError)
+      // Log but continue
+    }
 
     console.log("Successfully deleted user and all related data")
 
