@@ -28,7 +28,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Sending email to:", to);
 
     const emailResponse = await resend.emails.send({
-      from: "Hailo Digital <no-reply@hailodigital.co.uk>",
+      from: "TradeMate <onboarding@resend.dev>",
       to: [to],
       subject: subject,
       html: html,

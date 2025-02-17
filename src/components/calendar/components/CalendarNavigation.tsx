@@ -14,12 +14,9 @@ const CalendarNavigation = ({ onPreviousMonth, onNextMonth }: CalendarNavigation
         type="button"
         variant="outline" 
         size="icon" 
-        onTouchEnd={(e) => {
-          e.preventDefault();
-          onPreviousMonth();
-        }}
         onClick={(e) => {
           e.preventDefault();
+          e.stopPropagation();
           onPreviousMonth();
         }}
         className="hover:bg-gray-100 transition-colors"
@@ -30,12 +27,9 @@ const CalendarNavigation = ({ onPreviousMonth, onNextMonth }: CalendarNavigation
         type="button"
         variant="outline" 
         size="icon" 
-        onTouchEnd={(e) => {
-          e.preventDefault();
-          onNextMonth();
-        }}
         onClick={(e) => {
           e.preventDefault();
+          e.stopPropagation();
           onNextMonth();
         }}
         className="hover:bg-gray-100 transition-colors"

@@ -3,13 +3,7 @@ import Calendar from "@/components/calendar/Calendar";
 
 const WorkCalendar = () => {
   return (
-    <div 
-      className="h-full w-full" 
-      onClick={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-      }}
-    >
+    <div className="h-full w-full">
       <Calendar />
     </div>
   );

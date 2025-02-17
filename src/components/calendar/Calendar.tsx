@@ -7,7 +7,6 @@ import CalendarHeader from './components/CalendarHeader';
 import CalendarViewSelector from './components/CalendarViewSelector';
 import CalendarGrid from './components/CalendarGrid';
 import CalendarListView from './components/CalendarListView';
-import { useGesture } from '@use-gesture/react';
 
 type CalendarView = 'month' | 'week' | 'day' | 'list';
 
@@ -50,31 +49,12 @@ const Calendar = () => {
     color: job.status === 'completed' ? '#10B981' : '#3B82F6'
   }));
 
+  // Only render grid for month and week views
   const shouldRenderGrid = view === 'month' || view === 'week';
 
-  const bind = useGesture(
-    {
-      onDrag: ({ swipe: [swipeX] }) => {
-        if (swipeX > 0) {
-          handleMonthChange('previous');
-        } else if (swipeX < 0) {
-          handleMonthChange('next');
-        }
-      },
-    },
-    {
-      drag: {
-        axis: 'x',
-        threshold: 50,
-      },
-    }
-  );
-
   return (
-    <div 
-      {...bind()}
-      className="w-full max-w-6xl mx-auto p-4 md:p-6 space-y-4 md:space-y-6 rounded-lg shadow-lg border border-slate-200 animate-fade-in bg-[#1f1f31]"
-    >
+    <div className="w-full max-w-6xl mx-auto p-4 md:p-6 space-y-4 md:space-y-6 rounded-lg shadow-lg border border-slate-200 animate-fade-in bg-[#1f1f31]"
+         onClick={e => e.stopPropagation()}>
       <CalendarHeader 
         currentDate={currentDate}
         view={view}

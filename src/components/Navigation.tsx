@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -17,14 +16,13 @@ const Navigation = () => {
   
   const handleSignOut = async () => {
     try {
-      await supabase.auth.signOut();
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
       toast.success("Signed out successfully");
       navigate("/");
     } catch (error) {
-      console.error("Error during sign out:", error);
-      // Still redirect and show success since we want to force signout
-      toast.success("Signed out successfully");
-      navigate("/");
+      console.error("Error signing out:", error);
+      toast.error("Error signing out");
     }
   };
 

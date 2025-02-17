@@ -8,19 +8,29 @@ export const useDeleteUser = () => {
 
   return useMutation({
     mutationFn: async (userId: string) => {
-      console.log("Starting deletion process for user:", userId);
+      console.log("Deleting user:", userId);
       
-      try {
-        const { data, error } = await supabase.functions.invoke('delete-user', {
-          body: { userId }
-        });
-
-        if (error) throw error;
-        return userId;
-      } catch (error) {
-        console.error("Error in deletion process:", error);
-        throw error;
+      const { error: permissionsError } = await supabase
+        .from('job_access_permissions')
+        .delete()
+        .eq('granted_by', userId);
+      
+      if (permissionsError) {
+        console.error("Error deleting job access permissions:", permissionsError);
+        throw permissionsError;
       }
+      
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .delete()
+        .eq('id', userId);
+      
+      if (profileError) {
+        console.error("Error deleting profile:", profileError);
+        throw profileError;
+      }
+      
+      return userId;
     },
     onSuccess: (userId) => {
       console.log("Successfully deleted user:", userId);

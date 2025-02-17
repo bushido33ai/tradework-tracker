@@ -70,7 +70,6 @@ const SignUp = () => {
         password: data.password,
         options: {
           data: metadata,
-          emailRedirectTo: window.location.origin + '/signin',
         },
       });
 
@@ -78,27 +77,20 @@ const SignUp = () => {
 
       if (signUpError) {
         console.error("Signup error:", signUpError);
-        
-        // Handle specific error cases
-        if (signUpError.message === "User already registered") {
-          toast.error("This email is already registered. Please sign in instead.");
-          return;
-        }
-        
         throw signUpError;
       }
 
       if (signUpData.user) {
-        // Send welcome email with verification link
+        // Send welcome email
         try {
           await sendEmail({
             to: cleanedEmail,
-            subject: "Welcome to TradeMate - Please Verify Your Email!",
+            subject: "Welcome to TradeMate!",
             html: `
               <h1>Welcome to TradeMate, ${cleanedFirstName}!</h1>
-              <p>TradeMate is a web/mobile application designed &amp; developed by Hailo Digital ltd in order to make your life easier.</p>
-              <p>Please verify your email address by clicking the link in the verification email we just sent you.</p>
-              <p>You won't be able to access your account until you verify your email address.</p>
+              <p>Thank you for signing up as a ${userType}. We're excited to have you on board!</p>
+              <p>Your account has been created successfully. Please verify your email address to get started.</p>
+              <p>Best regards,<br>The TradeMate Team</p>
             `
           });
         } catch (emailError) {
