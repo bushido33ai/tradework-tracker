@@ -19,25 +19,41 @@ const Navigation = () => {
   
   const handleSignOut = async () => {
     try {
-      // Only attempt to sign out if there's an active session
-      if (!session) {
+      // First check if we have a valid session
+      const { data: { session: currentSession }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError) {
+        console.error("Error checking session:", sessionError);
+        // If there's no valid session, just redirect to home
         navigate("/");
         return;
       }
 
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      
-      toast.success("Signed out successfully");
-      navigate("/");
-    } catch (error: any) {
-      console.error("Error signing out:", error);
-      // If there's an auth error, still redirect to home
-      if (error.name === "AuthSessionMissingError") {
+      if (!currentSession) {
+        // No active session, just redirect
         navigate("/");
         return;
       }
-      toast.error("Error signing out");
+
+      // Proceed with logout if we have a valid session
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error("Error signing out:", error);
+        if (error.message.includes("session_not_found")) {
+          // Session already invalid, just redirect
+          navigate("/");
+          return;
+        }
+        toast.error("Error signing out");
+        return;
+      }
+
+      toast.success("Signed out successfully");
+      navigate("/");
+    } catch (error) {
+      console.error("Unexpected error during sign out:", error);
+      // In case of any other error, still redirect to home
+      navigate("/");
     }
   };
 
