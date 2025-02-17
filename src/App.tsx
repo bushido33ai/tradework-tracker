@@ -9,6 +9,8 @@ import Landing from "./pages/Landing";
 import UserTypeSelection from "./pages/UserTypeSelection";
 import SignUp from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
+import ResetPassword from "./pages/ResetPassword";
+import UpdatePassword from "./pages/UpdatePassword";
 import Navigation from "./components/Navigation";
 import Jobs from "./pages/Jobs";
 import Enquiries from "./pages/Enquiries";
@@ -94,6 +96,18 @@ const App = () => {
               <Route path="/signin" element={
                 <AppBackground>
                   <SignIn />
+                  <Footer />
+                </AppBackground>
+              } />
+              <Route path="/reset-password" element={
+                <AppBackground>
+                  <ResetPassword />
+                  <Footer />
+                </AppBackground>
+              } />
+              <Route path="/update-password" element={
+                <AppBackground>
+                  <UpdatePassword />
                   <Footer />
                 </AppBackground>
               } />
