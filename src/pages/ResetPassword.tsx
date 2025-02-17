@@ -9,47 +9,29 @@ import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern";
 
-const SignIn = () => {
+const ResetPassword = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSignIn = async (e: React.FormEvent) => {
+  const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      // Validate input
-      if (!email.trim() || !password.trim()) {
-        toast.error("Please enter both email and password");
-        return;
-      }
-
-      // Clean up the email
-      const cleanEmail = email.trim().toLowerCase();
-
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: cleanEmail,
-        password: password.trim(),
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/signin`,
       });
 
       if (error) {
-        console.error("Sign in error:", error);
-        if (error.message === "Invalid login credentials") {
-          toast.error("Invalid email or password. Please try again.");
-        } else {
-          toast.error(error.message);
-        }
+        toast.error(error.message);
         return;
       }
 
-      if (data?.user) {
-        toast.success("Signed in successfully!");
-        navigate("/dashboard");
-      }
+      toast.success("Check your email for the password reset link");
+      navigate("/signin");
     } catch (error: any) {
-      console.error("Unexpected error during sign in:", error);
+      console.error("Error during password reset:", error);
       toast.error("An unexpected error occurred. Please try again.");
     } finally {
       setIsLoading(false);
@@ -78,12 +60,12 @@ const SignIn = () => {
               className="w-64 h-auto group-hover:scale-105 transition-transform duration-300"
             />
           </Link>
-          <h2 className="text-3xl font-bold text-gray-900">Welcome back</h2>
-          <p className="mt-2 text-gray-600">Sign in to your account</p>
+          <h2 className="text-3xl font-bold text-gray-900">Reset Password</h2>
+          <p className="mt-2 text-gray-600">Enter your email to reset your password</p>
         </div>
 
-        <div className="bg-white/90 backdrop-blur-md p-8 rounded-xl shadow-[0_0_15px_rgba(0,0,0,0.1)] space-y-6 mt-6 border-2 border-primary-100 hover:shadow-[0_0_25px_rgba(30,64,175,0.15)] transition-all duration-300 transform hover:-translate-y-1">
-          <form onSubmit={handleSignIn} className="space-y-4">
+        <div className="bg-white/90 backdrop-blur-md p-8 rounded-xl shadow-[0_0_15px_rgba(0,0,0,0.1)] space-y-6 mt-6 border-2 border-primary-100 hover:shadow-[0_0_25px_rgba(30,64,175,0.15)] transition-all duration-300">
+          <form onSubmit={handleResetPassword} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -98,45 +80,23 @@ const SignIn = () => {
               />
             </div>
 
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <Label htmlFor="password">Password</Label>
-                <Link 
-                  to="/reset-password"
-                  className="text-sm text-primary hover:text-primary-600 font-medium"
-                >
-                  Forgot password?
-                </Link>
-              </div>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="w-full"
-                disabled={isLoading}
-              />
-            </div>
-
             <Button
               type="submit"
               className="w-full"
               disabled={isLoading}
             >
-              {isLoading ? "Signing in..." : "Sign in"}
+              {isLoading ? "Sending..." : "Send Reset Link"}
             </Button>
           </form>
 
           <div className="text-center text-sm">
             <p className="text-gray-600">
-              Don't have an account?{" "}
+              Remember your password?{" "}
               <Link 
-                to="/register" 
+                to="/signin" 
                 className="text-primary hover:text-primary-600 font-medium"
               >
-                Sign up
+                Sign in
               </Link>
             </p>
           </div>
@@ -146,4 +106,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default ResetPassword;
