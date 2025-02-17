@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,20 +9,34 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Logo } from "./navigation/Logo";
 import { NavContent } from "./navigation/NavContent";
+import { useSessionContext } from "@supabase/auth-helpers-react";
 
 const Navigation = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [isOpen, setIsOpen] = useState(false);
+  const { session } = useSessionContext();
   
   const handleSignOut = async () => {
     try {
+      // Only attempt to sign out if there's an active session
+      if (!session) {
+        navigate("/");
+        return;
+      }
+
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
+      
       toast.success("Signed out successfully");
       navigate("/");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error signing out:", error);
+      // If there's an auth error, still redirect to home
+      if (error.name === "AuthSessionMissingError") {
+        navigate("/");
+        return;
+      }
       toast.error("Error signing out");
     }
   };
