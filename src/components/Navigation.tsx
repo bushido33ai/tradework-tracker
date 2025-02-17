@@ -16,8 +16,11 @@ const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   
   const handleSignOut = () => {
-    // First remove session from local storage
-    localStorage.removeItem('supabase.auth.token');
+    // Get and clear current session synchronously
+    const { data: { session } } = supabase.auth.getSession();
+    if (session) {
+      supabase.auth.setSession(null);
+    }
     
     // Then attempt server-side signout without waiting
     supabase.auth.signOut().catch(error => {
