@@ -12,25 +12,14 @@ export const LandingNav = ({ session }: LandingNavProps) => {
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
-    try {
-      // First try to sign out locally
-      await supabase.auth.signOut({ scope: 'local' });
-      
-      // Then attempt global sign out, but don't block on errors
-      try {
-        await supabase.auth.signOut();
-      } catch (globalError) {
-        console.error("Global sign out failed:", globalError);
-        // Continue with local sign out flow
-      }
-
-      toast.success("Signed out successfully");
-      navigate("/");
-    } catch (error) {
+    // Attempt signout but don't wait for or validate the response
+    supabase.auth.signOut().catch(error => {
       console.error("Error during sign out:", error);
-      // Ensure we navigate away even if there's an error
-      navigate("/");
-    }
+    });
+    
+    // Always show success and redirect
+    toast.success("Signed out successfully");
+    navigate("/");
   };
 
   return (
