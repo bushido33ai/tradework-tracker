@@ -33,7 +33,27 @@ serve(async (req) => {
     console.log("Starting deletion process for user:", userId)
     
     try {
-      // 1. First delete all job-related data
+      // 1. First delete all permissions 
+      // This needs to be first because job_access_permissions references both merchant_id and granted_by
+      const { error: permissionsMerchantError } = await supabaseClient
+        .from('job_access_permissions')
+        .delete()
+        .eq('merchant_id', userId)
+      
+      if (permissionsMerchantError) {
+        console.error('Error deleting merchant permissions:', permissionsMerchantError)
+      }
+
+      const { error: permissionsGrantedError } = await supabaseClient
+        .from('job_access_permissions')
+        .delete()
+        .eq('granted_by', userId)
+      
+      if (permissionsGrantedError) {
+        console.error('Error deleting granted permissions:', permissionsGrantedError)
+      }
+
+      // 2. Delete all job-related data
       // Delete job invoices
       const { error: jobInvoicesError } = await supabaseClient
         .from('job_invoices')
@@ -114,7 +134,7 @@ serve(async (req) => {
         console.error('Error deleting jobs:', jobsError)
       }
 
-      // 2. Delete from user_roles
+      // 3. Delete from user_roles
       const { error: rolesError } = await supabaseClient
         .from('user_roles')
         .delete()
@@ -122,16 +142,6 @@ serve(async (req) => {
       
       if (rolesError) {
         console.error('Error deleting user roles:', rolesError)
-      }
-
-      // 3. Delete job permissions
-      const { error: permissionsError } = await supabaseClient
-        .from('job_access_permissions')
-        .delete()
-        .eq('granted_by', userId)
-      
-      if (permissionsError) {
-        console.error('Error deleting job permissions:', permissionsError)
       }
 
       // 4. Delete access requests
