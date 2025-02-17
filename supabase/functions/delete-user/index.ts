@@ -34,6 +34,26 @@ serve(async (req) => {
     
     try {
       // 1. First delete all job-related data
+      // Delete job invoices
+      const { error: jobInvoicesError } = await supabaseClient
+        .from('job_invoices')
+        .delete()
+        .eq('uploaded_by', userId)
+
+      if (jobInvoicesError) {
+        console.error('Error deleting job invoices:', jobInvoicesError)
+      }
+
+      // Delete job designs
+      const { error: jobDesignsError } = await supabaseClient
+        .from('job_designs')
+        .delete()
+        .eq('uploaded_by', userId)
+
+      if (jobDesignsError) {
+        console.error('Error deleting job designs:', jobDesignsError)
+      }
+
       // Delete job notes
       const { error: jobNotesError } = await supabaseClient
         .from('job_notes')
@@ -64,7 +84,27 @@ serve(async (req) => {
         console.error('Error deleting misc costs:', miscCostsError)
       }
 
-      // Delete the jobs themselves
+      // Delete enquiry designs
+      const { error: enquiryDesignsError } = await supabaseClient
+        .from('enquiry_designs')
+        .delete()
+        .eq('uploaded_by', userId)
+
+      if (enquiryDesignsError) {
+        console.error('Error deleting enquiry designs:', enquiryDesignsError)
+      }
+
+      // Delete enquiries
+      const { error: enquiriesError } = await supabaseClient
+        .from('enquiries')
+        .delete()
+        .eq('created_by', userId)
+
+      if (enquiriesError) {
+        console.error('Error deleting enquiries:', enquiriesError)
+      }
+
+      // Delete jobs
       const { error: jobsError } = await supabaseClient
         .from('jobs')
         .delete()
@@ -72,7 +112,6 @@ serve(async (req) => {
 
       if (jobsError) {
         console.error('Error deleting jobs:', jobsError)
-        throw jobsError
       }
 
       // 2. Delete from user_roles
