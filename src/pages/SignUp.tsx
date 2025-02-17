@@ -77,6 +77,13 @@ const SignUp = () => {
 
       if (signUpError) {
         console.error("Signup error:", signUpError);
+        
+        // Handle specific error cases
+        if (signUpError.message === "User already registered") {
+          toast.error("This email is already registered. Please sign in instead.");
+          return;
+        }
+        
         throw signUpError;
       }
 
@@ -85,12 +92,12 @@ const SignUp = () => {
         try {
           await sendEmail({
             to: cleanedEmail,
-            subject: "Welcome to TradeMate!",
+            subject: "Welcome to Hailo Digital!",
             html: `
-              <h1>Welcome to TradeMate, ${cleanedFirstName}!</h1>
+              <h1>Welcome to Hailo Digital, ${cleanedFirstName}!</h1>
               <p>Thank you for signing up as a ${userType}. We're excited to have you on board!</p>
               <p>Your account has been created successfully. Please verify your email address to get started.</p>
-              <p>Best regards,<br>The TradeMate Team</p>
+              <p>Best regards,<br>The Hailo Digital Team</p>
             `
           });
         } catch (emailError) {
