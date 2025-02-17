@@ -17,26 +17,22 @@ const Navigation = () => {
   
   const handleSignOut = async () => {
     try {
-      const { error } = await supabase.auth.signOut();
+      // First try to sign out locally
+      await supabase.auth.signOut({ scope: 'local' });
       
-      if (error) {
-        console.error("Error signing out:", error);
-        // If session is not found, clear local session
-        if (error.message.includes("session_not_found")) {
-          await supabase.auth.signOut({ scope: 'local' });
-        } else {
-          toast.error("Error signing out");
-          return;
-        }
+      // Then attempt global sign out, but don't block on errors
+      try {
+        await supabase.auth.signOut();
+      } catch (globalError) {
+        console.error("Global sign out failed:", globalError);
+        // Continue with local sign out flow
       }
 
-      // Always redirect and show success message
       toast.success("Signed out successfully");
       navigate("/");
     } catch (error) {
-      console.error("Unexpected error during sign out:", error);
-      // Force clear local session and redirect on any error
-      await supabase.auth.signOut({ scope: 'local' });
+      console.error("Error during sign out:", error);
+      // Ensure we navigate away even if there's an error
       navigate("/");
     }
   };
