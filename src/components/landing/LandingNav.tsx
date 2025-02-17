@@ -17,9 +17,9 @@ export const LandingNav = ({ session }: LandingNavProps) => {
       
       if (error) {
         console.error("Error signing out:", error);
-        // If session is not found, force clear the session
+        // If session is not found, clear local session
         if (error.message.includes("session_not_found")) {
-          await supabase.auth.clearSession();
+          await supabase.auth.signOut({ scope: 'local' });
         } else {
           toast.error("Error signing out");
           return;
@@ -31,8 +31,8 @@ export const LandingNav = ({ session }: LandingNavProps) => {
       navigate("/");
     } catch (error) {
       console.error("Unexpected error during sign out:", error);
-      // Force clear session and redirect on any error
-      await supabase.auth.clearSession();
+      // Force clear local session and redirect on any error
+      await supabase.auth.signOut({ scope: 'local' });
       navigate("/");
     }
   };
