@@ -8,26 +8,16 @@ export const useDeleteUser = () => {
 
   return useMutation({
     mutationFn: async (userId: string) => {
-      console.log("Deleting user:", userId);
+      console.log("Deleting user completely:", userId);
       
-      const { error: permissionsError } = await supabase
-        .from('job_access_permissions')
-        .delete()
-        .eq('granted_by', userId);
+      const { data, error } = await supabase
+        .rpc('delete_user_completely', {
+          user_id: userId
+        });
       
-      if (permissionsError) {
-        console.error("Error deleting job access permissions:", permissionsError);
-        throw permissionsError;
-      }
-      
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .delete()
-        .eq('id', userId);
-      
-      if (profileError) {
-        console.error("Error deleting profile:", profileError);
-        throw profileError;
+      if (error) {
+        console.error("Error deleting user:", error);
+        throw error;
       }
       
       return userId;

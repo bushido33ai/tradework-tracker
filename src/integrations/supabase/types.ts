@@ -593,6 +593,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      delete_user_completely: {
+        Args: {
+          user_id: string
+        }
+        Returns: undefined
+      }
       generate_unique_job_number: {
         Args: Record<PropertyKey, never>
         Returns: string
