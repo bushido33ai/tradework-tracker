@@ -28,7 +28,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Sending email to:", to);
 
     const emailResponse = await resend.emails.send({
-      from: "TradeMate <noreply@yourdomain.com>", // Replace yourdomain.com with your verified domain
+      from: "TradeMate <noreply@hailodigital.co.uk>",
       to: [to],
       subject: subject,
       html: html,
