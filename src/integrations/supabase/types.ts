@@ -595,7 +595,7 @@ export type Database = {
     Functions: {
       delete_user_completely: {
         Args: {
-          user_id: string
+          _user_id: string
         }
         Returns: undefined
       }
