@@ -89,8 +89,9 @@ const SignUp = () => {
             html: `
               <h1>Welcome to TradeMate, ${cleanedFirstName}!</h1>
               <p>Thank you for signing up as a ${userType}. We're excited to have you on board!</p>
-              <p>Your account has been created successfully. Please verify your email address to get started.</p>
-              <p>Best regards,<br>The TradeMate Team</p>
+              <p>TradeMate is a FREE web/mobile/desktop application created by the team at Hailo Digital</p>
+              <p>Your account has been created successfully. We hope you enjoy the app and this makes your life a little easier.</p>
+              <p>Best regards,<br>The Hailo Digital Team</p>
             `
           });
         } catch (emailError) {
