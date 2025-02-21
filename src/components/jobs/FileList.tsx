@@ -1,8 +1,9 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+
+import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
 import FileItem from "./file/FileItem";
-import { Loader2 } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface FileListProps {
   jobId: string;
@@ -10,16 +11,17 @@ interface FileListProps {
 }
 
 const FileList = ({ jobId, type }: FileListProps) => {
-  const queryClient = useQueryClient();
-  
-  const { data: files, isLoading } = useQuery({
-    queryKey: ["files", type, jobId],
+  const isMobile = useIsMobile();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { data: files } = useQuery({
+    queryKey: ["files", jobId, type],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from(type === "design" ? "job_designs" : "job_invoices")
+        .from(`job_${type}s`)
         .select("*")
         .eq("job_id", jobId)
-        .order("uploaded_at", { ascending: false });
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
       return data;
@@ -27,16 +29,28 @@ const FileList = ({ jobId, type }: FileListProps) => {
   });
 
   const handleFileClick = async (filePath: string, filename: string) => {
-    const { data, error } = await supabase.storage
-      .from(type === "design" ? "designs" : "invoices")
-      .createSignedUrl(filePath, 60);
+    try {
+      setIsLoading(true);
+      const { data: { signedUrl }, error } = await supabase.storage
+        .from(type === "design" ? "designs" : "invoices")
+        .createSignedUrl(filePath, 3600);
 
-    if (error) {
-      console.error("Error creating signed URL:", error);
-      return;
+      if (error) throw error;
+
+      if (signedUrl) {
+        if (isMobile) {
+          // For mobile, open in system browser
+          window.open(signedUrl, '_system');
+        } else {
+          // For web, open in new tab
+          window.open(signedUrl, '_blank');
+        }
+      }
+    } catch (error) {
+      console.error("Error opening file:", error);
+    } finally {
+      setIsLoading(false);
     }
-
-    window.open(data.signedUrl, "_blank");
   };
 
   const handleDelete = async (fileId: string, filePath: string) => {
@@ -50,34 +64,20 @@ const FileList = ({ jobId, type }: FileListProps) => {
 
       // Delete from database
       const { error: dbError } = await supabase
-        .from(type === "design" ? "job_designs" : "job_invoices")
+        .from(`job_${type}s`)
         .delete()
         .eq("id", fileId);
 
       if (dbError) throw dbError;
-
-      // Invalidate the query to refresh the list
-      queryClient.invalidateQueries({ queryKey: ["files", type, jobId] });
-
-      toast.success(`${type === "design" ? "Design" : "Invoice"} deleted successfully`);
     } catch (error) {
-      console.error("Delete error:", error);
-      toast.error(`Failed to delete ${type === "design" ? "design" : "invoice"}`);
+      console.error("Error deleting file:", error);
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-8">
-        <Loader2 className="h-6 w-6 animate-spin" />
-      </div>
-    );
-  }
-
   if (!files?.length) {
     return (
-      <div className="text-muted-foreground text-center py-8">
-        No {type === "design" ? "designs" : "invoices"} uploaded yet
+      <div className="text-center text-muted-foreground py-4">
+        No {type}s uploaded yet
       </div>
     );
   }
