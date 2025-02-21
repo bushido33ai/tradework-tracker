@@ -77,17 +77,46 @@ export const DashboardStats = () => {
     queryKey: ['totalInvoices', userId],
     queryFn: async () => {
       const startOfYear = new Date(new Date().getFullYear(), 0, 1).toISOString();
-      let query = supabase
+      
+      // Fetch invoices
+      let invoicesQuery = supabase
         .from('job_invoices')
         .select('amount, jobs!inner(created_by)')
         .gte('uploaded_at', startOfYear);
 
+      // Fetch misc costs
+      let miscCostsQuery = supabase
+        .from('job_misc_costs')
+        .select('amount, jobs!inner(created_by)')
+        .gte('created_at', startOfYear);
+
+      // Fetch days worked
+      let daysWorkedQuery = supabase
+        .from('job_days_worked')
+        .select('day_rate, jobs!inner(created_by)')
+        .gte('date_worked', startOfYear);
+
       if (userId) {
-        query = query.eq('jobs.created_by', userId);
+        invoicesQuery = invoicesQuery.eq('jobs.created_by', userId);
+        miscCostsQuery = miscCostsQuery.eq('jobs.created_by', userId);
+        daysWorkedQuery = daysWorkedQuery.eq('jobs.created_by', userId);
       }
 
-      const { data } = await query;
-      return data?.reduce((sum, row) => sum + (row.amount || 0), 0) || 0;
+      const [
+        { data: invoices },
+        { data: miscCosts },
+        { data: daysWorked }
+      ] = await Promise.all([
+        invoicesQuery,
+        miscCostsQuery,
+        daysWorkedQuery
+      ]);
+
+      const totalInvoiced = invoices?.reduce((sum, invoice) => sum + (Number(invoice.amount) || 0), 0) || 0;
+      const totalMiscCosts = miscCosts?.reduce((sum, cost) => sum + (Number(cost.amount) || 0), 0) || 0;
+      const totalDaysWorkedCost = daysWorked?.reduce((sum, day) => sum + (Number(day.day_rate) || 0), 0) || 0;
+
+      return totalInvoiced + totalMiscCosts + totalDaysWorkedCost;
     },
   });
 
@@ -137,7 +166,7 @@ export const DashboardStats = () => {
 
       <Card className="bg-blue-50/80 shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-1 border-l-4 border-l-primary-600">
         <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-          <CardTitle className="text-sm font-medium">Total Invoiced (YTD)</CardTitle>
+          <CardTitle className="text-sm font-medium">Total Costs (YTD)</CardTitle>
           <Receipt className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
