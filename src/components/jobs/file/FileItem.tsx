@@ -5,6 +5,7 @@ import { formatFileSize } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
+import OpenFileDialog from "./OpenFileDialog";
 
 interface FileItemProps {
   file: {
@@ -48,18 +49,14 @@ const FileItem = ({ file, type, onFileClick, onDelete }: FileItemProps) => {
 
     fetchThumbnailUrl();
   }, [file.file_path, isImage, type]);
-  
-  const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault();
+
+  const handleClick = () => {
     onFileClick(file.file_path, file.filename);
   };
 
-  return (
+  const FileContent = () => (
     <div className="flex items-center gap-4 p-3 hover:bg-accent rounded-md group">
-      <div 
-        className="relative w-12 h-12 rounded-md overflow-hidden bg-gray-100 cursor-pointer"
-        onClick={handleClick}
-      >
+      <div className="relative w-12 h-12 rounded-md overflow-hidden bg-gray-100 cursor-pointer">
         {isImage ? (
           thumbnailUrl ? (
             <img
@@ -86,10 +83,7 @@ const FileItem = ({ file, type, onFileClick, onDelete }: FileItemProps) => {
         )}
       </div>
       
-      <div
-        className="flex-1 cursor-pointer"
-        onClick={handleClick}
-      >
+      <div className="flex-1">
         <div className="flex items-center gap-2">
           <span className="font-medium truncate">{file.filename}</span>
           {isImage && <Image className="w-4 h-4 text-gray-500" />}
@@ -115,6 +109,14 @@ const FileItem = ({ file, type, onFileClick, onDelete }: FileItemProps) => {
         onDelete={() => onDelete(file.id, file.file_path)}
       />
     </div>
+  );
+
+  return (
+    <OpenFileDialog filename={file.filename} onConfirm={handleClick}>
+      <div className="cursor-pointer">
+        <FileContent />
+      </div>
+    </OpenFileDialog>
   );
 };
 
