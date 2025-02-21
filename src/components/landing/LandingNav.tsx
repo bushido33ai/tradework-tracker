@@ -14,13 +14,13 @@ export const LandingNav = ({ session }: LandingNavProps) => {
   const { isLoading } = useSessionContext();
 
   const handleSignOut = async () => {
-    navigate("/");
-    const { error } = await supabase.auth.signOut();
-    if (error) {
+    try {
+      await supabase.auth.signOut();
+      toast.success("Signed out successfully");
+      navigate("/");
+    } catch (error) {
       console.error("Error signing out:", error);
       toast.error("Error signing out");
-    } else {
-      toast.success("Signed out successfully");
     }
   };
 
