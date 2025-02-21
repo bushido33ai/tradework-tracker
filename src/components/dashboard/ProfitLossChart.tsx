@@ -17,56 +17,98 @@ export const ProfitLossChart = () => {
     queryFn: async () => {
       const startDate = startOfYear(new Date()).toISOString();
       
+      // Fetch jobs data
       let jobsQuery = supabase
         .from('jobs')
         .select('budget, created_at')
         .gte('created_at', startDate);
 
+      // Fetch invoices data
       let invoicesJoinQuery = supabase
         .from('job_invoices')
         .select('amount, uploaded_at, jobs!inner(created_by)')
         .gte('uploaded_at', startDate);
 
+      // Fetch misc costs data
+      let miscCostsQuery = supabase
+        .from('job_misc_costs')
+        .select('amount, created_at, jobs!inner(created_by)')
+        .gte('created_at', startDate);
+
+      // Fetch days worked data
+      let daysWorkedQuery = supabase
+        .from('job_days_worked')
+        .select('day_rate, date_worked, jobs!inner(created_by)')
+        .gte('date_worked', startDate);
+
       if (userId) {
         jobsQuery = jobsQuery.eq('created_by', userId);
         invoicesJoinQuery = invoicesJoinQuery.eq('jobs.created_by', userId);
+        miscCostsQuery = miscCostsQuery.eq('jobs.created_by', userId);
+        daysWorkedQuery = daysWorkedQuery.eq('jobs.created_by', userId);
       }
 
-      const [{ data: jobs }, { data: invoices }] = await Promise.all([
+      const [
+        { data: jobs },
+        { data: invoices },
+        { data: miscCosts },
+        { data: daysWorked }
+      ] = await Promise.all([
         jobsQuery,
-        invoicesJoinQuery
+        invoicesJoinQuery,
+        miscCostsQuery,
+        daysWorkedQuery
       ]);
 
       const totalBudget = jobs?.reduce((sum, job) => sum + (Number(job.budget) || 0), 0) || 0;
       const totalInvoiced = invoices?.reduce((sum, invoice) => sum + (Number(invoice.amount) || 0), 0) || 0;
-      const totalProfit = totalBudget - totalInvoiced;
+      const totalMiscCosts = miscCosts?.reduce((sum, cost) => sum + (Number(cost.amount) || 0), 0) || 0;
+      const totalDaysWorkedCost = daysWorked?.reduce((sum, day) => sum + (Number(day.day_rate) || 0), 0) || 0;
+      
+      const totalCosts = totalInvoiced + totalMiscCosts + totalDaysWorkedCost;
+      const totalProfit = totalBudget - totalCosts;
 
       const monthlyData = Array(12).fill(0).map((_, index) => ({
         month: format(new Date(2024, index), 'MMM'),
         budget: 0,
-        invoices: 0,
+        costs: 0,
         profit: 0
       }));
 
+      // Aggregate monthly budget
       jobs?.forEach(job => {
         const month = new Date(job.created_at).getMonth();
         monthlyData[month].budget += Number(job.budget || 0);
       });
 
+      // Aggregate monthly costs (invoices)
       invoices?.forEach(invoice => {
         const month = new Date(invoice.uploaded_at).getMonth();
-        monthlyData[month].invoices += Number(invoice.amount || 0);
+        monthlyData[month].costs += Number(invoice.amount || 0);
       });
 
+      // Add misc costs to monthly costs
+      miscCosts?.forEach(cost => {
+        const month = new Date(cost.created_at).getMonth();
+        monthlyData[month].costs += Number(cost.amount || 0);
+      });
+
+      // Add days worked costs to monthly costs
+      daysWorked?.forEach(day => {
+        const month = new Date(day.date_worked).getMonth();
+        monthlyData[month].costs += Number(day.day_rate || 0);
+      });
+
+      // Calculate monthly profit
       monthlyData.forEach(data => {
-        data.profit = data.budget - data.invoices;
+        data.profit = data.budget - data.costs;
       });
 
       return {
         monthlyData,
         totals: {
           budget: totalBudget,
-          invoiced: totalInvoiced,
+          costs: totalCosts,
           profit: totalProfit
         }
       };
@@ -101,9 +143,9 @@ export const ProfitLossChart = () => {
               </p>
             </div>
             <div>
-              <span className="text-muted-foreground">Total Invoiced:</span>
+              <span className="text-muted-foreground">Total Costs:</span>
               <p className="text-lg font-bold text-red-600">
-                £{profitLossData.totals.invoiced.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                £{profitLossData.totals.costs.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </p>
             </div>
             <div>
@@ -141,9 +183,9 @@ export const ProfitLossChart = () => {
               />
               <Line 
                 type="monotone" 
-                dataKey="invoices" 
+                dataKey="costs" 
                 stroke="#ef4444" 
-                name="Invoices"
+                name="Total Costs"
                 strokeWidth={2}
               />
               <Line 
