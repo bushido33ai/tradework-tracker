@@ -1,3 +1,4 @@
+
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -27,16 +28,29 @@ const FileList = ({ jobId, type }: FileListProps) => {
   });
 
   const handleFileClick = async (filePath: string, filename: string) => {
-    const { data, error } = await supabase.storage
-      .from(type === "design" ? "designs" : "invoices")
-      .createSignedUrl(filePath, 60);
+    try {
+      const { data, error } = await supabase.storage
+        .from(type === "design" ? "designs" : "invoices")
+        .createSignedUrl(filePath, 300); // 5 minutes expiry
 
-    if (error) {
-      console.error("Error creating signed URL:", error);
-      return;
+      if (error) {
+        console.error("Error creating signed URL:", error);
+        toast.error("Failed to open file");
+        return;
+      }
+
+      // Check if running in a mobile environment
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      
+      if (isMobile) {
+        window.open(data.signedUrl, '_system');
+      } else {
+        window.open(data.signedUrl, '_blank');
+      }
+    } catch (error) {
+      console.error("Error opening file:", error);
+      toast.error("Failed to open file");
     }
-
-    window.open(data.signedUrl, "_blank");
   };
 
   const handleDelete = async (fileId: string, filePath: string) => {
