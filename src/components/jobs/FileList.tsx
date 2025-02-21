@@ -39,14 +39,14 @@ const FileList = ({ jobId, type }: FileListProps) => {
         return;
       }
 
-      // Check if running in a mobile environment
-      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      // Create an invisible anchor element and trigger download
+      const link = document.createElement('a');
+      link.href = data.signedUrl;
+      link.download = filename; // Set the download attribute
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
       
-      if (isMobile) {
-        window.open(data.signedUrl, '_system');
-      } else {
-        window.open(data.signedUrl, '_blank');
-      }
     } catch (error) {
       console.error("Error opening file:", error);
       toast.error("Failed to open file");
@@ -112,3 +112,4 @@ const FileList = ({ jobId, type }: FileListProps) => {
 };
 
 export default FileList;
+
