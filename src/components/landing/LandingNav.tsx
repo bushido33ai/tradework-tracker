@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { ButtonColorful } from "@/components/ui/button-colorful";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { useSessionContext } from "@supabase/auth-helpers-react";
 
 interface LandingNavProps {
   session: any;
@@ -11,16 +10,44 @@ interface LandingNavProps {
 
 export const LandingNav = ({ session }: LandingNavProps) => {
   const navigate = useNavigate();
-  const { isLoading } = useSessionContext();
 
   const handleSignOut = async () => {
     try {
-      await supabase.auth.signOut();
+      // First check if we have a valid session
+      const { data: { session: currentSession }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError) {
+        console.error("Error checking session:", sessionError);
+        // If there's no valid session, just redirect to home
+        navigate("/");
+        return;
+      }
+
+      if (!currentSession) {
+        // No active session, just redirect
+        navigate("/");
+        return;
+      }
+
+      // Proceed with logout if we have a valid session
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error("Error signing out:", error);
+        if (error.message.includes("session_not_found")) {
+          // Session already invalid, just redirect
+          navigate("/");
+          return;
+        }
+        toast.error("Error signing out");
+        return;
+      }
+
       toast.success("Signed out successfully");
       navigate("/");
     } catch (error) {
-      console.error("Error signing out:", error);
-      toast.error("Error signing out");
+      console.error("Unexpected error during sign out:", error);
+      // In case of any other error, still redirect to home
+      navigate("/");
     }
   };
 
@@ -40,19 +67,17 @@ export const LandingNav = ({ session }: LandingNavProps) => {
           </Link>
 
           <div className="flex items-center gap-3">
-            {!isLoading && (
-              session ? (
+            {session ? (
+              <ButtonColorful
+                label="Sign out"
+                onClick={handleSignOut}
+              />
+            ) : (
+              <Link to="/signin">
                 <ButtonColorful
-                  label="Sign out"
-                  onClick={handleSignOut}
+                  label="Sign in"
                 />
-              ) : (
-                <Link to="/signin">
-                  <ButtonColorful
-                    label="Sign in"
-                  />
-                </Link>
-              )
+              </Link>
             )}
           </div>
         </div>

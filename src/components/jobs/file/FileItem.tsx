@@ -1,4 +1,3 @@
-
 import { FileText, Image, Link as LinkIcon } from "lucide-react";
 import DeleteFileDialog from "./DeleteFileDialog";
 import { formatFileSize } from "@/lib/utils";
@@ -26,62 +25,55 @@ const FileItem = ({ file, type, onFileClick, onDelete }: FileItemProps) => {
   
   useEffect(() => {
     const fetchThumbnailUrl = async () => {
-      try {
-        const { data: { signedUrl }, error } = await supabase.storage
-          .from(type === "design" ? "designs" : "invoices")
-          .createSignedUrl(file.file_path, 3600);
+      if (!isImage) return;
+      
+      const { data } = await supabase.storage
+        .from(type === "design" ? "designs" : "invoices")
+        .createSignedUrl(file.file_path, 3600); // 1 hour expiry
 
-        if (error) {
-          console.error("Error fetching thumbnail:", error);
-          return;
-        }
-
-        if (signedUrl) {
-          setThumbnailUrl(signedUrl);
-        }
-      } catch (error) {
-        console.error("Error in fetchThumbnailUrl:", error);
+      if (data?.signedUrl) {
+        setThumbnailUrl(data.signedUrl);
       }
     };
 
-    if (isImage) {
-      fetchThumbnailUrl();
-    }
+    fetchThumbnailUrl();
   }, [file.file_path, isImage, type]);
   
   return (
     <div className="flex items-center gap-4 p-3 hover:bg-accent rounded-md group">
-      <div 
-        className="cursor-pointer"
-        onClick={() => onFileClick(file.file_path, file.filename)}
-      >
-        {isImage ? (
-          <div className="relative w-12 h-12 rounded-md overflow-hidden bg-gray-100">
-            {thumbnailUrl ? (
-              <img
-                src={thumbnailUrl}
-                alt={file.filename}
-                className="w-full h-full object-cover hover:opacity-80 transition-opacity"
-                onError={(e) => {
-                  e.currentTarget.src = "/placeholder.svg";
-                }}
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <Image className="w-6 h-6 text-gray-500" />
-              </div>
-            )}
-          </div>
-        ) : isUrl ? (
-          <div className="w-12 h-12 flex items-center justify-center rounded-md bg-gray-100">
-            <LinkIcon className="w-6 h-6 text-gray-500" />
-          </div>
-        ) : (
-          <div className="w-12 h-12 flex items-center justify-center rounded-md bg-gray-100 hover:bg-gray-200 transition-colors">
-            <FileText className="w-6 h-6 text-gray-500" />
-          </div>
-        )}
-      </div>
+      {isImage ? (
+        <div className="relative w-12 h-12 rounded-md overflow-hidden bg-gray-100">
+          {thumbnailUrl ? (
+            <img
+              src={thumbnailUrl}
+              alt={file.filename}
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                e.currentTarget.src = "/placeholder.svg";
+              }}
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <Image className="w-6 h-6 text-gray-500" />
+            </div>
+          )}
+        </div>
+      ) : isUrl ? (
+        <div className="w-12 h-12 flex items-center justify-center rounded-md bg-gray-100">
+          <img
+            src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b"
+            alt="URL thumbnail"
+            className="w-full h-full object-cover rounded-md"
+            onError={(e) => {
+              e.currentTarget.src = "/placeholder.svg";
+            }}
+          />
+        </div>
+      ) : (
+        <div className="w-12 h-12 flex items-center justify-center rounded-md bg-gray-100">
+          <FileText className="w-6 h-6 text-gray-500" />
+        </div>
+      )}
       
       <div
         className="flex-1 cursor-pointer"
