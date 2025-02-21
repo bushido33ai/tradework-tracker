@@ -26,18 +26,27 @@ const FileItem = ({ file, type, onFileClick, onDelete }: FileItemProps) => {
   
   useEffect(() => {
     const fetchThumbnailUrl = async () => {
-      if (!isImage) return;
-      
-      const { data } = await supabase.storage
-        .from(type === "design" ? "designs" : "invoices")
-        .createSignedUrl(file.file_path, 3600); // 1 hour expiry
+      try {
+        const { data: { signedUrl }, error } = await supabase.storage
+          .from(type === "design" ? "designs" : "invoices")
+          .createSignedUrl(file.file_path, 3600);
 
-      if (data?.signedUrl) {
-        setThumbnailUrl(data.signedUrl);
+        if (error) {
+          console.error("Error fetching thumbnail:", error);
+          return;
+        }
+
+        if (signedUrl) {
+          setThumbnailUrl(signedUrl);
+        }
+      } catch (error) {
+        console.error("Error in fetchThumbnailUrl:", error);
       }
     };
 
-    fetchThumbnailUrl();
+    if (isImage) {
+      fetchThumbnailUrl();
+    }
   }, [file.file_path, isImage, type]);
   
   return (
@@ -65,14 +74,7 @@ const FileItem = ({ file, type, onFileClick, onDelete }: FileItemProps) => {
           </div>
         ) : isUrl ? (
           <div className="w-12 h-12 flex items-center justify-center rounded-md bg-gray-100">
-            <img
-              src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b"
-              alt="URL thumbnail"
-              className="w-full h-full object-cover rounded-md hover:opacity-80 transition-opacity"
-              onError={(e) => {
-                e.currentTarget.src = "/placeholder.svg";
-              }}
-            />
+            <LinkIcon className="w-6 h-6 text-gray-500" />
           </div>
         ) : (
           <div className="w-12 h-12 flex items-center justify-center rounded-md bg-gray-100 hover:bg-gray-200 transition-colors">
@@ -114,4 +116,3 @@ const FileItem = ({ file, type, onFileClick, onDelete }: FileItemProps) => {
 };
 
 export default FileItem;
-
