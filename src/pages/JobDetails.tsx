@@ -69,17 +69,29 @@ const JobDetails = () => {
 
   const updateJobMutation = useMutation({
     mutationFn: async (values: JobFormValues) => {
+      // Create an update object with the values
+      const jobUpdate: Record<string, any> = {
+        title: values.title,
+        description: values.description,
+        location: values.location,
+        budget: values.budget ? parseFloat(values.budget) : null,
+        job_type: values.job_type,
+      };
+      
+      // Only include dates that have values to prevent the "invalid input syntax" error
+      if (values.start_date) {
+        jobUpdate.start_date = values.start_date;
+      }
+      
+      if (values.end_date) {
+        jobUpdate.end_date = values.end_date;
+      }
+      
+      console.log("Updating job with values:", jobUpdate);
+      
       const { error } = await supabase
         .from("jobs")
-        .update({
-          title: values.title,
-          description: values.description,
-          location: values.location,
-          budget: values.budget ? parseFloat(values.budget) : null,
-          start_date: values.start_date,
-          end_date: values.end_date,
-          job_type: values.job_type,
-        })
+        .update(jobUpdate)
         .eq("id", id);
 
       if (error) throw error;
