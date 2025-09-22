@@ -8,6 +8,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Landing from "./pages/Landing";
 import UserTypeSelection from "./pages/UserTypeSelection";
 import SignUp from "./pages/SignUp";
+import VerifyEmail from "./pages/VerifyEmail";
 import SignIn from "./pages/SignIn";
 import ResetPassword from "./pages/ResetPassword";
 import UpdatePassword from "./pages/UpdatePassword";
@@ -90,6 +91,12 @@ const App = () => {
               <Route path="/signup/:userType" element={
                 <AppBackground>
                   <SignUp />
+                  <Footer />
+                </AppBackground>
+              } />
+              <Route path="/verify-email" element={
+                <AppBackground>
+                  <VerifyEmail />
                   <Footer />
                 </AppBackground>
               } />

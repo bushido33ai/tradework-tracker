@@ -53,60 +53,39 @@ const SignUp = () => {
       const cleanedFirstName = data.firstName.trim();
       const cleanedSurname = data.surname.trim();
 
-      // Set up metadata with all required fields
-      const metadata = {
-        user_type: userType,
-        address: cleanedAddress,
-        telephone: cleanedTelephone,
-        email: cleanedEmail,
-        first_name: cleanedFirstName,
-        surname: cleanedSurname,
-      };
+      console.log("Sending verification email request");
 
-      console.log("Sending signup request with metadata:", metadata);
-
-      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-        email: cleanedEmail,
-        password: data.password,
-        options: {
-          data: metadata,
-        },
+      // Send verification email instead of creating account directly
+      const { data: verificationData, error: verificationError } = await supabase.functions.invoke('send-verification-email', {
+        body: {
+          email: cleanedEmail,
+          password: data.password,
+          firstName: cleanedFirstName,
+          surname: cleanedSurname,
+          address: cleanedAddress,
+          telephone: cleanedTelephone,
+          userType: userType,
+          appUrl: window.location.origin
+        }
       });
 
-      console.log("Signup response:", { signUpData, signUpError });
+      console.log("Verification email response:", { verificationData, verificationError });
 
-      if (signUpError) {
-        console.error("Signup error:", signUpError);
-        throw signUpError;
+      if (verificationError) {
+        console.error("Verification email error:", verificationError);
+        throw verificationError;
       }
 
-      if (signUpData.user) {
-        // Send branded welcome email
-        try {
-          await sendEmail({
-            to: cleanedEmail,
-            subject: "Welcome to TradeMate - Your journey starts here!",
-            template: 'welcome',
-            templateData: {
-              firstName: cleanedFirstName,
-              userType: userType,
-              appUrl: window.location.origin
-            }
-          });
-        } catch (emailError) {
-          console.error('Failed to send welcome email:', emailError);
-          // Don't throw here - we still want to show success message even if email fails
-        }
-
-        toast.success("Account created successfully! Please check your email to verify your account.");
-        navigate("/signin");
-      } else {
-        throw new Error("Failed to create account");
+      if (verificationData?.error) {
+        throw new Error(verificationData.error);
       }
+
+      toast.success("Verification email sent! Please check your inbox and click the verification link to activate your account.");
+      navigate("/signin");
       
     } catch (error: any) {
       console.error('Signup error:', error);
-      toast.error(error.message || "Failed to create account. Please try again.");
+      toast.error(error.message || "Failed to send verification email. Please try again.");
     } finally {
       setIsLoading(false);
     }
