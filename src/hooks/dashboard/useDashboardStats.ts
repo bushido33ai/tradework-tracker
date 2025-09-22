@@ -118,19 +118,45 @@ export const useTotalReceived = (userId: string | undefined) => {
   return useQuery({
     queryKey: ['totalReceived', userId],
     queryFn: async () => {
-      const startOfYear = new Date(new Date().getFullYear(), 0, 1).toISOString();
-      
-      let paymentsQuery = supabase
-        .from('job_payments')
-        .select('amount, jobs!inner(created_by)')
-        .gte('payment_date', startOfYear);
+      // Use a date-only string to match a DATE column and avoid type issues
+      const startOfYear = new Date(new Date().getFullYear(), 0, 1)
+        .toISOString()
+        .split('T')[0];
 
       if (userId) {
-        paymentsQuery = paymentsQuery.eq('jobs.created_by', userId);
+        // Fetch all job IDs created by this user, then sum payments for those jobs
+        const { data: jobs, error: jobsError } = await supabase
+          .from('jobs')
+          .select('id')
+          .eq('created_by', userId);
+
+        if (jobsError) throw jobsError;
+
+        const jobIds = (jobs ?? []).map((j) => j.id);
+        if (jobIds.length === 0) return 0;
+
+        const { data: payments, error: paymentsError } = await supabase
+          .from('job_payments')
+          .select('amount, job_id, payment_date')
+          .in('job_id', jobIds)
+          .gte('payment_date', startOfYear);
+
+        if (paymentsError) throw paymentsError;
+
+        return (
+          payments?.reduce((sum, p) => sum + (Number(p.amount) || 0), 0) || 0
+        );
       }
 
-      const { data: payments } = await paymentsQuery;
-      return payments?.reduce((sum, payment) => sum + (Number(payment.amount) || 0), 0) || 0;
+      // Admins: sum across all payments YTD (no join required)
+      const { data: payments, error } = await supabase
+        .from('job_payments')
+        .select('amount, payment_date')
+        .gte('payment_date', startOfYear);
+
+      if (error) throw error;
+
+      return payments?.reduce((sum, p) => sum + (Number(p.amount) || 0), 0) || 0;
     },
   });
 };
