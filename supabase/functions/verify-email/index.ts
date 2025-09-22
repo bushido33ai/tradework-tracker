@@ -3,7 +3,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.47.10';
 import { Resend } from "npm:resend@2.0.0";
 import React from 'npm:react@18.3.1';
 import { renderAsync } from 'npm:@react-email/components@0.0.22';
-import { WelcomeEmail } from '../send-email/_templates/welcome-email.tsx';
+import { WelcomeEmail } from './_templates/welcome-email.tsx';
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
