@@ -1,14 +1,19 @@
 import { useNavigate } from "react-router-dom";
-import { Loader2 } from "lucide-react";
+import { Loader2, Trash2, LogOut } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useProfile } from "@/hooks/useProfile";
+import { useDeleteUser } from "@/hooks/useDeleteUser";
 import { ProfileForm } from "@/components/profile/ProfileForm";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Mail, Phone, MapPin, User } from "lucide-react";
+import { toast } from "sonner";
 
 const Profile = () => {
   const navigate = useNavigate();
+  const deleteUserMutation = useDeleteUser();
   
   const { data: authData, isLoading: isAuthLoading } = useQuery({
     queryKey: ['user'],
@@ -20,6 +25,30 @@ const Profile = () => {
   });
 
   const { data: profile, isLoading: isProfileLoading } = useProfile(authData?.user?.id);
+
+  const handleSignOut = async () => {
+    try {
+      await supabase.auth.signOut();
+      navigate("/");
+      toast.success("Signed out successfully");
+    } catch (error) {
+      console.error("Error signing out:", error);
+      toast.error("Failed to sign out");
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!authData?.user?.id) return;
+    
+    try {
+      await deleteUserMutation.mutateAsync(authData.user.id);
+      navigate("/");
+      toast.success("Account deleted successfully");
+    } catch (error) {
+      console.error("Error deleting account:", error);
+      toast.error("Failed to delete account");
+    }
+  };
 
   if (isAuthLoading || isProfileLoading) {
     return (
@@ -95,6 +124,56 @@ const Profile = () => {
               telephone: profile.telephone || "",
             }}
           />
+        </CardContent>
+      </Card>
+
+      <Card className="bg-red-50/80 shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-1 border-l-4 border-l-destructive">
+        <CardHeader>
+          <CardTitle className="text-destructive">Account Actions</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Button 
+              variant="outline" 
+              onClick={handleSignOut}
+              className="flex items-center gap-2"
+            >
+              <LogOut className="w-4 h-4" />
+              Sign Out
+            </Button>
+            
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button 
+                  variant="destructive" 
+                  className="flex items-center gap-2"
+                  disabled={deleteUserMutation.isPending}
+                >
+                  <Trash2 className="w-4 h-4" />
+                  {deleteUserMutation.isPending ? "Deleting..." : "Delete Account"}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete your account
+                    and remove all of your data from our servers including jobs, enquiries,
+                    customers, and suppliers.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction 
+                    onClick={handleDeleteAccount}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    Yes, delete my account
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </CardContent>
       </Card>
     </div>
