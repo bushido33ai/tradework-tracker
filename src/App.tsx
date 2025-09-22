@@ -33,6 +33,7 @@ import AdminRoute from "@/components/routes/AdminRoute";
 import MerchantTraders from "@/pages/MerchantTraders";
 import MerchantTraderJobs from "@/pages/MerchantTraderJobs";
 import WorkCalendar from "@/pages/WorkCalendar";
+import AuthHashRouter from "@/components/auth/AuthHashRouter";
 
 const queryClient = new QueryClient();
 
@@ -75,6 +76,7 @@ const App = () => {
       <SessionContextProvider supabaseClient={supabase}>
         <TooltipProvider>
           <BrowserRouter>
+            <AuthHashRouter />
             <Routes>
               <Route path="/" element={
                 <AppBackground showPattern={false}>

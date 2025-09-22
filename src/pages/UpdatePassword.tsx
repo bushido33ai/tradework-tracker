@@ -25,7 +25,23 @@ const UpdatePassword = () => {
         const accessToken = hashParams.get('access_token');
         const refreshToken = hashParams.get('refresh_token');
         
-        if (!accessToken || !refreshToken) {
+        if (accessToken && refreshToken) {
+          try {
+            const { error } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken,
+            });
+            if (error) {
+              console.error('Error setting session from recovery link:', error);
+              toast.error("Invalid or expired password reset link");
+              navigate("/signin");
+            }
+          } catch (err) {
+            console.error('Failed to set session from recovery link:', err);
+            toast.error("Invalid or expired password reset link");
+            navigate("/signin");
+          }
+        } else {
           toast.error("Invalid or expired password reset link");
           navigate("/signin");
         }
