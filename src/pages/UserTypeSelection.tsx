@@ -43,7 +43,7 @@ const UserTypeSelection = () => {
     <div 
       className="min-h-screen"
       style={{
-        backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url('/lovable-uploads/new-trademate-logo.png')`,
+        backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url('/lovable-uploads/342506cf-411e-4195-9c10-5f806c52d3b7.png')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat'
@@ -61,7 +61,7 @@ const UserTypeSelection = () => {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <img 
-              src="/lovable-uploads/new-trademate-logo.png" 
+              src="/lovable-uploads/342506cf-411e-4195-9c10-5f806c52d3b7.png" 
               alt="TradeMate Logo" 
               className="h-16 mx-auto mb-6"
             />
