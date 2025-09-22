@@ -1,5 +1,11 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.47.10';
+import { Resend } from "npm:resend@2.0.0";
+import React from 'npm:react@18.3.1';
+import { renderAsync } from 'npm:@react-email/components@0.0.22';
+import { WelcomeEmail } from '../send-email/_templates/welcome-email.tsx';
+
+const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -86,6 +92,29 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("User created successfully:", signUpData.user?.id);
 
+    // Send welcome email
+    try {
+      const emailHtml = await renderAsync(
+        React.createElement(WelcomeEmail, {
+          firstName: pendingVerification.first_name,
+          userType: pendingVerification.user_type,
+          appUrl: new URL(req.url).origin
+        })
+      );
+
+      const emailResponse = await resend.emails.send({
+        from: "TradeMate <noreply@hailodigital.co.uk>",
+        to: [pendingVerification.email],
+        subject: "Welcome to TradeMate - Your journey starts here!",
+        html: emailHtml,
+      });
+
+      console.log("Welcome email sent successfully:", emailResponse);
+    } catch (emailError) {
+      console.error('Failed to send welcome email:', emailError);
+      // Don't fail the verification if email fails
+    }
+
     // Delete the pending verification
     const { error: deleteError } = await supabase
       .from('pending_verifications')
@@ -100,7 +129,7 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: "Email verified successfully! Your account has been created. You can now sign in.",
+        message: "Email verified successfully! Your account has been created and a welcome email has been sent. You can now sign in.",
         userId: signUpData.user?.id 
       }),
       {
