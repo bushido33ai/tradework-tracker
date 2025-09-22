@@ -81,18 +81,17 @@ const SignUp = () => {
       }
 
       if (signUpData.user) {
-        // Send welcome email
+        // Send branded welcome email
         try {
           await sendEmail({
             to: cleanedEmail,
-            subject: "Welcome to TradeMate!",
-            html: `
-              <h1>Welcome to TradeMate, ${cleanedFirstName}!</h1>
-              <p>Thank you for signing up as a ${userType}. We're excited to have you on board!</p>
-              <p>TradeMate is a FREE web/mobile/desktop application created by the team at Hailo Digital</p>
-              <p>Your account has been created successfully. We hope you enjoy the app and this makes your life a little easier.</p>
-              <p>Best regards,<br>The Hailo Digital Team</p>
-            `
+            subject: "Welcome to TradeMate - Your journey starts here!",
+            template: 'welcome',
+            templateData: {
+              firstName: cleanedFirstName,
+              userType: userType,
+              appUrl: window.location.origin
+            }
           });
         } catch (emailError) {
           console.error('Failed to send welcome email:', emailError);
@@ -136,18 +135,26 @@ const SignUp = () => {
         backgroundRepeat: 'no-repeat'
       }}
     >
-      <div className="w-full max-w-md space-y-8 bg-white/80 backdrop-blur-sm p-8 rounded-lg shadow-lg">
-        <div className="flex items-center mb-8">
+      <div className="w-full max-w-lg space-y-8 bg-white/90 backdrop-blur-sm p-10 rounded-xl shadow-2xl border-0">
+        <div className="text-center mb-8">
           <Button
             variant="ghost"
-            className="p-0 hover:bg-transparent"
+            className="absolute top-4 left-4 p-2 hover:bg-gray-100 rounded-full"
             onClick={() => navigate(-1)}
           >
-            <ArrowLeft className="h-6 w-6" />
+            <ArrowLeft className="h-5 w-5" />
           </Button>
-          <h2 className="text-center text-3xl font-bold tracking-tight text-gray-900 flex-1 pr-6">
+          <img 
+            src="/lovable-uploads/342506cf-411e-4195-9c10-5f806c52d3b7.png" 
+            alt="TradeMate Logo" 
+            className="h-12 mx-auto mb-6"
+          />
+          <h2 className="text-3xl font-bold text-primary mb-2">
             {getTitleByUserType()}
           </h2>
+          <p className="text-gray-600">
+            Join thousands of professionals using TradeMate
+          </p>
         </div>
 
         <Form {...form}>
@@ -156,23 +163,28 @@ const SignUp = () => {
 
             <Button
               type="submit"
-              className="w-full"
+              className="w-full h-12 text-lg font-semibold bg-primary hover:bg-primary-700 transition-colors"
               disabled={isLoading}
             >
-              {isLoading ? "Creating account..." : "Create account"}
+              {isLoading ? "Creating your account..." : "Create My Account"}
             </Button>
           </form>
         </Form>
 
-        <p className="mt-4 text-center text-sm text-gray-600">
-          Already have an account?{" "}
-          <Link
-            to="/signin"
-            className="font-medium text-primary hover:text-primary-600"
-          >
-            Sign in
-          </Link>
-        </p>
+        <div className="text-center space-y-4">
+          <p className="text-sm text-gray-600">
+            Already have an account?{" "}
+            <Link
+              to="/signin"
+              className="font-medium text-primary hover:text-primary-700 transition-colors"
+            >
+              Sign in here
+            </Link>
+          </p>
+          <p className="text-xs text-gray-500">
+            By creating an account, you agree to our Terms of Service and Privacy Policy
+          </p>
+        </div>
       </div>
     </div>
   );

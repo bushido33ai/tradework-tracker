@@ -40,34 +40,52 @@ const UserTypeSelection = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-white">
+    <div 
+      className="min-h-screen"
+      style={{
+        backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url('/lovable-uploads/342506cf-411e-4195-9c10-5f806c52d3b7.png')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
       <div className="container mx-auto px-4 py-12">
         <Link 
           to="/" 
-          className="inline-flex items-center text-gray-600 hover:text-gray-800 mb-8"
+          className="inline-flex items-center text-gray-600 hover:text-gray-800 mb-8 transition-colors"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to home
         </Link>
         
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold text-gray-900 mb-8 text-center">
-            Select Your Account Type
-          </h1>
+          <div className="text-center mb-12">
+            <img 
+              src="/lovable-uploads/342506cf-411e-4195-9c10-5f806c52d3b7.png" 
+              alt="TradeMate Logo" 
+              className="h-16 mx-auto mb-6"
+            />
+            <h1 className="text-4xl font-bold text-primary mb-4">
+              Join TradeMate Today
+            </h1>
+            <p className="text-lg text-gray-600">
+              Choose your account type to get started with our free platform
+            </p>
+          </div>
           
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-8 md:grid-cols-3">
             {options.map((option) => (
               <Card 
                 key={option.value}
-                className="p-6 flex flex-col items-center text-center cursor-pointer hover:shadow-lg transition-shadow"
+                className="p-8 flex flex-col items-center text-center cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all duration-300 bg-white/90 backdrop-blur-sm border-0 shadow-lg"
               >
-                <div className="mb-4 text-primary">{option.icon}</div>
-                <h3 className="text-xl font-semibold mb-2">{option.title}</h3>
-                <p className="text-gray-600 mb-4">{option.description}</p>
+                <div className="mb-6 p-4 bg-primary/10 rounded-full text-primary">{option.icon}</div>
+                <h3 className="text-2xl font-bold mb-4 text-gray-900">{option.title}</h3>
+                <p className="text-gray-600 mb-6 leading-relaxed">{option.description}</p>
                 <ButtonColorful 
-                  label="Continue"
+                  label="Get Started"
                   onClick={() => handleUserTypeSelection(option.value)}
-                  className="w-full"
+                  className="w-full mt-auto"
                 />
               </Card>
             ))}
