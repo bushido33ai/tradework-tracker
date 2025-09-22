@@ -7,6 +7,7 @@ import { InvoicesTab } from "./tabs/InvoicesTab";
 import { NotesTab } from "./tabs/NotesTab";
 import { RunningTotalTab } from "./tabs/RunningTotalTab";
 import { BudgetTab } from "./tabs/BudgetTab";
+import { PaymentsTab } from "./tabs/PaymentsTab";
 
 interface JobTabsProps {
   jobId: string;
@@ -35,6 +36,10 @@ const JobTabs = ({ jobId, budget, job_type }: JobTabsProps) => {
 
         <TabsContent value="invoices">
           <InvoicesTab jobId={jobId} />
+        </TabsContent>
+
+        <TabsContent value="payments">
+          <PaymentsTab jobId={jobId} />
         </TabsContent>
 
         <TabsContent value="notes">

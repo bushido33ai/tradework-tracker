@@ -115,3 +115,25 @@ export const useTotalCosts = (userId: string | undefined) => {
   });
 };
 
+export const useTotalReceived = (userId: string | undefined) => {
+  return useQuery({
+    queryKey: ['totalReceived', userId],
+    queryFn: async () => {
+      const startOfYear = new Date(new Date().getFullYear(), 0, 1).toISOString();
+      
+      let paymentsQuery = supabase
+        .from('job_payments')
+        .select('amount, jobs!inner(created_by)')
+        .gte('payment_date', startOfYear);
+
+      if (userId) {
+        paymentsQuery = paymentsQuery.eq('jobs.created_by', userId);
+      }
+
+      const { data: payments } = await paymentsQuery;
+
+      return payments?.reduce((sum, payment) => sum + (Number(payment.amount) || 0), 0) || 0;
+    },
+  });
+};
+

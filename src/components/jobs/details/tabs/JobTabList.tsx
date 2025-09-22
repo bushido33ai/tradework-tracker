@@ -30,6 +30,12 @@ export const JobTabList = ({ isDayRate, showBudget }: JobTabListProps) => {
         Invoices
       </TabsTrigger>
       <TabsTrigger 
+        value="payments" 
+        className="flex-1 min-w-[100px] font-medium data-[state=active]:bg-primary-50 data-[state=active]:text-primary-800 data-[state=active]:shadow-inner data-[state=active]:border-b-2 data-[state=active]:border-primary-600 transition-all duration-200"
+      >
+        Payments
+      </TabsTrigger>
+      <TabsTrigger 
         value="notes" 
         className="flex-1 min-w-[100px] font-medium data-[state=active]:bg-primary-50 data-[state=active]:text-primary-800 data-[state=active]:shadow-inner data-[state=active]:border-b-2 data-[state=active]:border-primary-600 transition-all duration-200"
       >

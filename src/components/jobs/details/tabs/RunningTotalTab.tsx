@@ -37,15 +37,26 @@ export const RunningTotalTab = ({ jobId, isDayRate }: RunningTotalTabProps) => {
 
       if (daysError) throw daysError;
 
+      // Get payments received
+      const { data: payments, error: paymentsError } = await supabase
+        .from("job_payments")
+        .select("amount")
+        .eq("job_id", jobId);
+
+      if (paymentsError) throw paymentsError;
+
       const miscTotal = miscCosts?.reduce((sum, cost) => sum + Number(cost.amount), 0) ?? 0;
       const invoiceTotal = invoices?.reduce((sum, invoice) => sum + Number(invoice.amount), 0) ?? 0;
       const daysTotal = daysWorked?.reduce((sum, day) => sum + Number(day.day_rate || 0), 0) ?? 0;
+      const paymentsTotal = payments?.reduce((sum, payment) => sum + Number(payment.amount), 0) ?? 0;
 
       return {
         miscTotal,
         invoiceTotal,
         daysTotal,
-        grandTotal: miscTotal + invoiceTotal + daysTotal
+        paymentsTotal,
+        grandTotal: miscTotal + invoiceTotal + daysTotal,
+        remainingBalance: (miscTotal + invoiceTotal + daysTotal) - paymentsTotal
       };
     }
   });
@@ -76,8 +87,30 @@ export const RunningTotalTab = ({ jobId, isDayRate }: RunningTotalTabProps) => {
                 <span className="font-medium">£{totalCosts.invoiceTotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between items-center p-4 bg-primary-50 rounded-lg border-2 border-primary-200">
-                <span className="font-medium">Grand Total</span>
+                <span className="font-medium">Total Costs</span>
                 <span className="font-bold text-lg">£{totalCosts.grandTotal.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
+                <span>Total Received</span>
+                <span className="font-medium text-green-600">£{totalCosts.paymentsTotal.toFixed(2)}</span>
+              </div>
+              <div className={`flex justify-between items-center p-4 rounded-lg border-2 ${
+                totalCosts.remainingBalance > 0 
+                  ? 'bg-orange-50 border-orange-200' 
+                  : totalCosts.remainingBalance < 0
+                  ? 'bg-red-50 border-red-200'
+                  : 'bg-green-50 border-green-200'
+              }`}>
+                <span className="font-medium">Remaining Balance</span>
+                <span className={`font-bold text-lg ${
+                  totalCosts.remainingBalance > 0 
+                    ? 'text-orange-600' 
+                    : totalCosts.remainingBalance < 0
+                    ? 'text-red-600'
+                    : 'text-green-600'
+                }`}>
+                  £{totalCosts.remainingBalance.toFixed(2)}
+                </span>
               </div>
             </div>
           </div>
