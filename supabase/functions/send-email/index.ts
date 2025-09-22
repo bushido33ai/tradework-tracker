@@ -37,12 +37,28 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Sending email to:", to);
 
     let emailHtml = html;
+    let attachments: any[] | undefined = undefined;
 
     // If template is specified, render it
     if (template === 'welcome' && templateData) {
       emailHtml = await renderAsync(
         React.createElement(WelcomeEmail, templateData)
       );
+
+      // Embed logo as inline image for reliable rendering in email clients
+      const logoFromApp = templateData.appUrl
+        ? `${templateData.appUrl}/lovable-uploads/342506cf-411e-4195-9c10-5f806c52d3b7.png`
+        : undefined;
+      const logoFallback = 'https://wsxicsgmjjmqefztultu.supabase.co/storage/v1/object/public/designs/342506cf-411e-4195-9c10-5f806c52d3b7.png';
+      const logoPath = logoFromApp || logoFallback;
+
+      attachments = [
+        {
+          path: logoPath,
+          filename: 'trademate-logo.png',
+          contentId: 'trademate-logo',
+        },
+      ];
     }
 
     const emailResponse = await resend.emails.send({
@@ -50,6 +66,7 @@ const handler = async (req: Request): Promise<Response> => {
       to: [to],
       subject: subject,
       html: emailHtml,
+      ...(attachments ? { attachments } : {}),
     });
 
     console.log("Email sent successfully:", emailResponse);

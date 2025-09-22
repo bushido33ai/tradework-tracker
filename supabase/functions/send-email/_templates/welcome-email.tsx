@@ -31,7 +31,7 @@ export const WelcomeEmail = ({
       <Container style={container}>
         <Section style={logoContainer}>
           <Img
-            src={appUrl ? `${appUrl}/lovable-uploads/342506cf-411e-4195-9c10-5f806c52d3b7.png` : "https://wsxicsgmjjmqefztultu.supabase.co/storage/v1/object/public/designs/342506cf-411e-4195-9c10-5f806c52d3b7.png"}
+            src="cid:trademate-logo"
             width="200"
             height="auto"
             alt="TradeMate Logo"
