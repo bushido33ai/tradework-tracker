@@ -2,20 +2,38 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, Trash2, PoundSterling } from "lucide-react";
+import { Trash2, Banknote } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
-import { toast } from "sonner";
-import { useSessionContext } from "@supabase/auth-helpers-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
+interface Payment {
+  id: string;
+  amount: number;
+  payment_date: string;
+  description: string | null;
+  created_at: string;
+}
 
 interface PaymentsListProps {
   jobId: string;
 }
 
 export const PaymentsList = ({ jobId }: PaymentsListProps) => {
-  const { session } = useSessionContext();
+  const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: payments, isLoading } = useQuery({
+  const { data: payments = [], isLoading } = useQuery({
     queryKey: ["job-payments", jobId],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -25,7 +43,7 @@ export const PaymentsList = ({ jobId }: PaymentsListProps) => {
         .order("payment_date", { ascending: false });
 
       if (error) throw error;
-      return data;
+      return data as Payment[];
     },
   });
 
@@ -39,73 +57,109 @@ export const PaymentsList = ({ jobId }: PaymentsListProps) => {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["job-payments", jobId] });
-      toast.success("Payment deleted successfully");
+      toast({
+        title: "Payment deleted",
+        description: "Payment has been successfully deleted.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["job-payments"] });
+      queryClient.invalidateQueries({ queryKey: ["totalReceived"] });
     },
     onError: (error) => {
-      console.error("Failed to delete payment:", error);
-      toast.error("Failed to delete payment");
+      toast({
+        title: "Error",
+        description: "Failed to delete payment. Please try again.",
+        variant: "destructive",
+      });
+      console.error("Error deleting payment:", error);
     },
   });
 
+  const totalReceived = payments.reduce((sum, payment) => sum + Number(payment.amount), 0);
+
   if (isLoading) {
     return (
-      <div className="flex justify-center py-4">
-        <Loader2 className="h-6 w-6 animate-spin" />
+      <div className="space-y-4">
+        <div className="h-20 bg-muted animate-pulse rounded-lg" />
+        <div className="h-20 bg-muted animate-pulse rounded-lg" />
       </div>
     );
   }
 
-  const totalReceived = payments?.reduce((sum, payment) => sum + Number(payment.amount), 0) || 0;
-
   return (
     <div className="space-y-4">
-      {totalReceived > 0 && (
-        <Card className="p-4 bg-green-50 border-green-200">
-          <div className="flex items-center justify-between">
-            <span className="font-medium text-green-900">Total Received:</span>
-            <span className="font-bold text-lg text-green-900">£{totalReceived.toFixed(2)}</span>
+      {/* Total Received Summary */}
+      <Card className="bg-green-50 border-green-200">
+        <div className="p-4">
+          <div className="flex items-center gap-2">
+            <Banknote className="h-5 w-5 text-green-600" />
+            <h3 className="font-medium text-green-800">Total Received</h3>
           </div>
-        </Card>
-      )}
+          <p className="text-2xl font-bold text-green-900">
+            £{totalReceived.toFixed(2)}
+          </p>
+        </div>
+      </Card>
 
-      {payments && payments.length > 0 ? (
+      {/* Payments List */}
+      {payments.length === 0 ? (
+        <Card className="p-6">
+          <p className="text-center text-muted-foreground">
+            No payments recorded yet.
+          </p>
+        </Card>
+      ) : (
         <div className="space-y-3">
           {payments.map((payment) => (
             <Card key={payment.id} className="p-4">
-              <div className="flex justify-between items-start">
+              <div className="flex items-center justify-between">
                 <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <PoundSterling className="h-4 w-4 text-green-600" />
-                    <span className="font-medium text-lg">£{Number(payment.amount).toFixed(2)}</span>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-medium text-lg">
+                      £{Number(payment.amount).toFixed(2)}
+                    </span>
+                    <span className="text-sm text-muted-foreground">
+                      {format(new Date(payment.payment_date), "PPP")}
+                    </span>
                   </div>
-                  <p className="text-sm text-muted-foreground">
-                    {format(new Date(payment.payment_date), "PPP")}
-                  </p>
                   {payment.description && (
-                    <p className="text-sm mt-1">{payment.description}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {payment.description}
+                    </p>
                   )}
                 </div>
-                {payment.created_by === session?.user?.id && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => deletePaymentMutation.mutate(payment.id)}
-                    disabled={deletePaymentMutation.isPending}
-                    className="text-red-600 hover:text-red-700"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                )}
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="ml-4 text-red-600 hover:text-red-700 hover:bg-red-50"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete Payment</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Are you sure you want to delete this payment of £{Number(payment.amount).toFixed(2)}?
+                        This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() => deletePaymentMutation.mutate(payment.id)}
+                        className="bg-red-600 hover:bg-red-700"
+                      >
+                        Delete
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
             </Card>
           ))}
         </div>
-      ) : (
-        <Card className="p-6 text-center text-muted-foreground">
-          <PoundSterling className="h-8 w-8 mx-auto mb-2 opacity-50" />
-          <p>No payments recorded yet</p>
-        </Card>
       )}
     </div>
   );

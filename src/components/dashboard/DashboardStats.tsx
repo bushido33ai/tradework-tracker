@@ -1,5 +1,5 @@
 
-import { Briefcase, CheckCircle, PoundSterling, Receipt, TrendingUp } from "lucide-react";
+import { Briefcase, CheckCircle, PoundSterling, Receipt, Banknote } from "lucide-react";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useAdminRole } from "@/hooks/useAdminRole";
 import { StatCard } from "./StatCard";
@@ -51,7 +51,7 @@ export const DashboardStats = () => {
       <StatCard
         title="Total Received (YTD)"
         value={totalReceived}
-        icon={TrendingUp}
+        icon={Banknote}
         isCurrency={true}
       />
     </div>

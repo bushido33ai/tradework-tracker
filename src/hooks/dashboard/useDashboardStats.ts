@@ -1,4 +1,3 @@
-
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -131,9 +130,7 @@ export const useTotalReceived = (userId: string | undefined) => {
       }
 
       const { data: payments } = await paymentsQuery;
-
       return payments?.reduce((sum, payment) => sum + (Number(payment.amount) || 0), 0) || 0;
     },
   });
 };
-

@@ -1,139 +1,175 @@
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card } from "@/components/ui/card";
-import { useSessionContext } from "@supabase/auth-helpers-react";
-import { supabase } from "@/integrations/supabase/client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { Plus, PoundSterling } from "lucide-react";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useToast } from "@/hooks/use-toast";
+import { CalendarIcon } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+
+const paymentSchema = z.object({
+  amount: z.string().min(1, "Amount is required"),
+  payment_date: z.date(),
+  description: z.string().optional(),
+});
+
+type PaymentFormValues = z.infer<typeof paymentSchema>;
 
 interface PaymentFormProps {
   jobId: string;
+  onSuccess?: () => void;
 }
 
-export const PaymentForm = ({ jobId }: PaymentFormProps) => {
-  const [amount, setAmount] = useState("");
-  const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split('T')[0]);
-  const [description, setDescription] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
-  const { session } = useSessionContext();
+export const PaymentForm = ({ jobId, onSuccess }: PaymentFormProps) => {
+  const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const addPaymentMutation = useMutation({
-    mutationFn: async () => {
-      if (!session?.user?.id) throw new Error("Not authenticated");
-      
-      const { error } = await supabase
-        .from("job_payments")
-        .insert({
-          job_id: jobId,
-          amount: parseFloat(amount),
-          payment_date: paymentDate,
-          description: description || null,
-          created_by: session.user.id,
-        });
+  const form = useForm<PaymentFormValues>({
+    resolver: zodResolver(paymentSchema),
+    defaultValues: {
+      amount: "",
+      payment_date: new Date(),
+      description: "",
+    },
+  });
+
+  const createPaymentMutation = useMutation({
+    mutationFn: async (values: PaymentFormValues) => {
+      const { error } = await supabase.from("job_payments").insert({
+        job_id: jobId,
+        amount: parseFloat(values.amount),
+        payment_date: values.payment_date.toISOString().split('T')[0],
+        description: values.description || null,
+        created_by: (await supabase.auth.getUser()).data.user?.id,
+      });
 
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["job-payments", jobId] });
-      toast.success("Payment recorded successfully");
-      setAmount("");
-      setPaymentDate(new Date().toISOString().split('T')[0]);
-      setDescription("");
-      setIsOpen(false);
+      toast({
+        title: "Payment recorded",
+        description: "Payment has been successfully recorded.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["job-payments"] });
+      queryClient.invalidateQueries({ queryKey: ["totalReceived"] });
+      form.reset();
+      onSuccess?.();
     },
     onError: (error) => {
-      console.error("Failed to add payment:", error);
-      toast.error("Failed to record payment");
+      toast({
+        title: "Error",
+        description: "Failed to record payment. Please try again.",
+        variant: "destructive",
+      });
+      console.error("Error creating payment:", error);
     },
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!amount || parseFloat(amount) <= 0) {
-      toast.error("Please enter a valid amount");
-      return;
-    }
-    addPaymentMutation.mutate();
+  const onSubmit = async (values: PaymentFormValues) => {
+    setIsSubmitting(true);
+    await createPaymentMutation.mutateAsync(values);
+    setIsSubmitting(false);
   };
 
-  if (!isOpen) {
-    return (
-      <Button 
-        onClick={() => setIsOpen(true)} 
-        className="w-full"
-        variant="outline"
-      >
-        <Plus className="h-4 w-4 mr-2" />
-        Record Payment
-      </Button>
-    );
-  }
-
   return (
-    <Card className="p-4">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <Label htmlFor="amount">Amount (£)</Label>
-          <div className="relative">
-            <PoundSterling className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input
-              id="amount"
-              type="number"
-              step="0.01"
-              min="0"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              placeholder="0.00"
-              className="pl-10"
-              required
-            />
-          </div>
-        </div>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
+          name="amount"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Amount (£)</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  type="number"
+                  step="0.01"
+                  placeholder="0.00"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-        <div>
-          <Label htmlFor="paymentDate">Payment Date</Label>
-          <Input
-            id="paymentDate"
-            type="date"
-            value={paymentDate}
-            onChange={(e) => setPaymentDate(e.target.value)}
-            required
-          />
-        </div>
+        <FormField
+          control={form.control}
+          name="payment_date"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>Payment Date</FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full pl-3 text-left font-normal",
+                        !field.value && "text-muted-foreground"
+                      )}
+                    >
+                      {field.value ? (
+                        format(field.value, "PPP")
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={field.value}
+                    onSelect={field.onChange}
+                    disabled={(date) =>
+                      date > new Date() || date < new Date("1900-01-01")
+                    }
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-        <div>
-          <Label htmlFor="description">Description (Optional)</Label>
-          <Textarea
-            id="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="e.g., Initial deposit, Progress payment, Final payment"
-            rows={2}
-          />
-        </div>
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description (Optional)</FormLabel>
+              <FormControl>
+                <Textarea
+                  {...field}
+                  placeholder="Payment description..."
+                  className="resize-none"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-        <div className="flex gap-2">
-          <Button
-            type="submit"
-            disabled={addPaymentMutation.isPending}
-            className="flex-1"
-          >
-            {addPaymentMutation.isPending ? "Recording..." : "Record Payment"}
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => setIsOpen(false)}
-          >
-            Cancel
-          </Button>
-        </div>
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full"
+        >
+          {isSubmitting ? "Recording..." : "Record Payment"}
+        </Button>
       </form>
-    </Card>
+    </Form>
   );
 };
