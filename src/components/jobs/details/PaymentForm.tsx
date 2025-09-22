@@ -61,6 +61,10 @@ export const PaymentForm = ({ jobId, onSuccess }: PaymentFormProps) => {
       });
       queryClient.invalidateQueries({ queryKey: ["job-payments"] });
       queryClient.invalidateQueries({ queryKey: ["totalReceived"] });
+      queryClient.invalidateQueries({ queryKey: ["currentJobs"] });
+      queryClient.invalidateQueries({ queryKey: ["completedJobs"] });
+      queryClient.invalidateQueries({ queryKey: ["totalSpend"] });
+      queryClient.invalidateQueries({ queryKey: ["totalInvoices"] });
       form.reset();
       onSuccess?.();
     },
