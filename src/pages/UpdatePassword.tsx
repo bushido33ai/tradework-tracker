@@ -20,8 +20,15 @@ const UpdatePassword = () => {
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        toast.error("Invalid or expired password reset link");
-        navigate("/signin");
+        // Check if there's a hash with token info (for password reset)
+        const hashParams = new URLSearchParams(window.location.hash.slice(1));
+        const accessToken = hashParams.get('access_token');
+        const refreshToken = hashParams.get('refresh_token');
+        
+        if (!accessToken || !refreshToken) {
+          toast.error("Invalid or expired password reset link");
+          navigate("/signin");
+        }
       }
     };
 
