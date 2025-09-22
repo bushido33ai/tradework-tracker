@@ -29,15 +29,6 @@ export const WelcomeEmail = ({
     <Preview>Welcome to TradeMate - Your journey starts here!</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Section style={logoContainer}>
-          <Img
-            src="cid:trademate-logo"
-            width="200"
-            height="auto"
-            alt="TradeMate Logo"
-            style={logo}
-          />
-        </Section>
         
         <Heading style={h1}>Welcome to TradeMate, {firstName}!</Heading>
         
@@ -104,14 +95,6 @@ const container = {
   marginBottom: '64px',
 }
 
-const logoContainer = {
-  textAlign: 'center' as const,
-  padding: '20px 0',
-}
-
-const logo = {
-  margin: '0 auto',
-}
 
 const h1 = {
   color: '#1E40AF',
