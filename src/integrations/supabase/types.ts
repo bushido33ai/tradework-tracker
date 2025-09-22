@@ -518,6 +518,48 @@ export type Database = {
           },
         ]
       }
+      pending_verifications: {
+        Row: {
+          address: string
+          created_at: string
+          email: string
+          expires_at: string
+          first_name: string
+          id: string
+          password_hash: string
+          surname: string
+          telephone: string
+          user_type: string
+          verification_token: string
+        }
+        Insert: {
+          address: string
+          created_at?: string
+          email: string
+          expires_at?: string
+          first_name: string
+          id?: string
+          password_hash: string
+          surname: string
+          telephone: string
+          user_type: string
+          verification_token?: string
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          email?: string
+          expires_at?: string
+          first_name?: string
+          id?: string
+          password_hash?: string
+          surname?: string
+          telephone?: string
+          user_type?: string
+          verification_token?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           address: string | null
@@ -631,6 +673,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      cleanup_expired_verifications: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       delete_user_completely: {
         Args: { _user_id: string }
         Returns: undefined
