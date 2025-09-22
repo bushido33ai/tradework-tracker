@@ -58,7 +58,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Found pending verification:", pendingVerification);
 
-    // Create the actual user account
+    // Create the actual user account using the admin client
     const { data: signUpData, error: signUpError } = await supabase.auth.admin.createUser({
       email: pendingVerification.email,
       password: pendingVerification.password_hash,

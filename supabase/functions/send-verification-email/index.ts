@@ -49,9 +49,14 @@ const handler = async (req: Request): Promise<Response> => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    // Check if user already exists
-    const { data: existingUser } = await supabase.auth.admin.getUserByEmail(email);
-    if (existingUser.user) {
+    // Check if user already exists by trying to get their profile
+    const { data: existingProfile, error: profileError } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('email', email.toLowerCase().trim())
+      .maybeSingle();
+
+    if (existingProfile) {
       return new Response(
         JSON.stringify({ error: "An account with this email already exists" }),
         {

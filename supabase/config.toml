@@ -4,6 +4,12 @@ project_id = "wsxicsgmjjmqefztultu"
 [functions.send-email]
 verify_jwt = false
 
+[functions.send-verification-email]
+verify_jwt = false
+
+[functions.verify-email]
+verify_jwt = false
+
 [functions.ingest-invoice]
 verify_jwt = false
 
