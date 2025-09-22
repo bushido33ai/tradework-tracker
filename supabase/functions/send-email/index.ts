@@ -56,7 +56,8 @@ const handler = async (req: Request): Promise<Response> => {
         {
           path: logoPath,
           filename: 'trademate-logo.png',
-          contentId: 'trademate-logo',
+          content_id: 'trademate-logo',
+          content_type: 'image/png',
         },
       ];
     }
