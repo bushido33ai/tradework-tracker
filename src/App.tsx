@@ -79,7 +79,7 @@ const App = () => {
             <AuthHashRouter />
             <Routes>
               <Route path="/" element={
-                <AppBackground showPattern={false}>
+                <AppBackground>
                   <Landing />
                   <Footer />
                 </AppBackground>

@@ -25,12 +25,7 @@ const Landing = () => {
   }, []);
 
   return (
-    <div 
-      className="min-h-screen bg-cover bg-center relative"
-      style={{
-        backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('/lovable-uploads/136602a8-f1a5-4465-8db7-36485b6fc5ae.png')`
-      }}
-    >
+    <div className="min-h-screen relative">
       <div className="container mx-auto px-4 py-12">
         <LandingNav session={session} />
         <div className="max-w-4xl mx-auto">
