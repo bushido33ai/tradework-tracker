@@ -20,24 +20,39 @@ const UpdatePassword = () => {
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        // Check if there's a hash with token info (for password reset)
-        const hashParams = new URLSearchParams(window.location.hash.slice(1));
-        const accessToken = hashParams.get('access_token');
-        const refreshToken = hashParams.get('refresh_token');
-        
-        if (accessToken && refreshToken) {
-          try {
-            const { error } = await supabase.auth.setSession({
-              access_token: accessToken,
-              refresh_token: refreshToken,
-            });
-            if (error) {
-              console.error('Error setting session from recovery link:', error);
+        // Try to parse tokens from hash first, then from query string
+        const getParams = () => {
+          if (window.location.hash && window.location.hash.length > 1) {
+            return new URLSearchParams(window.location.hash.slice(1));
+          }
+          if (window.location.search && window.location.search.length > 1) {
+            return new URLSearchParams(window.location.search.slice(1));
+          }
+          return null;
+        };
+
+        const params = getParams();
+        if (params) {
+          const accessToken = params.get('access_token');
+          const refreshToken = params.get('refresh_token');
+          
+          if (accessToken && refreshToken) {
+            try {
+              const { error } = await supabase.auth.setSession({
+                access_token: accessToken,
+                refresh_token: refreshToken,
+              });
+              if (error) {
+                console.error('Error setting session from recovery link:', error);
+                toast.error("Invalid or expired password reset link");
+                navigate("/signin");
+              }
+            } catch (err) {
+              console.error('Failed to set session from recovery link:', err);
               toast.error("Invalid or expired password reset link");
               navigate("/signin");
             }
-          } catch (err) {
-            console.error('Failed to set session from recovery link:', err);
+          } else {
             toast.error("Invalid or expired password reset link");
             navigate("/signin");
           }
