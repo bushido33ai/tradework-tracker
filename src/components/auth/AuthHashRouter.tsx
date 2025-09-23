@@ -25,16 +25,19 @@ const AuthHashRouter = () => {
     if (!params) return;
 
     const type = params.get("type");
+    const hasCode = !!params.get("code");
+    const hasTokenHash = !!params.get("token_hash");
 
     // Password recovery: send user to Update Password page
-    if (type === "recovery") {
+    const isRecovery = type === "recovery" || hasCode || hasTokenHash;
+    if (isRecovery && location.pathname !== "/update-password") {
       // Preserve tokens so supabase-js can parse them
       const hash = location.hash && location.hash.length > 1
         ? location.hash
         : "#" + params.toString();
       navigate("/update-password" + hash, { replace: true });
     }
-  }, [location.hash, location.search, navigate]);
+  }, [location.hash, location.search, location.pathname, navigate]);
 
   return null;
 };

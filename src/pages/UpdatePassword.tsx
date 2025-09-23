@@ -16,50 +16,63 @@ const UpdatePassword = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // Check if we have a valid session for password reset
+    // Ensure session is established from recovery link params
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        // Try to parse tokens from hash first, then from query string
-        const getParams = () => {
-          if (window.location.hash && window.location.hash.length > 1) {
-            return new URLSearchParams(window.location.hash.slice(1));
-          }
-          if (window.location.search && window.location.search.length > 1) {
-            return new URLSearchParams(window.location.search.slice(1));
-          }
-          return null;
-        };
+      if (session) return;
 
-        const params = getParams();
-        if (params) {
-          const accessToken = params.get('access_token');
-          const refreshToken = params.get('refresh_token');
-          
-          if (accessToken && refreshToken) {
-            try {
-              const { error } = await supabase.auth.setSession({
-                access_token: accessToken,
-                refresh_token: refreshToken,
-              });
-              if (error) {
-                console.error('Error setting session from recovery link:', error);
-                toast.error("Invalid or expired password reset link");
-                navigate("/signin");
-              }
-            } catch (err) {
-              console.error('Failed to set session from recovery link:', err);
-              toast.error("Invalid or expired password reset link");
-              navigate("/signin");
-            }
-          } else {
-            toast.error("Invalid or expired password reset link");
-            navigate("/signin");
-          }
-        } else {
-          toast.error("Invalid or expired password reset link");
-          navigate("/signin");
+      const getParams = () => {
+        if (window.location.hash && window.location.hash.length > 1) {
+          return new URLSearchParams(window.location.hash.slice(1));
         }
+        if (window.location.search && window.location.search.length > 1) {
+          return new URLSearchParams(window.location.search.slice(1));
+        }
+        return null;
+      };
+
+      const params = getParams();
+      if (!params) {
+        toast.error("Invalid or expired password reset link");
+        navigate("/signin");
+        return;
+      }
+
+      const code = params.get("code");
+      const tokenHash = params.get("token_hash");
+      const accessToken = params.get('access_token');
+      const refreshToken = params.get('refresh_token');
+
+      try {
+        if (code) {
+          const { error } = await supabase.auth.exchangeCodeForSession(code);
+          if (error) throw error;
+          return;
+        }
+
+        if (tokenHash) {
+          const { error } = await supabase.auth.verifyOtp({
+            type: 'recovery',
+            token_hash: tokenHash,
+          } as any);
+          if (error) throw error;
+          return;
+        }
+
+        if (accessToken && refreshToken) {
+          const { error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken,
+          });
+          if (error) throw error;
+          return;
+        }
+
+        throw new Error('Missing recovery parameters');
+      } catch (err) {
+        console.error('Failed to establish session from recovery link:', err);
+        toast.error('Invalid or expired password reset link');
+        navigate('/signin');
       }
     };
 
