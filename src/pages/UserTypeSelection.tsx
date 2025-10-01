@@ -61,8 +61,8 @@ const UserTypeSelection = () => {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <img 
-              src="/lovable-uploads/342506cf-411e-4195-9c10-5f806c52d3b7.png" 
-              alt="TradeMate Logo" 
+              src="/trademate-logo.png" 
+              alt="TradeMate Logo"
               className="h-16 mx-auto mb-6"
             />
             <h1 className="text-4xl font-bold text-primary mb-4">

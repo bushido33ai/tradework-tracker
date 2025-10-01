@@ -124,8 +124,8 @@ const SignUp = () => {
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <img 
-            src="/lovable-uploads/342506cf-411e-4195-9c10-5f806c52d3b7.png" 
-            alt="TradeMate Logo" 
+            src="/trademate-logo.png" 
+            alt="TradeMate Logo"
             className="h-12 mx-auto mb-6"
           />
           <h2 className="text-3xl font-bold text-primary mb-2">
