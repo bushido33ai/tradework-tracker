@@ -73,7 +73,7 @@ const SignIn = () => {
             className="inline-flex items-center justify-center mb-8 group"
           >
             <img 
-              src="/lovable-uploads/15450379-3a61-442e-83d8-3bd0bc091a36.png" 
+              src="/trademate-logo.png" 
               alt="TradeMate Logo" 
               className="w-64 h-auto group-hover:scale-105 transition-transform duration-300"
             />
