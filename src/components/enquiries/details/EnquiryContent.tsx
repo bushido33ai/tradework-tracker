@@ -21,12 +21,12 @@ export const EnquiryContent = ({
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card className="p-6">
+        <Card className="p-6 bg-white shadow-lg hover:shadow-xl transition-all duration-200 border-l-4 border-l-primary">
           <h3 className="font-semibold mb-2">Description</h3>
           <p className="text-muted-foreground whitespace-pre-wrap">{description}</p>
         </Card>
 
-        <Card className="p-6">
+        <Card className="p-6 bg-white shadow-lg hover:shadow-xl transition-all duration-200 border-l-4 border-l-primary">
           <h3 className="font-semibold mb-2">Location</h3>
           <p className="text-muted-foreground">{location}</p>
           {visitDate && (
@@ -41,7 +41,7 @@ export const EnquiryContent = ({
       </div>
 
       {measurementNotes && (
-        <Card className="p-6">
+        <Card className="p-6 bg-white shadow-lg hover:shadow-xl transition-all duration-200 border-l-4 border-l-primary">
           <h3 className="font-semibold mb-2">Measurement Notes</h3>
           <p className="text-muted-foreground whitespace-pre-wrap">
             {measurementNotes}
@@ -49,7 +49,7 @@ export const EnquiryContent = ({
         </Card>
       )}
 
-      <Card className="p-6">
+      <Card className="p-6 bg-white shadow-lg hover:shadow-xl transition-all duration-200 border-l-4 border-l-primary">
         <div className="flex justify-between items-center mb-4">
           <h3 className="font-semibold">Designs</h3>
           <FileUpload enquiryId={id} />
