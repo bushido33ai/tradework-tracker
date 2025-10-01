@@ -65,7 +65,7 @@ const VerifyEmail = () => {
     <div 
       className="min-h-screen flex flex-col items-center justify-center p-4"
       style={{
-        backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('/trademate-logo.png')`,
+        backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('/lovable-uploads/342506cf-411e-4195-9c10-5f806c52d3b7.png')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat'
@@ -75,7 +75,7 @@ const VerifyEmail = () => {
         <Card className="bg-white/90 backdrop-blur-sm shadow-2xl border-0">
           <CardHeader className="text-center">
             <img 
-              src="/trademate-logo.png" 
+              src="/lovable-uploads/342506cf-411e-4195-9c10-5f806c52d3b7.png" 
               alt="TradeMate Logo" 
               className="h-12 mx-auto mb-6"
             />
