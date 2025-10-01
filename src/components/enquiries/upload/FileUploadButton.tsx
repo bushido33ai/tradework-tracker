@@ -9,7 +9,7 @@ const FileUploadButton = ({
   isUploading,
   id
 }: FileUploadButtonProps) => {
-  return <label htmlFor={id} className="bg-slate-300">
+  return <label htmlFor={id} className="bg-inherit ">
       <Button variant="outline" className="cursor-pointer" disabled={isUploading} asChild>
         <span>
           <Upload className="w-4 h-4 mr-2" />
