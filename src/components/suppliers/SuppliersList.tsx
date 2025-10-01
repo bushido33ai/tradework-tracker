@@ -80,11 +80,13 @@ const SuppliersList = ({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {suppliers.map(supplier => <TableRow key={supplier.id}>
+          {suppliers.map(supplier => <TableRow 
+              key={supplier.id}
+              onClick={() => handleSupplierClick(supplier)}
+              className="cursor-pointer hover:bg-accent/50 transition-colors"
+            >
               <TableCell className="font-medium">
-                <button onClick={() => handleSupplierClick(supplier)} className="hover:text-primary transition-colors text-left">
-                  {supplier.company_name}
-                </button>
+                {supplier.company_name}
               </TableCell>
               <TableCell>{supplier.contact_name}</TableCell>
               <TableCell className="break-all">{supplier.email}</TableCell>
