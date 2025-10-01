@@ -6,39 +6,31 @@
 
 @layer base {
   :root {
-    /* Mogency Design System - Dark Theme with Neon Colors */
-    --background: 0 0% 0%;
-    --foreground: 0 0% 100%;
-    --card: 0 0% 5%;
-    --card-foreground: 0 0% 100%;
-    --popover: 0 0% 5%;
-    --popover-foreground: 0 0% 100%;
-    --primary: 199 89% 48%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 210 40% 15%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 64%;
-    --accent: 210 40% 20%;
-    --accent-foreground: 0 0% 100%;
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221 83% 53%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
-    --ring: 199 89% 48%;
-    --radius: 0.5rem;
-    
-    /* Mogency Neon Colors */
-    --mogency-neon-blue: 199 89% 48%;
-    --mogency-neon-pink: 292 76% 58%;
-    --mogency-neon-purple: 258 90% 66%;
-    --mogency-neon-green: 160 84% 39%;
-    --mogency-neon-orange: 17 88% 53%;
-    --mogency-blue: 199 89% 48%;
-    --mogency-teal: 187 92% 44%;
-    --mogency-gray-light: 210 40% 98%;
-    --mogency-gray-medium: 215 20.2% 65.1%;
-    --mogency-gray-dark: 215 25% 27%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221 83% 53%;
+    --radius: 0.75rem;
+    --color-1: 0 100% 63%;
+    --color-2: 270 100% 63%;
+    --color-3: 210 100% 63%;
+    --color-4: 195 100% 63%;
+    --color-5: 90 100% 63%;
   }
 
   @property --pos-x {
@@ -149,6 +141,11 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url('/lovable-uploads/18dc1161-c26f-4cc8-b2fa-25aff475caf9.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
     min-height: 100vh;
   }
 
@@ -157,53 +154,7 @@
   }
 
   .card {
-    @apply bg-card backdrop-blur-sm rounded-lg shadow-sm;
-  }
-}
-
-@layer utilities {
-  /* Glass Morphism */
-  .card-glass {
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  }
-
-  /* Tech Grid Pattern */
-  .tech-grid {
-    background-image: 
-      linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-    background-size: 50px 50px;
-  }
-
-  /* Text Neon Glow */
-  .text-neon-glow {
-    text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
-  }
-
-  /* Shadow Neon Effects */
-  .shadow-neon {
-    box-shadow: 0 0 25px rgba(14, 165, 233, 0.3);
-  }
-
-  .shadow-neon-pink {
-    box-shadow: 0 0 25px rgba(217, 70, 239, 0.3);
-  }
-
-  .shadow-neon-purple {
-    box-shadow: 0 0 25px rgba(139, 92, 246, 0.3);
-  }
-
-  .shadow-neon-green {
-    box-shadow: 0 0 25px rgba(16, 185, 129, 0.3);
-  }
-
-  /* Hover Scale Animation */
-  .hover-scale {
-    @apply transition-transform duration-200 hover:scale-105;
+    @apply bg-white/90 backdrop-blur-sm rounded-lg shadow-sm;
   }
 }
 
