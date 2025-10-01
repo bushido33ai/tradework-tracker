@@ -1,17 +1,9 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useState } from "react";
 import ViewSupplierDialog from "./ViewSupplierDialog";
-
 interface Supplier {
   id: string;
   company_name: string;
@@ -22,46 +14,36 @@ interface Supplier {
   business_type: string;
   status: "active" | "inactive";
 }
-
 interface SuppliersListProps {
   suppliers: Supplier[];
   isLoading: boolean;
 }
-
-const SuppliersList = ({ suppliers, isLoading }: SuppliersListProps) => {
+const SuppliersList = ({
+  suppliers,
+  isLoading
+}: SuppliersListProps) => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
   const handleSupplierClick = (supplier: Supplier) => {
     setSelectedSupplier(supplier);
     setIsDialogOpen(true);
   };
-
   if (isLoading) {
     return <div>Loading suppliers...</div>;
   }
-
   if (suppliers.length === 0) {
-    return (
-      <div className="text-center py-8 text-muted-foreground">
+    return <div className="text-center py-8 text-muted-foreground">
         No suppliers found. Add your first supplier to get started.
-      </div>
-    );
+      </div>;
   }
-
   if (!isDesktop) {
-    return (
-      <div className="space-y-4">
-        {suppliers.map((supplier) => (
-          <Card key={supplier.id} className="bg-white shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-1 border-l-4 border-l-primary">
+    return <div className="space-y-4">
+        {suppliers.map(supplier => <Card key={supplier.id} className="bg-white shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-1 border-l-4 border-l-primary">
             <CardHeader>
               <div className="flex justify-between items-start">
                 <div>
-                  <button
-                    onClick={() => handleSupplierClick(supplier)}
-                    className="text-left hover:text-primary transition-colors"
-                  >
+                  <button onClick={() => handleSupplierClick(supplier)} className="text-left hover:text-primary transition-colors">
                     <h3 className="font-semibold">{supplier.company_name}</h3>
                     <p className="text-sm text-muted-foreground">{supplier.contact_name}</p>
                   </button>
@@ -81,23 +63,13 @@ const SuppliersList = ({ suppliers, isLoading }: SuppliersListProps) => {
                 <div>{supplier.business_type}</div>
               </div>
             </CardContent>
-          </Card>
-        ))}
-        {selectedSupplier && (
-          <ViewSupplierDialog
-            supplier={selectedSupplier}
-            open={isDialogOpen}
-            onOpenChange={setIsDialogOpen}
-          />
-        )}
-      </div>
-    );
+          </Card>)}
+        {selectedSupplier && <ViewSupplierDialog supplier={selectedSupplier} open={isDialogOpen} onOpenChange={setIsDialogOpen} />}
+      </div>;
   }
-
-  return (
-    <div className="border rounded-lg bg-white shadow-lg">
+  return <div className="border rounded-lg bg-white shadow-lg">
       <Table>
-        <TableHeader>
+        <TableHeader className="p-4 cursor-pointer bg-blue-50/80 shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-1 border-l-4 border-l-primary-600">
           <TableRow>
             <TableHead>Company Name</TableHead>
             <TableHead>Contact</TableHead>
@@ -108,13 +80,9 @@ const SuppliersList = ({ suppliers, isLoading }: SuppliersListProps) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {suppliers.map((supplier) => (
-            <TableRow key={supplier.id}>
+          {suppliers.map(supplier => <TableRow key={supplier.id}>
               <TableCell className="font-medium">
-                <button
-                  onClick={() => handleSupplierClick(supplier)}
-                  className="hover:text-primary transition-colors text-left"
-                >
+                <button onClick={() => handleSupplierClick(supplier)} className="hover:text-primary transition-colors text-left">
                   {supplier.company_name}
                 </button>
               </TableCell>
@@ -127,19 +95,10 @@ const SuppliersList = ({ suppliers, isLoading }: SuppliersListProps) => {
                   {supplier.status}
                 </Badge>
               </TableCell>
-            </TableRow>
-          ))}
+            </TableRow>)}
         </TableBody>
       </Table>
-      {selectedSupplier && (
-        <ViewSupplierDialog
-          supplier={selectedSupplier}
-          open={isDialogOpen}
-          onOpenChange={setIsDialogOpen}
-        />
-      )}
-    </div>
-  );
+      {selectedSupplier && <ViewSupplierDialog supplier={selectedSupplier} open={isDialogOpen} onOpenChange={setIsDialogOpen} />}
+    </div>;
 };
-
 export default SuppliersList;
