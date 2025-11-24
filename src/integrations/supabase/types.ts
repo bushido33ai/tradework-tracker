@@ -673,18 +673,9 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      cleanup_expired_verifications: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      delete_user_completely: {
-        Args: { _user_id: string }
-        Returns: undefined
-      }
-      generate_unique_job_number: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      cleanup_expired_verifications: { Args: never; Returns: undefined }
+      delete_user_completely: { Args: { _user_id: string }; Returns: undefined }
+      generate_unique_job_number: { Args: never; Returns: string }
       has_role: {
         Args: { role: Database["public"]["Enums"]["app_role"]; user_id: string }
         Returns: boolean
