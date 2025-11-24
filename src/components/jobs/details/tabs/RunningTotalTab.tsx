@@ -45,18 +45,28 @@ export const RunningTotalTab = ({ jobId, isDayRate }: RunningTotalTabProps) => {
 
       if (paymentsError) throw paymentsError;
 
+      // Get extras costs
+      const { data: extras, error: extrasError } = await supabase
+        .from("job_extras")
+        .select("amount")
+        .eq("job_id", jobId);
+
+      if (extrasError) throw extrasError;
+
       const miscTotal = miscCosts?.reduce((sum, cost) => sum + Number(cost.amount), 0) ?? 0;
       const invoiceTotal = invoices?.reduce((sum, invoice) => sum + Number(invoice.amount), 0) ?? 0;
       const daysTotal = daysWorked?.reduce((sum, day) => sum + Number(day.day_rate || 0), 0) ?? 0;
       const paymentsTotal = payments?.reduce((sum, payment) => sum + Number(payment.amount), 0) ?? 0;
+      const extrasTotal = extras?.reduce((sum, extra) => sum + Number(extra.amount), 0) ?? 0;
 
       return {
         miscTotal,
         invoiceTotal,
         daysTotal,
         paymentsTotal,
-        grandTotal: miscTotal + invoiceTotal + daysTotal,
-        remainingBalance: (miscTotal + invoiceTotal + daysTotal) - paymentsTotal
+        extrasTotal,
+        grandTotal: miscTotal + invoiceTotal + daysTotal + extrasTotal,
+        remainingBalance: (miscTotal + invoiceTotal + daysTotal + extrasTotal) - paymentsTotal
       };
     }
   });
@@ -85,6 +95,10 @@ export const RunningTotalTab = ({ jobId, isDayRate }: RunningTotalTabProps) => {
               <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
                 <span>Invoice Costs</span>
                 <span className="font-medium">£{totalCosts.invoiceTotal.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+                <span>Extras</span>
+                <span className="font-medium">£{totalCosts.extrasTotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between items-center p-4 bg-primary-50 rounded-lg border-2 border-primary-200">
                 <span className="font-medium">Total Costs</span>
