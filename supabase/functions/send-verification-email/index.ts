@@ -12,6 +12,28 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// Simple in-memory rate limiting (resets on function cold start)
+const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
+const RATE_LIMIT_MAX_REQUESTS = 3;
+const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour
+
+function isRateLimited(key: string): boolean {
+  const now = Date.now();
+  const record = rateLimitMap.get(key);
+  
+  if (!record || now > record.resetTime) {
+    rateLimitMap.set(key, { count: 1, resetTime: now + RATE_LIMIT_WINDOW_MS });
+    return false;
+  }
+  
+  if (record.count >= RATE_LIMIT_MAX_REQUESTS) {
+    return true;
+  }
+  
+  record.count++;
+  return false;
+}
+
 interface SendVerificationEmailRequest {
   email: string;
   password: string;
@@ -41,7 +63,26 @@ const handler = async (req: Request): Promise<Response> => {
       appUrl 
     }: SendVerificationEmailRequest = await req.json();
 
-    console.log("Sending verification email to:", email);
+    // Input validation
+    if (!email || !password || !firstName || !surname || !userType) {
+      return new Response(
+        JSON.stringify({ error: "Missing required fields" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    const cleanedEmail = email.toLowerCase().trim();
+
+    // Rate limiting by email
+    if (isRateLimited(cleanedEmail)) {
+      console.log("Rate limit exceeded for email:", cleanedEmail);
+      return new Response(
+        JSON.stringify({ error: "Too many signup attempts. Please try again later." }),
+        { status: 429, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    console.log("Processing signup for:", cleanedEmail);
 
     // Initialize Supabase client with service role key
     const supabase = createClient(
@@ -49,97 +90,101 @@ const handler = async (req: Request): Promise<Response> => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    // Check if user already exists by trying to get their profile
-    const { data: existingProfile, error: profileError } = await supabase
-      .from('profiles')
-      .select('id')
-      .eq('email', email.toLowerCase().trim())
-      .maybeSingle();
+    // Check if user already exists
+    const { data: existingUser } = await supabase.auth.admin.listUsers();
+    const userExists = existingUser?.users?.some(u => u.email?.toLowerCase() === cleanedEmail);
 
-    if (existingProfile) {
+    if (userExists) {
       return new Response(
         JSON.stringify({ error: "An account with this email already exists" }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json", ...corsHeaders },
-        }
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
 
-    // Hash the password (using a simple approach for demo)
-    const hashedPassword = password; // In production, use proper hashing
-
-    // Store pending verification
-    const { data: pendingData, error: insertError } = await supabase
-      .from('pending_verifications')
-      .insert({
-        email: email.toLowerCase().trim(),
-        password_hash: hashedPassword,
-        first_name: firstName.trim(),
-        surname: surname.trim(),
+    // Create user with Supabase Auth - password is securely hashed by Supabase
+    // User is created with email_confirm: false so they must verify
+    const { data: userData, error: createError } = await supabase.auth.admin.createUser({
+      email: cleanedEmail,
+      password: password, // Supabase handles secure bcrypt hashing internally
+      email_confirm: false, // User must confirm email
+      user_metadata: {
+        user_type: userType,
         address: address.trim(),
         telephone: telephone.trim(),
-        user_type: userType,
-      })
-      .select('verification_token')
-      .single();
+        email: cleanedEmail,
+        first_name: firstName.trim(),
+        surname: surname.trim(),
+      },
+    });
 
-    if (insertError) {
-      console.error("Failed to create pending verification:", insertError);
+    if (createError) {
+      console.error("Failed to create user:", createError);
       
-      if (insertError.code === '23505') { // Unique constraint violation
+      if (createError.message.includes("already been registered")) {
         return new Response(
-          JSON.stringify({ error: "A verification request for this email is already pending" }),
-          {
-            status: 400,
-            headers: { "Content-Type": "application/json", ...corsHeaders },
-          }
+          JSON.stringify({ error: "An account with this email already exists" }),
+          { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
         );
       }
       
-      throw insertError;
+      throw createError;
     }
 
-    console.log("Created pending verification with token:", pendingData.verification_token);
+    console.log("User created with ID:", userData.user?.id);
 
-    // Render verification email
+    // Generate email confirmation link using Supabase's built-in method
+    const { data: linkData, error: linkError } = await supabase.auth.admin.generateLink({
+      type: 'signup',
+      email: cleanedEmail,
+      options: {
+        redirectTo: `${appUrl}/signin?verified=true`,
+      }
+    });
+
+    if (linkError) {
+      console.error("Failed to generate verification link:", linkError);
+      // Clean up the created user since we can't send verification
+      await supabase.auth.admin.deleteUser(userData.user!.id);
+      throw linkError;
+    }
+
+    // Extract the token from the generated link
+    const verificationUrl = linkData.properties?.action_link || `${appUrl}/verify-email?token=${linkData.properties?.hashed_token}`;
+
+    console.log("Generated verification URL");
+
+    // Render custom verification email
     const emailHtml = await renderAsync(
       React.createElement(VerificationEmail, {
-        firstName,
+        firstName: firstName.trim(),
         userType,
-        verificationUrl: `${appUrl}/verify-email?token=${pendingData.verification_token}`,
+        verificationUrl,
       })
     );
 
-    // Send verification email
+    // Send verification email via Resend
     const emailResponse = await resend.emails.send({
       from: "TradeMate <noreply@hailodigital.co.uk>",
-      to: [email],
+      to: [cleanedEmail],
       subject: "Verify your email - TradeMate Account",
       html: emailHtml,
     });
 
-    console.log("Verification email sent successfully:", emailResponse);
+    console.log("Verification email sent:", emailResponse);
 
     return new Response(
       JSON.stringify({ 
         success: true, 
         message: "Verification email sent! Please check your inbox and click the verification link to activate your account." 
       }),
-      {
-        status: 200,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
-      }
+      { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
 
   } catch (error: any) {
     console.error("Error in send-verification-email function:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
-      }
+      JSON.stringify({ error: error.message || "An unexpected error occurred" }),
+      { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
   }
 };

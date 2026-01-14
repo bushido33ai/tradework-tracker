@@ -12,6 +12,35 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// Simple in-memory rate limiting for token verification attempts
+const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
+const RATE_LIMIT_MAX_ATTEMPTS = 5;
+const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000; // 15 minutes
+
+function isRateLimited(key: string): boolean {
+  const now = Date.now();
+  const record = rateLimitMap.get(key);
+  
+  if (!record || now > record.resetTime) {
+    rateLimitMap.set(key, { count: 1, resetTime: now + RATE_LIMIT_WINDOW_MS });
+    return false;
+  }
+  
+  if (record.count >= RATE_LIMIT_MAX_ATTEMPTS) {
+    return true;
+  }
+  
+  record.count++;
+  return false;
+}
+
+// Get client IP for rate limiting
+function getClientIP(req: Request): string {
+  return req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 
+         req.headers.get('x-real-ip') || 
+         'unknown';
+}
+
 interface VerifyEmailRequest {
   token: string;
 }
@@ -22,16 +51,25 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const clientIP = getClientIP(req);
+
   try {
     const { token }: VerifyEmailRequest = await req.json();
 
     if (!token) {
       return new Response(
         JSON.stringify({ error: "Token is required" }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json", ...corsHeaders },
-        }
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Rate limit by IP and token combination
+    const rateLimitKey = `${clientIP}:${token.substring(0, 8)}`;
+    if (isRateLimited(rateLimitKey)) {
+      console.log("Rate limit exceeded for verification attempt");
+      return new Response(
+        JSON.stringify({ error: "Too many verification attempts. Please try again later." }),
+        { status: 429, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
 
@@ -41,111 +79,129 @@ const handler = async (req: Request): Promise<Response> => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    console.log("Verifying email with token:", token);
+    console.log("Processing email verification");
 
-    // Find the pending verification
-    const { data: pendingVerification, error: findError } = await supabase
-      .from('pending_verifications')
-      .select('*')
-      .eq('verification_token', token)
-      .gt('expires_at', new Date().toISOString())
-      .single();
-
-    if (findError || !pendingVerification) {
-      console.error("Verification not found or expired:", findError);
-      return new Response(
-        JSON.stringify({ error: "Invalid or expired verification token" }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json", ...corsHeaders },
-        }
-      );
-    }
-
-    console.log("Found pending verification:", pendingVerification);
-
-    // Create the actual user account using the admin client
-    const { data: signUpData, error: signUpError } = await supabase.auth.admin.createUser({
-      email: pendingVerification.email,
-      password: pendingVerification.password_hash,
-      email_confirm: true, // Skip email confirmation since we're doing it manually
-      user_metadata: {
-        user_type: pendingVerification.user_type,
-        address: pendingVerification.address,
-        telephone: pendingVerification.telephone,
-        email: pendingVerification.email,
-        first_name: pendingVerification.first_name,
-        surname: pendingVerification.surname,
-      },
+    // Try to verify the token using Supabase's built-in verification
+    // The token from generateLink should be a valid OTP token
+    const { data: verifyData, error: verifyError } = await supabase.auth.verifyOtp({
+      token_hash: token,
+      type: 'signup',
     });
 
-    if (signUpError) {
-      console.error("Failed to create user:", signUpError);
-      return new Response(
-        JSON.stringify({ error: "Failed to create account: " + signUpError.message }),
-        {
-          status: 500,
-          headers: { "Content-Type": "application/json", ...corsHeaders },
+    if (verifyError) {
+      console.error("Verification failed:", verifyError);
+      
+      // Fall back to legacy pending_verifications table for backwards compatibility
+      const { data: pendingVerification, error: findError } = await supabase
+        .from('pending_verifications')
+        .select('*')
+        .eq('verification_token', token)
+        .gt('expires_at', new Date().toISOString())
+        .single();
+
+      if (findError || !pendingVerification) {
+        return new Response(
+          JSON.stringify({ error: "Invalid or expired verification token" }),
+          { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        );
+      }
+
+      // Legacy flow - user exists in pending_verifications
+      // This path should eventually be deprecated
+      console.log("Using legacy verification flow for:", pendingVerification.email);
+
+      // Check if user already exists (someone may have verified already)
+      const { data: existingUsers } = await supabase.auth.admin.listUsers();
+      const existingUser = existingUsers?.users?.find(
+        u => u.email?.toLowerCase() === pendingVerification.email.toLowerCase()
+      );
+
+      if (existingUser) {
+        // User already exists, just confirm their email if not confirmed
+        if (!existingUser.email_confirmed_at) {
+          await supabase.auth.admin.updateUserById(existingUser.id, {
+            email_confirm: true,
+          });
         }
+        
+        // Clean up pending verification
+        await supabase.from('pending_verifications').delete().eq('verification_token', token);
+        
+        return new Response(
+          JSON.stringify({ 
+            success: true, 
+            message: "Email verified successfully! You can now sign in.",
+            userId: existingUser.id 
+          }),
+          { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        );
+      }
+
+      // Note: We can no longer create users from pending_verifications 
+      // because we've removed plaintext password storage
+      // Users must re-register through the new secure flow
+      
+      // Clean up the stale pending verification
+      await supabase.from('pending_verifications').delete().eq('verification_token', token);
+      
+      return new Response(
+        JSON.stringify({ 
+          error: "This verification link is from an older registration. Please register again with a new account." 
+        }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
 
-    console.log("User created successfully:", signUpData.user?.id);
+    // New flow - Supabase OTP verification succeeded
+    const user = verifyData.user;
+    
+    if (!user) {
+      return new Response(
+        JSON.stringify({ error: "Verification failed - no user found" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    console.log("Email verified for user:", user.id);
 
     // Send welcome email
     try {
+      const userMetadata = user.user_metadata || {};
       const emailHtml = await renderAsync(
         React.createElement(WelcomeEmail, {
-          firstName: pendingVerification.first_name,
-          userType: pendingVerification.user_type,
+          firstName: userMetadata.first_name || 'User',
+          userType: userMetadata.user_type || 'user',
           appUrl: new URL(req.url).origin
         })
       );
 
-      const emailResponse = await resend.emails.send({
+      await resend.emails.send({
         from: "TradeMate <noreply@hailodigital.co.uk>",
-        to: [pendingVerification.email],
+        to: [user.email!],
         subject: "Welcome to TradeMate - Your journey starts here!",
         html: emailHtml,
       });
 
-      console.log("Welcome email sent successfully:", emailResponse);
+      console.log("Welcome email sent to:", user.email);
     } catch (emailError) {
       console.error('Failed to send welcome email:', emailError);
       // Don't fail the verification if email fails
     }
 
-    // Delete the pending verification
-    const { error: deleteError } = await supabase
-      .from('pending_verifications')
-      .delete()
-      .eq('verification_token', token);
-
-    if (deleteError) {
-      console.error("Failed to delete pending verification:", deleteError);
-      // Don't fail the request since the user was created successfully
-    }
-
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: "Email verified successfully! Your account has been created and a welcome email has been sent. You can now sign in.",
-        userId: signUpData.user?.id 
+        message: "Email verified successfully! Your account is now active. You can sign in.",
+        userId: user.id 
       }),
-      {
-        status: 200,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
-      }
+      { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
 
   } catch (error: any) {
     console.error("Error in verify-email function:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
-      }
+      JSON.stringify({ error: error.message || "An unexpected error occurred" }),
+      { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
   }
 };
