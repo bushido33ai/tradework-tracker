@@ -181,9 +181,13 @@ const handler = async (req: Request): Promise<Response> => {
     );
 
   } catch (error: any) {
-    console.error("Error in send-verification-email function:", error);
+    const correlationId = crypto.randomUUID();
+    console.error(`[${correlationId}] Error in send-verification-email function:`, error);
     return new Response(
-      JSON.stringify({ error: error.message || "An unexpected error occurred" }),
+      JSON.stringify({ 
+        error: "An unexpected error occurred. Please try again later.",
+        correlationId 
+      }),
       { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
   }
