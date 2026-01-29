@@ -34,6 +34,7 @@ import MerchantTraders from "@/pages/MerchantTraders";
 import MerchantTraderJobs from "@/pages/MerchantTraderJobs";
 import WorkCalendar from "@/pages/WorkCalendar";
 import AuthHashRouter from "@/components/auth/AuthHashRouter";
+import Help from "@/pages/Help";
 
 const queryClient = new QueryClient();
 
@@ -138,6 +139,7 @@ const App = () => {
                             <Route path="/suppliers" element={<Suppliers />} />
                             <Route path="/customers" element={<Customers />} />
                             <Route path="/profile" element={<Profile />} />
+                            <Route path="/help" element={<Help />} />
                             <Route path="/merchant/traders" element={<MerchantTraders />} />
                             <Route path="/merchant/traders/:traderId/jobs" element={<MerchantTraderJobs />} />
                             <Route path="/admin" element={
