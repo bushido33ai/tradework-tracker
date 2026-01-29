@@ -1,5 +1,5 @@
 
-import { format, isSameMonth, isSameDay } from 'date-fns';
+import { format, isSameMonth, isSameDay, isWithinInterval, startOfDay } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import CalendarEvent from './CalendarEvent';
@@ -22,11 +22,28 @@ const CalendarGrid = ({ days, currentDate, view, events, onEventClick }: Calenda
   const isMobile = useIsMobile();
 
   const getDayEvents = (date: Date) => {
+    const normalizedDate = startOfDay(date);
     return events.filter(event => {
-      const eventStartDate = event.startDate;
-      const eventEndDate = event.endDate || eventStartDate;
-      return isSameDay(date, eventStartDate) || isSameDay(date, eventEndDate);
+      const eventStart = startOfDay(event.startDate);
+      const eventEnd = startOfDay(event.endDate || event.startDate);
+      
+      // Check if date falls within the event's date range (inclusive)
+      return isWithinInterval(normalizedDate, { start: eventStart, end: eventEnd }) ||
+             isSameDay(normalizedDate, eventStart) ||
+             isSameDay(normalizedDate, eventEnd);
     });
+  };
+
+  const getEventPosition = (date: Date, event: { startDate: Date; endDate: Date }) => {
+    const normalizedDate = startOfDay(date);
+    const eventStart = startOfDay(event.startDate);
+    const eventEnd = startOfDay(event.endDate || event.startDate);
+    
+    const isStart = isSameDay(normalizedDate, eventStart);
+    const isEnd = isSameDay(normalizedDate, eventEnd);
+    const isMiddle = !isStart && !isEnd;
+    
+    return { isStart, isEnd, isMiddle };
   };
 
   return (
@@ -58,16 +75,20 @@ const CalendarGrid = ({ days, currentDate, view, events, onEventClick }: Calenda
             >
               {format(day, 'd')}
             </time>
-            <div className="mt-2">
-              {dayEvents.map(event => (
-                <div key={event.id} onClick={() => onEventClick(event.id)}>
-                  <CalendarEvent 
-                    event={event} 
-                    isStart={isSameDay(day, event.startDate)} 
-                    isEnd={isSameDay(day, event.endDate)} 
-                  />
-                </div>
-              ))}
+            <div className="mt-2 space-y-1">
+              {dayEvents.map(event => {
+                const { isStart, isEnd, isMiddle } = getEventPosition(day, event);
+                return (
+                  <div key={event.id} onClick={() => onEventClick(event.id)}>
+                    <CalendarEvent 
+                      event={event} 
+                      isStart={isStart} 
+                      isEnd={isEnd}
+                      isMiddle={isMiddle}
+                    />
+                  </div>
+                );
+              })}
             </div>
           </div>
         );
