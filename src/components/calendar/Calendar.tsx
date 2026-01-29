@@ -41,12 +41,27 @@ const Calendar = () => {
     navigate(`/jobs/${eventId}`);
   };
 
+  const getStatusColor = (status: string | null) => {
+    switch (status) {
+      case 'pending':
+        return '#F97316'; // Orange
+      case 'in_progress':
+        return '#3B82F6'; // Blue
+      case 'completed':
+        return '#10B981'; // Green
+      case 'cancelled':
+        return '#6B7280'; // Grey
+      default:
+        return '#3B82F6'; // Default to blue
+    }
+  };
+
   const formattedEvents = jobs.map(job => ({
     id: job.id,
     title: job.title,
     startDate: parseISO(job.start_date),
     endDate: job.end_date ? parseISO(job.end_date) : parseISO(job.start_date),
-    color: job.status === 'completed' ? '#10B981' : '#3B82F6'
+    color: getStatusColor(job.status)
   }));
 
   // Only render grid for month and week views
