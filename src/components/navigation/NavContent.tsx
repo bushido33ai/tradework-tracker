@@ -1,6 +1,6 @@
 
 import { Link } from "react-router-dom";
-import { Home, ClipboardList, MessageSquare, Users, Building2, UserCircle, LogOut, Settings, Briefcase } from "lucide-react";
+import { Home, ClipboardList, MessageSquare, Users, Building2, UserCircle, LogOut, Settings, Briefcase, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLocation, Navigate } from "react-router-dom";
 import { useSessionContext } from "@supabase/auth-helpers-react";
@@ -44,7 +44,10 @@ export const NavContent = ({ onNavigate, onSignOut }: NavContentProps) => {
   }
 
   // Add common items
-  navItems.push({ icon: UserCircle, label: "Profile", path: "/profile" });
+  navItems.push(
+    { icon: UserCircle, label: "Profile", path: "/profile" },
+    { icon: HelpCircle, label: "Help", path: "/help" }
+  );
 
   // Add admin settings if user is admin
   if (isAdmin) {
