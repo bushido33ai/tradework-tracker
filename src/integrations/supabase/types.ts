@@ -714,6 +714,18 @@ export type Database = {
       cleanup_expired_verifications: { Args: never; Returns: undefined }
       delete_user_completely: { Args: { _user_id: string }; Returns: undefined }
       generate_unique_job_number: { Args: never; Returns: string }
+      get_tradesman_directory: {
+        Args: never
+        Returns: {
+          address: string
+          email: string
+          first_name: string
+          full_name: string
+          id: string
+          surname: string
+          telephone: string
+        }[]
+      }
       has_role: {
         Args: { role: Database["public"]["Enums"]["app_role"]; user_id: string }
         Returns: boolean

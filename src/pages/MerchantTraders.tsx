@@ -1,27 +1,47 @@
 
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Loader2, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { useSessionContext } from "@supabase/auth-helpers-react";
+import { useProfile } from "@/hooks/useProfile";
+
+interface TradesmanProfile {
+  id: string;
+  first_name: string | null;
+  surname: string | null;
+  full_name: string | null;
+  email: string | null;
+  telephone: string | null;
+  address: string | null;
+}
 
 const MerchantTraders = () => {
   const navigate = useNavigate();
+  const { session } = useSessionContext();
+  const { data: profile, isLoading: profileLoading } = useProfile(session?.user?.id);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data: traders, isLoading } = useQuery({
-    queryKey: ["traders"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("user_type", "tradesman");
+  // Check if user is a merchant - redirect if not
+  const isMerchant = profile?.user_type === 'merchant';
 
-      if (error) throw error;
-      return data;
+  const { data: traders, isLoading: tradersLoading } = useQuery({
+    queryKey: ["tradesman-directory"],
+    queryFn: async () => {
+      // Use the secure RPC function that enforces merchant-only access
+      const { data, error } = await supabase
+        .rpc('get_tradesman_directory');
+
+      if (error) {
+        console.error("Error fetching tradesman directory:", error);
+        throw error;
+      }
+      return data as TradesmanProfile[];
     },
+    enabled: isMerchant, // Only run query if user is a merchant
   });
 
   const filteredTraders = traders?.filter((trader) => {
@@ -39,7 +59,21 @@ const MerchantTraders = () => {
     );
   });
 
-  if (isLoading) {
+  // Show loading while checking profile
+  if (profileLoading) {
+    return (
+      <div className="flex items-center justify-center h-[50vh]">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+  // Redirect non-merchants to dashboard
+  if (!isMerchant) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  if (tradersLoading) {
     return (
       <div className="flex items-center justify-center h-[50vh]">
         <Loader2 className="h-8 w-8 animate-spin" />
