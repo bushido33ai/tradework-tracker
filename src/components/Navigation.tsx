@@ -63,7 +63,10 @@ const Navigation = () => {
 
   if (isMobile) {
     return (
-      <div className="fixed top-0 left-0 right-0 h-16 bg-[#1A1F2C] text-white border-b border-[#2A2F3C] px-4 flex items-center justify-between z-50">
+      <div
+        className="fixed top-0 left-0 right-0 h-16 bg-[#1A1F2C] text-white border-b border-[#2A2F3C] px-4 flex items-center justify-between z-50"
+        style={{ height: "calc(4rem + env(safe-area-inset-top))", paddingTop: "env(safe-area-inset-top)" }}
+      >
         <Logo onClick={handleNavigation} />
         
         <Sheet open={isOpen} onOpenChange={setIsOpen}>

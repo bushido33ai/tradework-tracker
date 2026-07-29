@@ -128,7 +128,7 @@ const App = () => {
                     <AppBackground>
                       <div className="flex min-h-screen flex-col">
                         <Navigation />
-                        <main className="flex-1 p-2 md:p-8 mt-20 md:mt-4 mx-2 md:mx-4 md:ml-64 overflow-y-auto">
+                        <main className="flex-1 p-2 md:p-8 mt-[calc(5rem+env(safe-area-inset-top))] md:mt-4 mx-2 md:mx-4 md:ml-64 overflow-y-auto">
                           <Routes>
                             <Route path="/dashboard" element={<Dashboard />} />
                             <Route path="/jobs" element={<Jobs />} />
